@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  author: 1
+  references: MyString
+  User: MyString
+  text: MyText
+  likes: 1
+  dislikes: 1
+  comment_to: MyString
+  references: MyString
+  Post: MyString
+
+two:
+  author: 1
+  references: MyString
+  User: MyString
+  text: MyText
+  likes: 1
+  dislikes: 1
+  comment_to: MyString
+  references: MyString
+  Post: MyString

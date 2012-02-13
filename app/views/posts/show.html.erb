@@ -1,0 +1,50 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Author:</b>
+  <%= @post.author %>
+</p>
+
+<p>
+  <b>References:</b>
+  <%= @post.references %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @post.User %>
+</p>
+
+<p>
+  <b>Text:</b>
+  <%= @post.text %>
+</p>
+
+<p>
+  <b>Likes:</b>
+  <%= @post.likes %>
+</p>
+
+<p>
+  <b>Dislikes:</b>
+  <%= @post.dislikes %>
+</p>
+
+<p>
+  <b>Comment to:</b>
+  <%= @post.comment_to %>
+</p>
+
+<p>
+  <b>References:</b>
+  <%= @post.references %>
+</p>
+
+<p>
+  <b>Post:</b>
+  <%= @post.Post %>
+</p>
+
+
+<%= link_to 'Edit', edit_post_path(@post) %> |
+<%= link_to 'Back', posts_path %>
