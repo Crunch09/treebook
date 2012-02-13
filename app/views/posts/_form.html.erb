@@ -12,16 +12,8 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :author %><br />
-    <%= f.number_field :author %>
-  </div>
-  <div class="field">
-    <%= f.label :references %><br />
-    <%= f.text_field :references %>
-  </div>
-  <div class="field">
-    <%= f.label :User %><br />
-    <%= f.text_field :User %>
+    <%= f.label :user %><br />
+    <%= f.text_field :user %>
   </div>
   <div class="field">
     <%= f.label :text %><br />
@@ -36,16 +28,8 @@
     <%= f.number_field :dislikes %>
   </div>
   <div class="field">
-    <%= f.label :comment_to %><br />
-    <%= f.text_field :comment_to %>
-  </div>
-  <div class="field">
-    <%= f.label :references %><br />
-    <%= f.text_field :references %>
-  </div>
-  <div class="field">
-    <%= f.label :Post %><br />
-    <%= f.text_field :Post %>
+    <%= f.label :post %><br />
+    <%= f.text_field :post %>
   </div>
   <div class="actions">
     <%= f.submit %>

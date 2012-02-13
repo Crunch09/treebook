@@ -1,4 +1,6 @@
 Treebook::Application.routes.draw do
+  resources :trees
+
   resources :posts
 
   resources :users

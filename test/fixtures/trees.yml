@@ -2,14 +2,8 @@
 
 one:
   user: 
-  text: MyText
-  likes: 1
-  dislikes: 1
-  post: 
+  title: MyString
 
 two:
   user: 
-  text: MyText
-  likes: 1
-  dislikes: 1
-  post: 
+  title: MyString
