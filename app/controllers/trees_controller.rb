@@ -2,17 +2,6 @@ class TreesController < ApplicationController
 
   before_filter :authenticate_user!
 
-  # GET /trees
-  # GET /trees.json
-  def index
-    @trees = Tree.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @trees }
-    end
-  end
-
   # GET /trees/1
   # GET /trees/1.json
   def show
@@ -20,7 +9,7 @@ class TreesController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @tree }
+      format.json { render json: @tree.to_json(:include => { :user => {:only => [:firstname, :name, :id, :email]}}) }
     end
   end
 

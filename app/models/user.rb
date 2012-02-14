@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :firstname, :name, :birthday
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :firstname, :name, :birthday, :trees, :posts
 
 
 	def self.find_for_google_oauth(access_token, signed_in_resource=nil)
