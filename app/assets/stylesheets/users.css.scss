@@ -2,6 +2,10 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+a:hover {
+  text-decoration: none !important;
+}
+
 div#top_bar {
   position: absolute;
   height: 40px;
@@ -25,28 +29,42 @@ div#logo {
   width: 260px;
 }
 
+div#spacer {
+  float: right;
+  width: 20px;
+  height: 40px;
+}
+
 div#login_layer, div#signup_layer {
   float: right;
   line-height: 40px;
-  margin-right: 10px;
+  margin-right: 20px;
 }
 
 div#login_layer > b, div#signup_layer > b {
   display: block;
+  padding: 0px 10px;
   cursor: pointer;
   width: 100%;
-  text-align: right;
+  text-align: center;
+  z-index: 3;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+
+div#login_layer > b:hover, div#signup_layer > b:hover {
+  text-shadow: #000 0px 0px 6px !important;
 }
 
 div#login_layer > div, div#signup_layer > div {
   display: none;
   
   position: absolute;
+  width: 250px;
   top: 39px;
   right: 0;
   z-index: 1;
   padding: 10px;
-  margin-right: 10px;
   
   color: #000;
   line-height: 150%;
@@ -54,4 +72,15 @@ div#login_layer > div, div#signup_layer > div {
   border: 1px solid #666;
   border-radius: 0px 0px 10px 10px;
   box-shadow: 0px 0px 10px #000;
+}
+
+div#login_layer > div, div#signup_layer > input {
+  width: 100%;
+}
+
+div#tree_logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -150px 0px 0px -150px;
 }

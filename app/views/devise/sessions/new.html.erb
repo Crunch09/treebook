@@ -1,4 +1,5 @@
 <div id="top_bar">
+  <div id="spacer"></div>
   <div id="signup_layer">
     <b>Registrieren</b>
     <div>
@@ -13,6 +14,15 @@
         
         <div><%= f.label :password_confirmation %><br />
         <%= f.password_field :password_confirmation %></div>
+        
+        <div><%= f.label :firstname %><br />
+        <%= f.text_field :firstname %></div>
+        
+        <div><%= f.label :name %><br />
+        <%= f.text_field :name %></div>
+        
+        <div><%= f.label :birthday %><br />
+        <%= f.date_select :birthday %></div>
         
         <div><%= f.submit "Sign up" %></div>
       <% end %>
@@ -43,4 +53,7 @@
   </div>
   
   <div id="logo"><a href="/"><%= image_tag("treebook_logo.png") %></a></div>
+</div>
+<div id="tree_logo">
+  <%= image_tag("treebook_treelogo.png") %>
 </div>
