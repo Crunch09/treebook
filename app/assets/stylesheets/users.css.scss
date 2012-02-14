@@ -7,7 +7,7 @@ a:hover {
 }
 
 div#top_bar {
-  position: absolute;
+  position: fixed;
   height: 40px;
   width: 100%;
   left: 0;
@@ -22,6 +22,13 @@ div#top_bar {
   background-image: -ms-linear-gradient(bottom, rgba(0,0,0,0.2) 30%, rgba(255,255,255,0.2) 70%);
   
   color: #FFF;
+}
+
+div#top_bar a {
+  color: #FFF;
+}
+div#top_bar a:hover {
+  text-shadow: #000 0px 0px 6px !important;
 }
 
 div#logo {
@@ -41,7 +48,7 @@ div#login_layer, div#signup_layer {
   margin-right: 20px;
 }
 
-div#login_layer > b, div#signup_layer > b {
+div#login_layer > b, div#signup_layer > b, div#user_menu > b {
   display: block;
   padding: 0px 10px;
   cursor: pointer;
@@ -52,7 +59,7 @@ div#login_layer > b, div#signup_layer > b {
   border-right: 1px solid transparent;
 }
 
-div#login_layer > b:hover, div#signup_layer > b:hover {
+div#login_layer > b:hover, div#signup_layer > b:hover, div#user_menu > b:hover {
   text-shadow: #000 0px 0px 6px !important;
 }
 
@@ -78,9 +85,77 @@ div#login_layer > input, div#signup_layer > input {
   width: 100%;
 }
 
+div#logout {
+  float: right;
+  line-height: 40px;
+  font-weight: bold;
+  margin-right: 20px;
+  padding: 0px 10px;
+}
+
 div#tree_logo {
   position: absolute;
   top: 50%;
   left: 50%;
   margin: -150px 0px 0px -150px;
+}
+
+div#user_menu {
+  float: right;
+  margin-right: 20px;
+  line-height: 40px;
+  font-weight: bold;
+}
+
+
+div#user_menu_layer {
+  display: none;
+  
+  position: absolute;
+  width: 250px;
+  top: 39px;
+  right: 0;
+  z-index: 1;
+  padding: 10px 0px;
+  
+  color: #000;
+  line-height: 150%;
+  background-color: #FFF;
+  border: 1px solid #666;
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: 0px 0px 10px #000;
+}
+
+div#user_menu_layer a {
+  color: #000;
+}
+
+div#user_menu_layer ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+div#user_menu_layer ul > li {
+  margin: 0px;
+  padding: 0px;
+}
+
+div#user_menu_layer ul > li > a {
+  display: block;
+  margin: 0px;
+  padding: 5px;
+}
+
+div#user_menu_layer ul > li > a:hover {
+  background-color: #EEE;
+  text-shadow: none !important;
+}
+
+div#content {
+  position: absolute;
+  top: 39px;
+  left: 0;
+  z-index: 1;
+  width: 100%;
 }

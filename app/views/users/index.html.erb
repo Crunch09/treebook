@@ -1,9 +1,17 @@
-<h1>Landing page</h1>
-
-<div>
-<% if user_signed_in? %>
-<%= "Hi, #{current_user.firstname}" %>
-<% end %>
+<div id="top_bar">
+  <div id="spacer"></div>
+  <div id="user_menu">
+  <% if user_signed_in? %>
+  <b><%= "#{current_user.firstname} #{current_user.name}" %></b>
+  <% end %>
+    <div id="user_menu_layer">
+      <ul>
+        <li><%= link_to "Ausloggen", destroy_user_session_path, :method => 'delete' %></li>
+      </ul>
+    </div>
+  </div>
+  <div id="logo"><a href="/"><%= image_tag("treebook_logo.png") %></a></div>
 </div>
-
-<%= link_to "Ausloggen", destroy_user_session_path, :method => 'delete' %>
+<div id="content">
+  <h1>Landing page</h1>
+</div>
