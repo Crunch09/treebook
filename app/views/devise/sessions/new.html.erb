@@ -22,7 +22,7 @@
         <%= f.text_field :name %></div>
         
         <div><%= f.label :birthday %><br />
-        <%= f.date_select :birthday %></div>
+        <%= f.date_select :birthday, :start_year => 1950, :order => [:day, :month, :year], :end_year => (Time.now.year - 10), :default => 25.years.ago, :use_month_numbers => true %></div>
         
         <div><%= f.submit "Sign up" %></div>
       <% end %>

@@ -1,6 +1,6 @@
 class TreesController < ApplicationController
 
-  before_filter authenticate_user!
+  before_filter :authenticate_user!
 
   # GET /trees
   # GET /trees.json

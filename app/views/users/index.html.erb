@@ -1,33 +1,9 @@
-<h1>Listing users</h1>
+<h1>Landing page</h1>
 
-<table>
-  <tr>
-    <th>Email</th>
-    <th>Name</th>
-    <th>Firstname</th>
-    <th>Birthday</th>
-    <th>Password</th>
-    <th>Privacy setting</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @users.each do |user| %>
-  <tr>
-    <td><%= user.email %></td>
-    <td><%= user.name %></td>
-    <td><%= user.firstname %></td>
-    <td><%= user.birthday %></td>
-    <td><%= user.password %></td>
-    <td><%= user.privacy_setting %></td>
-    <td><%= link_to 'Show', user %></td>
-    <td><%= link_to 'Edit', edit_user_path(user) %></td>
-    <td><%= link_to 'Destroy', user, confirm: 'Are you sure?', method: :delete %></td>
-  </tr>
+<div>
+<% if user_signed_in? %>
+<%= "Hi, #{current_user.firstname}" %>
 <% end %>
-</table>
+</div>
 
-<br />
-
-<%= link_to 'New User', new_user_path %>
+<%= link_to "Ausloggen", destroy_user_session_path, :method => 'delete' %>
