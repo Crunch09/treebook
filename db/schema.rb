@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120214082857) do
+ActiveRecord::Schema.define(:version => 20120214115014) do
 
   create_table "posts", :force => true do |t|
     t.integer  "user_id"
@@ -34,6 +34,11 @@ ActiveRecord::Schema.define(:version => 20120214082857) do
   end
 
   add_index "trees", ["user_id"], :name => "index_trees_on_user_id"
+
+  create_table "trees_users", :id => false, :force => true do |t|
+    t.integer "tree_id"
+    t.integer "user_id"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "name"
