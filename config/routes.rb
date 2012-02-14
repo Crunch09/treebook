@@ -1,13 +1,11 @@
 Treebook::Application.routes.draw do
-  devise_for :users do
-    get '/', :to => "devise/sessions#new"
-  end
+  devise_for :users
 
   resources :trees
 
   resources :posts
 
-  resources :users
+  root :to => 'posts#index'
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
