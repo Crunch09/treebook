@@ -1,0 +1,17 @@
+#toast {
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  width: 300px;
+  margin-left: -150px;
+  padding: 10px;
+  
+  font-weight: bold;
+  text-align: center;
+  
+  border: 1px solid #666;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px #000;
+  background-color: #EFEFEF;
+}

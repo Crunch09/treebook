@@ -1,4 +1,9 @@
 $(function() {
+  // check for error message
+  if($('.alert').text() != "") {
+    makeToast($('.alert').text());
+  }
+  
   // check for login layer
   if($('#login_layer').length > 0) {
     // init layer position
