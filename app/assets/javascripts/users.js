@@ -4,6 +4,11 @@ $(function() {
     makeToast($('.alert').text());
   }
   
+  // check for player
+  if($('#player').length > 0) {
+    initMusicPlayer();
+  }
+  
   // check for login layer
   if($('#login_layer').length > 0) {
     // init layer position
