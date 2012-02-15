@@ -16,7 +16,7 @@
 <% if user_signed_in? %>
 <div id="main">
   <div id="navigation">
-    <%= image_tag("derp.png", {:width => 150, :class => "avatar"}) %>
+    <%= image_tag(current_user.image, {:width => 48, :class => "avatar"}) %>
     <ul>
       <li><a href="#" name="Startseite" onclick="show('Startseite')">Startseite</a></li>
       <li><a href="#" name="Nachrichten" onclick="show('Nachrichten')">Nachrichten</a></li>
