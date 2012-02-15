@@ -12,8 +12,8 @@ gem 'sqlite3'
 gem 'devise'
 
 
-# load GoogleOmniAuthPlugin
-gem 'omniauth-google-oauth2'
+# load FacebookPlugin
+gem 'omniauth-facebook'
 
 
 # Gems used only for assets and not required

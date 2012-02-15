@@ -1,14 +1,23 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-	def google_oauth2
-	    # You need to implement the method below in your model
-	    @user = User.find_for_google_oauth(request.env["omniauth.auth"], current_user)
+	def facebook
 
-	    if @user.persisted?
-	      flash[:notice] = "Erfolgreich mit Google angemeldet."
-	      sign_in_and_redirect @user, :event => :authentication
+		omniauth = request.env["omniauth.auth"]
+		data = omniauth['info']
+	    authentication = Authentication.find_by_provider_and_uid(omniauth['provider'], omniauth['uid'])
+
+	    if authentication
+	      flash[:notice] = "Erfolgreich mit Facebook angemeldet"
+	      sign_in_and_redirect :user, authentication.user
 	    else
-	      session["devise.google_data"] = request.env["omniauth.auth"]
-	      redirect_to new_user_registration_url
+	      user = User.new(:email => data.email, :password => Devise.friendly_token[0,20], :firstname => data.first_name, :name => data.last_name)
+	      a = Authentication.create!(:provider => omniauth[:provider], :uid => omniauth[:uid])
+	      user.authentication = a
+	      if user.save
+	      	session["devise.facebook_data"] = request.env["omniauth.auth"]
+	      	sign_in_and_redirect :user, user
+	      else
+			redirect_to new_user_registration_url
+		  end
 	    end
   	end
 

@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_one :authentication
   has_many :posts
   has_and_belongs_to_many :trees
 
@@ -13,7 +14,7 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :firstname, :name, :birthday, :trees, :posts
 
 
-	def self.find_for_google_oauth(access_token, signed_in_resource=nil)
+	def self.find_for_facebook_oauth(access_token, signed_in_resource=nil)
 		data = access_token.extra.raw_info
 	  	if user = User.where(:email => data.email).first
 	    	user
