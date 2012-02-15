@@ -12,6 +12,10 @@ gem 'sqlite3'
 gem 'devise'
 
 
+#load Gon
+gem 'gon'
+
+
 # load FacebookPlugin
 gem 'omniauth-facebook'
 

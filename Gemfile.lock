@@ -51,6 +51,10 @@ GEM
       addressable (~> 2.2)
       multipart-post (~> 1.1)
       rack (~> 1.1)
+    gon (2.0.6)
+      actionpack (>= 2.3.0)
+      json
+      rabl
     hashie (1.2.0)
     hike (1.2.1)
     i18n (0.6.0)
@@ -79,6 +83,9 @@ GEM
       omniauth (~> 1.0)
     orm_adapter (0.0.6)
     polyglot (0.3.3)
+    rabl (0.5.4)
+      activesupport (>= 2.3.14)
+      multi_json (~> 1.0.3)
     rack (1.4.1)
     rack-cache (1.1)
       rack (>= 0.4)
@@ -132,6 +139,7 @@ PLATFORMS
 DEPENDENCIES
   coffee-rails (~> 3.2.1)
   devise
+  gon
   jquery-rails
   omniauth-facebook
   rails (= 3.2.1)
