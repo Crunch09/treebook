@@ -184,7 +184,6 @@ div#navigation ul a {
   display: block;
   line-height: 25px;
   padding: 5px;
-  margin-right: 25px;
   cursor: pointer;
 }
 
@@ -194,9 +193,6 @@ div#navigation ul a:hover {
 
 .active {
   background-color: #DDDDDD;
-  margin-right: 0px !important;
-  border-top-right-radius: 35px 18px;
-  border-bottom-right-radius: 35px 18px;
 }
 
 .avatar {

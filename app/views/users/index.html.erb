@@ -27,7 +27,7 @@
       <li><b>Meine Trees</b></li>
       <% my_trees = Tree.where :user_id => current_user.id %>
       <% my_trees.each do |t| %>
-      <%=raw  "<li><a href=\"#\" name=\"tree_#{t.title}\" onclick=\"show('tree:#{t.id}')\">#{t.title}</a></li>" %>
+      <%=raw  "<li><a href=\"#\" name=\"tree_#{t.id}_#{t.title}\" onclick=\"show('tree:#{t.id}')\">#{t.title}</a></li>" %>
       <% end %>
       <li><a href="#" name="addTree" onclick="addTree()">+ neuer Tree</a></li>
     </ul>

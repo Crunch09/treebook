@@ -113,15 +113,28 @@ $(function() {
     // STATUS UPDATE
     setInputDefault($('#content input[name="status_update"]'), "Teile deine Gedanken!");
     $('#content input[name="status_update"]').bind('focus', function() {
-      if($(this).next('input[name="send_post"]').length == 0) {
-        $(this).after('<input type="button" name="send_post" value="Teilen" />');
-        $(this).next('input[name="send_post"]').button();
-      }
-    });
-    
-    $('#content input[name="status_update"]').bind('blur', function() {
-      if($(this).val() == "") {
-        $(this).next('input[name="send_post"]').remove();
+      if($(this).nextAll('input[name="send_post"]').length == 0) {
+        $(this).after('<input type="text" name="treetag[]" value="" class="treetag"/><br /><input type="button" name="send_post" value="Teilen" />');
+        
+        var jsonTrees = new Array();
+        $('#navigation a[name^="tree_"]').each(function() {
+          var tree_data = $(this).attr("name").split("_");
+          jsonTrees.push({ "id": tree_data[1], "label": tree_data[2], "value": tree_data[2] });
+        });
+        
+        $('input.treetag').tagedit({
+          allowEdit: false,
+          autocompleteOptions: {
+            source: jsonTrees
+          },
+          texts: { // some texts
+            removeLinkTitle: 'Entfernen.',
+            saveEditLinkTitle: 'Änderungen speichern.',
+            breakEditLinkTitle: 'Abbrechen'
+          }
+        });
+        
+        $(this).nextAll('input[name="send_post"]').button();
       }
     });
   }

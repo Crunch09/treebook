@@ -6,8 +6,9 @@ class UsersController < ApplicationController
 	#GET /users.json
 	def index
 		@users = User.all
-
-		gon.user_id = current_user.id
+		if !current_user.nil?
+			gon.user_id = current_user.id
+		end
 
 		respond_to do |format|
 			format.html { redirect_to new_user_session_path if current_user.nil? }
