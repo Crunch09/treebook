@@ -16,10 +16,20 @@
 <% if user_signed_in? %>
 <div id="main">
   <div id="navigation">
-    <%= image_tag(current_user.image, {:width => 48, :class => "avatar"}) %>
+    <span class="its_me">
+      <%= image_tag(current_user.image, {:width => 48, :class => "avatar"}) %> <b><%= current_user.firstname %></b>
+      <br style="clear: left;" />
+    </span>
     <ul>
       <li><a href="#" name="Startseite" onclick="show('Startseite')">Startseite</a></li>
       <li><a href="#" name="Nachrichten" onclick="show('Nachrichten')">Nachrichten</a></li>
+      <br />
+      <li><b>Meine Trees</b></li>
+      <% my_trees = Tree.where :user_id => current_user.id %>
+      <% my_trees.each do |t| %>
+      <%=raw  "<li><a href=\"#\" name=\"tree_#{t.title}\" onclick=\"show('tree:#{t.id}')\">#{t.title}</a></li>" %>
+      <% end %>
+      <li><a href="#" name="addTree" onclick="addTree()">+ neuer Tree</a></li>
     </ul>
   </div>
   <div id="content">

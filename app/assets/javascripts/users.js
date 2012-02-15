@@ -110,21 +110,18 @@ $(function() {
     
     show('Startseite');
     
-    $('#content input[name="status_update"]').data('origText', $('#content input[name="status_update"]').val());
     // STATUS UPDATE
+    setInputDefault($('#content input[name="status_update"]'), "Teile deine Gedanken!");
     $('#content input[name="status_update"]').bind('focus', function() {
-      if($(this).val() == $(this).data('origText')) {
-        $(this).val("").css({
-          'color': '#000000'
-        });
+      if($(this).next('input[name="send_post"]').length == 0) {
+        $(this).after('<input type="button" name="send_post" value="Teilen" />');
+        $(this).next('input[name="send_post"]').button();
       }
     });
     
     $('#content input[name="status_update"]').bind('blur', function() {
-      if($(this).val() == '') {
-        $(this).val($(this).data('origText')).css({
-          'color': '#999999'
-        });
+      if($(this).val() == "") {
+        $(this).next('input[name="send_post"]').remove();
       }
     });
   }
