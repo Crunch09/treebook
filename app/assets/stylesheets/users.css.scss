@@ -170,11 +170,11 @@ div#main {
 div#navigation {
   float: left;
   width: 200px;
-  padding: 0px;
+  padding: 24px 10px;
 }
 
 div#navigation ul {
-  margin: 0px;
+  margin: 20px 0px;
   padding: 0px;
   list-style-type: none;
 }
@@ -201,13 +201,20 @@ div#navigation ul a:hover {
 
 .avatar {
   margin: 10px;
+  float: left;
+}
+
+.its_me {
+  line-height: 64px;
+  vertical-align: middle;
   cursor: pointer;
 }
 
 div#content {
-  width: 820px;
-  margin-left: 200px;
-  padding: 10px;
+  width: 600px;
+  margin-left: 220px;
+  padding: 24px 10px;
+  border: 1px solid #DDDDDD;
 }
 
 div#content > div {
@@ -215,6 +222,6 @@ div#content > div {
 }
 
 div#Startseite input[name="status_update"] {
-  width: 620px;
+  width: 580px;
   color: #999999;
 }
