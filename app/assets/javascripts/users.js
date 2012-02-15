@@ -72,14 +72,17 @@ $(function() {
     });
   }
   
+  // user is logged in
   if($('#user_menu').length > 0) {
-    // init layer position
+    // USER MENU
+    // init user menu layer position
     $('#user_menu_layer').position({
       of: $('#user_menu > b'),
       my: 'right top',
       at: 'right bottom',
       offset: '0 -1'
     });
+    // init user menu
     $('#user_menu > b').toggle(function() {
       $('#user_menu_layer').slideDown(200);
       
@@ -98,6 +101,26 @@ $(function() {
         'textShadow': 'none',
         'background': 'transparent'
       });
+    });
+    
+    show('Startseite');
+    
+    $('#content input[name="status_update"]').data('origText', $('#content input[name="status_update"]').val());
+    // STATUS UPDATE
+    $('#content input[name="status_update"]').bind('focus', function() {
+      if($(this).val() == $(this).data('origText')) {
+        $(this).val("").css({
+          'color': '#000000'
+        });
+      }
+    });
+    
+    $('#content input[name="status_update"]').bind('blur', function() {
+      if($(this).val() == '') {
+        $(this).val($(this).data('origText')).css({
+          'color': '#999999'
+        });
+      }
     });
   }
 });

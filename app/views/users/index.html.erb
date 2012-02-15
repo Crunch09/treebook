@@ -6,12 +6,33 @@
   <% end %>
     <div id="user_menu_layer">
       <ul>
+        <li><a>Mein Profil</a></li>
         <li><%= link_to "Ausloggen", destroy_user_session_path, :method => 'delete' %></li>
       </ul>
     </div>
   </div>
   <div id="logo"><a href="/"><%= image_tag("treebook_logo.png") %></a></div>
 </div>
-<div id="content">
-  <h1>Landing page</h1>
+<% if user_signed_in? %>
+<div id="main">
+  <div id="navigation">
+    <% if current_user.image_available? %>
+    <%= image_tag(current_user.image) %>
+    <% else %>
+    <%= image_tag("derp.png") %>
+    <% end %>
+    <ul>
+      <li><a href="#" name="Startseite" onclick="show('Startseite')">Startseite</a></li>
+      <li><a href="#" name="Nachrichten" onclick="show('Nachrichten')">Nachrichten</a></li>
+    </ul>
+  </div>
+  <div id="content">
+    <div id="Startseite">
+      <input type="text" name="status_update" value="Teile deine Gedanken!" />
+    </div>
+    <div id="Nachrichten">
+       <h3>Nachrichten</h3>
+    </div>
+  </div>
 </div>
+<% end %>

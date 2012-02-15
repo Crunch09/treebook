@@ -6,3 +6,12 @@ var makeToast = function(str) {
     });
   });
 }
+
+var show = function(str) {
+  if($('#'+str).length > 0) {
+    $('#content > div').hide();
+    $('#'+str).show();
+    $('#navigation').find('a').removeClass('active');
+    $('#navigation').find('a[name="'+str+'"]').addClass('active');
+  }
+}

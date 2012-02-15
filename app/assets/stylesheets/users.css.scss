@@ -158,10 +158,58 @@ div#user_menu_layer ul > li > a:hover {
   text-shadow: none !important;
 }
 
-div#content {
+div#main {
   position: absolute;
   top: 39px;
-  left: 0;
+  left: 50%;
+  margin-left: -510px;
   z-index: 1;
-  width: 100%;
+  width: 1020px;
+}
+
+div#navigation {
+  float: left;
+  width: 200px;
+  padding: 0px;
+}
+
+div#navigation ul {
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+}
+
+div#navigation ul a {
+  font-weight: bold;
+  display: block;
+  line-height: 25px;
+  padding: 5px;
+  margin-right: 25px;
+  cursor: pointer;
+}
+
+div#navigation ul a:hover {
+  background-color: #EEEEEE;
+}
+
+.active {
+  background-color: #DDDDDD;
+  margin-right: 0px !important;
+  border-top-right-radius: 35px 18px;
+  border-bottom-right-radius: 35px 18px;
+}
+
+div#content {
+  width: 820px;
+  margin-left: 200px;
+  padding: 10px;
+}
+
+div#content > div {
+  display: none;
+}
+
+div#Startseite input[name="status_update"] {
+  width: 620px;
+  color: #999999;
 }
