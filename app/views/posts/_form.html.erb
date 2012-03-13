@@ -12,8 +12,8 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :user %><br />
-    <%= f.text_field :user %>
+    <%= f.label :user_id, "Author" %><br />
+    <%= f.number_field :user_id %>
   </div>
   <div class="field">
     <%= f.label :text %><br />
@@ -28,8 +28,8 @@
     <%= f.number_field :dislikes %>
   </div>
   <div class="field">
-    <%= f.label :comment_to %><br />
-    <%= f.text_field :comment_to %>
+    <%= f.label :post_id, "Comment to post" %><br />
+    <%= f.number_field :post_id %>
   </div>
   <div class="actions">
     <%= f.submit %>
