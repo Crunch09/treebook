@@ -5,3 +5,14 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+
+chris = User.create({ name:"Brandt", firstname:"Christian", password: "123456", password_confirmation: "123456", email:"christian.brandt@mni.thm.de"})
+flo = User.create({ name:"Thomas", firstname:"Florian", password: "123456", password_confirmation: "123456", email:"florian.thomas@mni.thm.de"})
+
+trees = Tree.create([{ user: flo, title: "the first one"}, {user: chris, title: "first tree"}])
+# user in tree des anderen hinzufügen
+trees.first.users << chris
+trees.first.save
+posts = Post.create([{ user: flo, text: "my first post"}, { user: chris, text: "the first reply"}])
+Post.first.trees << Tree.first

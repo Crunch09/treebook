@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120214201345) do
+ActiveRecord::Schema.define(:version => 20120313194352) do
 
   create_table "authentications", :force => true do |t|
     t.integer "user_id"
@@ -31,6 +31,11 @@ ActiveRecord::Schema.define(:version => 20120214201345) do
 
   add_index "posts", ["post_id"], :name => "index_posts_on_post_id"
   add_index "posts", ["user_id"], :name => "index_posts_on_user_id"
+
+  create_table "posts_trees", :id => false, :force => true do |t|
+    t.integer "post_id"
+    t.integer "tree_id"
+  end
 
   create_table "trees", :force => true do |t|
     t.integer  "user_id"
