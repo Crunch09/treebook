@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_one :authentication
   has_many :posts
+  has_many :owned_trees, :class_name => "Tree"
   has_and_belongs_to_many :trees
 
 
@@ -11,7 +12,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :firstname, :name, :birthday, :trees, :posts
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :firstname, :name, :birthday, :trees, :posts, :owned_trees
 
   def image
     default_url = "http://localhost:3000/assets/derp.png"

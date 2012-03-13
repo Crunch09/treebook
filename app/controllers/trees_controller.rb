@@ -76,10 +76,9 @@ class TreesController < ApplicationController
 
   #GET /trees
   #GET /trees.json
-  def index
-    @ownedTrees = Tree.where :user_id => current_user.id 
+  def index 
       respond_to do |format|
-        format.json { render json: @ownedTrees }
+        format.json { render json: current_user.owned_trees }
       end
   end
 

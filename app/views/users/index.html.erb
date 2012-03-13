@@ -25,7 +25,7 @@
       <li><a href="#" name="Nachrichten" onclick="show('Nachrichten')">Nachrichten</a></li>
       <br />
       <li><b>Meine Trees</b></li>
-      <% my_trees = Tree.where :user_id => current_user.id %>
+      <% my_trees = current_user.owned_trees %>
       <% my_trees.each do |t| %>
       <%=raw  "<li><a href=\"#\" name=\"tree_#{t.id}_#{t.title}\" onclick=\"show('tree:#{t.id}')\">#{t.title}</a></li>" %>
       <% end %>
