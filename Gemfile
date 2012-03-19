@@ -16,8 +16,12 @@ gem 'devise'
 gem 'gon'
 
 
-# load FacebookPlugin
+# load Omniauth plugins
 gem 'omniauth-facebook'
+gem 'omniauth-google_oauth2'
+
+
+gem 'flickraw'
 
 
 # Gems used only for assets and not required

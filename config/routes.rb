@@ -12,6 +12,7 @@ Treebook::Application.routes.draw do
   root :to => 'users#index'
 
   match "trees/" => "trees#index", :via => :get, :as => :trees
+  match "images" => "users#images", :via => :get, :as => :images
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.

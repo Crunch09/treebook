@@ -16,6 +16,9 @@
 
 <%- if devise_mapping.omniauthable? %>
   <%- resource_class.omniauth_providers.each do |provider| %>
+  	<!-- diesen Link (vorerst) nur für Facebook anzeigen -->
+  	<% if provider.to_s.titleize.eql? "Facebook" %>
     <%= link_to "Via #{provider.to_s.titleize} anmelden", omniauth_authorize_path(resource_name, provider) %><br />
+    <% end %>
   <% end -%>
 <% end -%>
