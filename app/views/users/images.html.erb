@@ -1,1 +1,6 @@
-<%= javascript_include_tag "images" %>
+<% unless @auth_url.nil? %>
+	<%= link_to 'flickr', @auth_url %>
+<% end %>
+<% unless @photosets.nil? %>
+	<%= @photosets.inspect %>
+<% end %>

@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+
   has_many :authentications
   has_many :posts
   has_many :owned_trees, :class_name => "Tree"
@@ -13,8 +14,8 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :firstname, :name,
-                  :birthday, :trees, :posts, :owned_trees
-
+                  :birthday, :trees, :posts, :owned_trees, :access_token, :access_secret,
+                  :flickr_id
   def image
     default_url = "http://localhost:3000/assets/derp.png"
     gravatar_id = Digest::MD5.hexdigest(self.email.downcase)
@@ -22,5 +23,8 @@ class User < ActiveRecord::Base
     img
   end
 
-  
+  def got_flickr_connection?
+    !self.access_token.nil? && !self.access_secret.nil?
+  end
+ 
 end

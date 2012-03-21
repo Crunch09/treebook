@@ -212,8 +212,11 @@ Devise.setup do |config|
   # up on your models and hooks.
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', :scope => 'user,public_repo'
   config.omniauth :facebook,  '343001832389456', '77e5fb5e621bac2959bc8f6908ad62e0'
-  config.omniauth :google_oauth2, '591394326238.apps.googleusercontent.com', 'O5oXwTT5xFhlezt9cfamvLRz', :scope => 'https://picasaweb.google.com/data/',
-                  :strategy_class => OmniAuth::Strategies::GoogleOAuth2
+  #config.omniauth :google_oauth2, '591394326238.apps.googleusercontent.com', 'O5oXwTT5xFhlezt9cfamvLRz', :scope => 'https://picasaweb.google.com/data/',
+                 # :strategy_class => OmniAuth::Strategies::GoogleOAuth2
+  #config.omniauth :flickr, '42026bbf6f026bb43201488328dd61b0', '043bd220b6b52509', :scope => 'write'
+
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

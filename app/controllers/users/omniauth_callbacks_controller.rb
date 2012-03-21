@@ -1,4 +1,5 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+
 	def facebook
 
 		omniauth = request.env["omniauth.auth"]
@@ -21,17 +22,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 	    end
   	end
 
-  	def google_oauth2
-  		omniauth = request.env["omniauth.auth"]
-		data = omniauth['info']
-	    authentication = Authentication.find_by_provider_and_uid(omniauth['provider'], omniauth['uid'])
-	    unless authentication
-	    	a = Authentication.create!(:provider => omniauth[:provider], :uid => omniauth[:uid], :user_id => current_user.id)
-	    	current_user.authentications << a
-	    	flash[:notice] = omniauth.to_yaml
-			redirect_to root_url
-	    end
-	end
+  	
 
   	def passthru
   		render :file => "#{Rails.root}/public/404.html", :status => 404, :layout => false

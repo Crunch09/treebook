@@ -18,11 +18,9 @@ gem 'gon'
 
 # load Omniauth plugins
 gem 'omniauth-facebook'
-gem 'omniauth-google_oauth2'
-
+gem 'omniauth-flickr'
 
 gem 'flickraw'
-
 
 # Gems used only for assets and not required
 # in production environments by default.

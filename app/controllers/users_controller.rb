@@ -1,8 +1,11 @@
 class UsersController < ApplicationController
-
 	require 'flickraw'
 
 	before_filter :authenticate_user!, :except => 'index'
+
+
+	FlickRaw.api_key= "42026bbf6f026bb43201488328dd61b0"
+	FlickRaw.shared_secret= "043bd220b6b52509"
 
 	#GET /users
 	#GET /users.json
@@ -21,27 +24,47 @@ class UsersController < ApplicationController
 	#GET /images
 	#GET /images.json
 	def images
-		flickr = Authentication.find_by_provider_and_user_id("flickr", current_user.id)
-		unless flickr.nil?
-			FlickRaw.api_key = "42026bbf6f026bb43201488328dd61b0"
-			FlickRaw.shared_secret = "043bd220b6b52509"
-			flickr = FlickRaw::Flickr.new
-			@user = current_user
-			#begin
-			#	photosets = flickr.photosets.getList(:user_id => current_user.flickr_id)
-			#	gon.photosets = photosets
-			#	respond_to do |format|
-			#		format.html 
-			#		format.json { render json: photosets }
-			#	end
-			#rescue FlickRaw::FailedResponse => ex
-			#	flash[:alert] = "Bitte geb eine gueltige Flickr-ID an"
-			#	redirect_to edit_user_registration_path
-			#end
-		else
-			flash[:notice] = "Bitte geb erst deine Flickr-ID in deinem Profil an"
-			redirect_to edit_user_registration_path
-		end
+		flickr = FlickRaw::Flickr.new
+		unless current_user.got_flickr_connection?
+			token = flickr.get_request_token(:oauth_callback => 'http://localhost:3000/flickrcallback')
+	  		session[:token] = token
+	  		# You'll need to store the token somewhere for when the user is returned to the callback method
+	  		# I stick mine in memcache with their session key as the cache key
+	  		@auth_url = flickr.get_authorize_url(token['oauth_token'], :perms => 'write')
+	  	else
+	  		flickr.access_token = current_user.access_token
+	  		flickr.access_secret = current_user.access_secret
+	  		@photosets = flickr.photosets.getList
+	  	end
+
+	  	respond_to do |format|
+			format.html 
+			format.json { render json: @users }
+	  	end
 	end
 
+	# Nach der Authentifizierung schickt Flickr die Antwort an diese Action
+	def flickrcallback
+
+	      flickr = FlickRaw::Flickr.new
+
+		  oauth_token = params[:oauth_token]
+		  oauth_verifier = params[:oauth_verifier]
+
+		  raw_token = flickr.get_access_token(session[:token]['oauth_token'], session[:token]['oauth_token_secret'], oauth_verifier)
+		  # raw_token is a hash like this {"user_nsid"=>"92023420%40N00", "oauth_token_secret"=>"XXXXXX", "username"=>"boncey", "fullname"=>"Darren%20Greaves", "oauth_token"=>"XXXXXX"}
+		  # Use URI.unescape on the nsid and name parameters
+
+		  current_user.access_token = raw_token["oauth_token"]
+		  current_user.access_secret = raw_token["oauth_token_secret"]
+		  current_user.save
+
+		  flickr.access_token = current_user.access_token
+	  	  flickr.access_secret = current_user.access_secret
+
+	  	  login = flickr.test.login
+
+		  flash[:notice] = login.inspect
+		  redirect_to images_path
+	end
 end
