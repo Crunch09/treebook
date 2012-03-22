@@ -11,6 +11,7 @@ Treebook::Application.routes.draw do
 
   root :to => 'users#index'
 
+  match "users/:id" => "users#show", :via => :get, :as => :show_user
   match "trees/" => "trees#index", :via => :get, :as => :trees
   match "images" => "users#images", :via => :get, :as => :images
   match "images/:id" => "users#images", :via => :get

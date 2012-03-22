@@ -21,6 +21,16 @@ class UsersController < ApplicationController
 		end
 	end
 
+	#GET /users/#id
+	#GET /users/#id.json
+	def show
+		@user = User.find params[:id]
+		current_user.posts_by_user = params[:id]
+		respond_to do |format|
+			format.json {render json: @user.to_json(:methods => :shared_posts)}
+		end
+	end
+
 	#GET /images
 	#GET /images.json
 	def images
