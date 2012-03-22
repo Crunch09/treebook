@@ -11,3 +11,16 @@
  *= require_self
  *= require_tree .
 */
+
+input[type="text"], textarea {
+    border: 1px solid #CCC;
+    padding: 4px;
+    transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    -webkit-transition: all 0.4s;
+}
+
+input[type="text"]:focus, textarea:focus {
+    border: 1px solid #009900;
+    box-shadow: 0px 0px 4px #008800;
+}

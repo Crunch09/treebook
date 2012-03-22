@@ -87,3 +87,17 @@ var addTree = function() {
     });
   }
 }
+
+var arrayHas = function(arr, val) {
+  for(var i = 0; i < arr.length; i++) {
+    if(arr[i] == val) return true;
+  }
+  return false;
+}
+
+var arrayFind = function(arr, val) {
+  for(var i = 0; i < arr.length; i++) {
+    if(arr[i] == val) return arr[i];
+  }
+  return false;
+}

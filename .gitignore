@@ -15,3 +15,6 @@
 /tmp
 
 .rake_tasks*
+
+# Ignore Komodo-Project-File
+/treebook.komodoproject

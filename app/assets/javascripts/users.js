@@ -4,14 +4,9 @@ $(function() {
     makeToast($('.alert').text());
   }
   
-  // check for player
-  if($('#player').length > 0) {
-    initMusicPlayer();
-  }
-  
   // check for login layer
   if($('#login_layer').length > 0) {
-    // init layer position
+    // init login layer position
     $('#login_layer > div').position({
       of: $('#login_layer > b'),
       my: 'right top',
@@ -112,29 +107,104 @@ $(function() {
     
     // STATUS UPDATE
     setInputDefault($('#content input[name="status_update"]'), "Teile deine Gedanken!");
+    
+    // show selectable trees and post-button on focus
     $('#content input[name="status_update"]').bind('focus', function() {
       if($(this).nextAll('input[name="send_post"]').length == 0) {
-        $(this).after('<input type="text" name="treetag[]" value="" class="treetag"/><br /><input type="button" name="send_post" value="Teilen" />');
+        $(this).after('<input type="button" name="send_post" value="Teilen" /><input type="text" name="treetag" value="|all" class="treetag"/><ul class="status_trees"><li>Alle</li></ul>');
         
+        // collect users trees
         var jsonTrees = new Array();
         $('#navigation a[name^="tree_"]').each(function() {
           var tree_data = $(this).attr("name").split("_");
           jsonTrees.push({ "id": tree_data[1], "label": tree_data[2], "value": tree_data[2] });
         });
         
-        $('input.treetag').tagedit({
-          allowEdit: false,
-          autocompleteOptions: {
-            source: jsonTrees
+        $('.status_trees').after('<input type="text" name="status_trees_input" />');
+        $('input[name="status_trees_input"]').autocomplete({
+          autoFocus: true,
+          minLength: 0,
+          source: jsonTrees,
+          select: function(event, ui) {
+            $('.status_trees').append('<li>'+ui.item.label+'</li>');
+            if(ui.item.id != "all") {
+              $('input[name="treetag"]').val($('input[name="treetag"]').val().split("|all").join(""));
+              $('.status_trees li:contains("Alle")').remove();
+            } else {
+              $('input[name="treetag"]').val("");
+              $('.status_trees li:not(:contains("Alle"))').remove();
+            }
+            $('input[name="treetag"]').val($('input[name="treetag"]').val()+"|"+ui.item.id);
+            $('input[name="status_trees_input"]').val("");
           },
-          texts: { // some texts
-            removeLinkTitle: 'Entfernen.',
-            saveEditLinkTitle: 'Änderungen speichern.',
-            breakEditLinkTitle: 'Abbrechen'
+          close: function(event, ui) {
+            $('input[name="status_trees_input"]').val("");
+            var selected = $('input[name="treetag"]').val().substr(1).split("|");
+            var newSource = new Array();
+            for(var i = 0; i < jsonTrees.length; i++) {
+              if(!arrayHas(selected, jsonTrees[i].id)) {
+                newSource.push(jsonTrees[i]);
+              }
+            }
+            if(newSource.length > 0) {
+              $(this).autocomplete("option", "source", newSource);
+            } else {
+              $(this).hide();
+            }
           }
+        }).bind('focus', function() {
+          var e = jQuery.Event("keydown", { keyCode: 40 });
+          $(this).trigger(e);
         });
         
-        $(this).nextAll('input[name="send_post"]').button();
+        jsonTrees.push({"id": "all", "label": "Alle", "value": "Alle"});
+        
+        $(this).nextAll('input[name="send_post"]').button().click(function() {
+          var chosenTrees = $('input[name="treetag"]').val().substr(1).split("|");
+          if(arrayHas(chosenTrees, "all")) {
+            chosenTrees = new Array();
+            for(var i = 0; i < jsonTrees.length; i++) {
+              if(jsonTrees[i].id != "all") {
+                chosenTrees.push(jsonTrees[i].id);
+              }
+            }
+          }
+          $.ajax({
+            url: 'posts',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+              'post[user_id]': gon.user_id,
+              'post[text]': $('input[name="status_update"]').val(),
+              'post[likes]': 0,
+              'post[dislikes]': 0,
+              'post[post_id]': '',
+              'post[tree_ids]': chosenTrees
+            },
+            success: function(newPost) {
+              $('input[name="status_update"]').val("").trigger("blur").siblings("*").remove();
+              $('#Stream').prepend('<div class="post"><div class="post_user">'+newPost.user_id+'</div><div class="post_date">'+newPost.created_at+'</div><div class="post_msg">'+newPost.text+'</div></div>');
+              $('#Stream .post:first').css('backgroundColor', '#DDD').animate({
+                'backgroundColor': '#FFF'
+              }, 1500);
+            }
+          });
+        });
+      }
+    });
+    
+    // STREAM
+    
+    var posts = new Array();
+    
+    $.ajax({
+      url: 'posts.json',
+      dataType: 'json',
+      success: function(resp) {
+        for(var i = 0; i < resp.length; i++) {
+          var p = resp[i];
+          $('#Stream').prepend('<div class="post"><div class="post_user">'+p.user_id+'</div><div class="post_date">'+p.created_at+'</div><div class="post_msg">'+p.text+'</div></div>');
+        }
       }
     });
   }
