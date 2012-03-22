@@ -206,18 +206,48 @@ div#navigation ul a:hover {
   cursor: pointer;
 }
 
-div#content {
+#content {
   width: 600px;
   margin-left: 220px;
   padding: 24px 10px;
   border: 1px solid #DDDDDD;
 }
 
-div#content > div {
+#content > div {
   display: none;
 }
 
-div#Startseite input[name="status_update"] {
+#Startseite input[name="status_update"] {
   width: 580px;
   color: #999999;
+}
+
+#Startseite input[name="treetag"] {
+  display: none;
+}
+#Startseite .status_trees {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+}
+#Startseite .status_trees li {
+  margin-right: 4px;
+  padding: 4px;
+  border: 1px solid #EEE;
+  border-radius: 4px;
+  box-shadow: 0px 0px 4px #AAA;
+  float: left;
+}
+#Startseite input[name="send_post"] {
+  float: right;
+}
+
+.post {
+  padding: 5px;
+}
+.post:not(:last-child) {
+  border-bottom: 1px solid #CCC;
+}
+.post_user {
+  font-weight: bold;
 }
