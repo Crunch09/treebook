@@ -219,7 +219,7 @@ var addPost = function(p) {
       dataType: 'json',
       success: function(u) {
         users[u.id] = u;
-        $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_date">'+p.created_at+'</div><div class="post_avatar"></div><div class="post_user">'+u.firstname+' '+u.name+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> <span class="post_comment"></span></div></div>');
+        $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.created_at+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> <span class="post_comment"></span></div></div>');
         if(p.text.length > 200) {
           $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
           $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {

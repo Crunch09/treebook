@@ -16,6 +16,18 @@ var show = function(str) {
   }
 }
 
+var showProfile = function(user_id) {
+  $.ajax({
+    url: 'users/'+user_id+'.json',
+    dataType: 'json',
+    success: function(u) {
+      $('#Profil').html("<h3>"+u.firstname+" "+u.name+"</h3>"+
+                        "<div class='profile_image'><img src='"+u.image+"' width='64' /></div>");
+      show("Profil");
+    }
+  });
+}
+
 var setInputDefault = function(input, str) {
   input.data('origText', str);
   input.val(str).css('color', '#999999');

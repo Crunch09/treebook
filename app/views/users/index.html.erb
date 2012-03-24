@@ -6,7 +6,7 @@
   <% end %>
     <div id="user_menu_layer">
       <ul>
-        <li><a>Mein Profil</a></li>
+        <li><a onclick="showProfile(<%= "#{current_user.id}" %>)">Mein Profil</a></li>
         <li><%= link_to "Ausloggen", destroy_user_session_path, :method => 'delete' %></li>
       </ul>
     </div>
@@ -16,7 +16,7 @@
 <% if user_signed_in? %>
 <div id="main">
   <div id="navigation">
-    <span class="its_me">
+    <span class="its_me" onclick="showProfile(<%= "#{current_user.id}" %>)">
       <%= image_tag(current_user.image, {:width => 48, :class => "avatar"}) %> <b><%= current_user.firstname %></b>
       <br style="clear: left;" />
     </span>
@@ -44,6 +44,9 @@
     </div>
     <div id="Nachrichten">
        <h3>Nachrichten</h3>
+    </div>
+    <div id="Profil">
+    
     </div>
   </div>
 </div>

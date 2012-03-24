@@ -250,9 +250,14 @@ div#navigation ul a:hover {
 }
 .post_user {
   font-weight: bold;
+  cursor: pointer;
+}
+.post_user .post_avatar img {
+  vertical-align: top;
+  float: left;
+  margin-right: 8px;
 }
 .post_date {
-  float: right;
   font-size: x-small;
 }
 .post_text {
