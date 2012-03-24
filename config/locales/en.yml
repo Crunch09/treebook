@@ -3,3 +3,47 @@
 
 en:
   hello: "Hello world"
+  datetime:
+     distance_in_words:
+       half_a_minute: "einer halben minute"
+       less_than_x_seconds:
+         one:   "weniger als einer Sekunde"
+         other: "weniger als %{count} Sekunden"
+       x_seconds:
+         one:   "einer Sekunde"
+         other: "%{count} Sekunden"
+       less_than_x_minutes:
+         one:   "weniger als einer Minute"
+         other: "weniger als %{count} Minuten"
+       x_minutes:
+         one:   "einer Minute"
+         other: "%{count} Minute"
+       about_x_hours:
+         one:   "etwa einer Stunde"
+         other: "etwa %{count} Stunden"
+       x_days:
+         one:   "einem Tag"
+         other: "%{count} Tagen"
+       about_x_months:
+         one:   "etwa einem Monat"
+         other: "etwas %{count} Monaten"
+       x_months:
+         one:   "einem Monat"
+         other: "%{count} Monaten"
+       about_x_years:
+         one:   "etwa einem Jahr"
+         other: "etwa %{count} Jahr"
+       over_x_years:
+         one:   "ueber einem Jahr"
+         other: "ueber %{count} Jahr"
+       almost_x_years:
+         one:   "fast einem Jahr"
+         other: "fast %{count} Jahren"
+     prompts:
+       year:   "Jahr"
+       month:  "Monat"
+       day:    "Tag"
+       hour:   "Stunde"
+       minute: "Minute"
+       second: "Sekunden"
+

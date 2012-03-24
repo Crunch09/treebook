@@ -1,4 +1,5 @@
 class Post < ActiveRecord::Base
+  include ActionView::Helpers::DateHelper 
   belongs_to :user
   belongs_to :comment_to, :class_name => "Post",
     :foreign_key => "post_id"
@@ -11,5 +12,9 @@ class Post < ActiveRecord::Base
 
   def comments
   	Post.where(:post_id => self.id).order("created_at DESC")
+  end
+
+  def time_ago
+    time_ago_in_words(self.created_at)
   end
 end

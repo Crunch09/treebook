@@ -183,7 +183,7 @@ $(function() {
             },
             success: function(newPost) {
               $('input[name="status_update"]').val("").trigger("blur").siblings("*").remove();
-              $('#Stream').prepend('<div class="post"><div class="post_user">'+newPost.user_id+'</div><div class="post_date">'+newPost.created_at+'</div><div class="post_msg">'+newPost.text+'</div></div>');
+              $('#Stream').prepend('<div class="post"><div class="post_user">'+newPost.user_id+'</div><div class="post_date">vor '+newPost.time_ago+'</div><div class="post_msg">'+newPost.text+'</div></div>');
               $('#Stream .post:first').css('backgroundColor', '#DDD').animate({
                 'backgroundColor': '#FFF'
               }, 1500);
@@ -219,7 +219,7 @@ var addPost = function(p) {
       dataType: 'json',
       success: function(u) {
         users[u.id] = u;
-        $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.created_at+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> <span class="post_comment"></span></div></div>');
+        $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">vor '+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> <span class="post_comment"></span></div></div>');
         if(p.text.length > 200) {
           $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
           $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {

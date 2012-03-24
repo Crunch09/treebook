@@ -5,11 +5,11 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    @posts = Post.where(:post_id => nil)
+    @posts = Post.where(:post_id => nil).order('created_at ASC')
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @posts.to_json(:methods => :comments) }
+      format.json { render json: @posts.to_json(:methods => [:comments, :time_ago]) }
     end
   end
 
@@ -20,7 +20,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @post.to_json(:methods => :comments) }
+      format.json { render json: @post.to_json(:methods => [:comments, :time_ago]) }
     end
   end
 
