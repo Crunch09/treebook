@@ -48,7 +48,7 @@ class PostsController < ApplicationController
     respond_to do |format|
       if @post.save
         format.html { redirect_to @post, notice: 'Post was successfully created.' }
-        format.json { render json: @post, status: :created, location: @post }
+        format.json { render json: @post.to_json(:methods => [:comments, :time_ago]), status: :created, location: @post }
       else
         format.html { render action: "new" }
         format.json { render json: @post.errors, status: :unprocessable_entity }
