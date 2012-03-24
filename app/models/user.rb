@@ -47,6 +47,10 @@ class User < ActiveRecord::Base
     available_posts 
   end
 
+  def to_s
+    "#{self.firstname} #{self.name}"
+  end
+
   #werden benötigt um innerhalb von shared_posts auf den current_user zuzugreifen
   def self.current
     Thread.current[:user]
