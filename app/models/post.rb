@@ -8,4 +8,8 @@ class Post < ActiveRecord::Base
   
   validates :text, :presence => true
   validates :user, :presence => true
+
+  def comments
+  	Post.where(:post_id => self.id).order("created_at DESC")
+  end
 end
