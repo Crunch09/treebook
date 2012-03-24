@@ -274,7 +274,7 @@ var showAllComments = function(p) {
 }
 
 var addShowAllCommentsLink = function(p) {
-  $('#post_'+p.id).after('<div class="showAllComments">Zeige alle '+(p.comments.length-3)+' vorherigen Kommentare</div>');
+  $('#post_'+p.id).after('<div class="showAllComments comment">Zeige alle '+(p.comments.length-3)+' vorherigen Kommentare</div>');
   $('#post_'+p.id).next('.showAllComments').click(function() {
     showAllComments(p);
     $(this).remove();
@@ -283,7 +283,11 @@ var addShowAllCommentsLink = function(p) {
 
 var comment = function(id) {
   $('.write_comment').remove();
-  $('#post_'+id).append("<div class='write_comment'><input type='text' name='comment_text' /><input type='button' onclick='sendComment("+id+")' value='Abschicken' /></div>");
+  $('#post_'+id).append("<div class='write_comment'><input type='text' name='comment_text' /><input type='button' onclick='sendComment("+id+")' value='Abschicken' /><input type='button' name='cancel_comment' value='Abbrechen' /></div>");
+  $('#post_'+id+' .write_comment input[name="cancel_comment"]').click(function() {
+    $('.write_comment').remove();
+  });
+  $('#post_'+id+' .write_comment input[type="button"]').button();
 }
 
 var sendComment = function(id) {
