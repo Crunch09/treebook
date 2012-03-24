@@ -251,8 +251,8 @@ var addPost = function(p) {
 }
 
 var addComment = function(p, i, where) {
-  var u = checkUserCache(p.user_id);
   var c = (i.id == undefined ? p.comments[i] : i);
+  var u = checkUserCache(c.user_id);
   if(where == 'after') {
     if($('#post_'+p.id).nextAll('.post').length > 0) {
       $('#post_'+p.id).nextAll('.post').before('<div id="comment_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" />'+c.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" />'+c.dislikes+'</span></div></div>');
