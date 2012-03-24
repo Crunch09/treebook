@@ -204,11 +204,12 @@ $(function() {
         for(var i = 0; i < resp.length; i++) {
           var p = resp[i];
           addPost(p);
-          for(var j = p.comments.length-1; j > p.comments.length-4; j--) {
-            if(j >= 0)
+          console.log(p.comments);
+          for(var j = 0; j < 3; j++) {
+            if(j < p.comments.length)
               addComment(p, j);
           }
-          if(p.comments.length > 4) {
+          if(p.comments.length > 3) {
             addShowAllCommentsLink(p);
           }
         }
@@ -235,7 +236,7 @@ var checkUserCache = function(id) {
 
 var addPost = function(p) {
   var u = checkUserCache(p.user_id);
-  $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+' <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></span></div></div>');
+  $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></div></div>');
   if(p.text.length > 200) {
     $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
     $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
@@ -251,7 +252,7 @@ var addPost = function(p) {
 
 var addComment = function(p, i) {
   var u = checkUserCache(p.user_id);
-  var c = p.comments[i];
+  var c = (i.id == undefined ? p.comments[i] : i);
   $('#post_'+p.id).after('<div id="comment_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+c.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+c.dislikes+'</span></div></div>');
   if(p.text.length > 200) {
     $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
@@ -267,15 +268,16 @@ var addComment = function(p, i) {
 }
 
 var showAllComments = function(p) {
-  for(var i = p.comments.length-4; i >= 0; i++) {
+  for(var i = 3; i < p.comments.length; i++) {
     addComment(p, i);
   }
 }
 
 var addShowAllCommentsLink = function(p) {
-  $('#post_'+p.id).after('<div class="showAllComments">Zeige alle '+p.comments.length-4+' vorherigen Kommentare</div>');
+  $('#post_'+p.id).after('<div class="showAllComments">Zeige alle '+(p.comments.length-3)+' vorherigen Kommentare</div>');
   $('#post_'+p.id).next('.showAllComments').click(function() {
     showAllComments(p);
+    $(this).remove();
   });
 }
 
@@ -291,12 +293,24 @@ var sendComment = function(id) {
     type: 'POST',
     dataType: 'json',
     data: {
-      'user_id': gon.user_id,
-      'text': text,
-      'post_id': id
+      'post[user_id]': gon.user_id,
+      'post[text]': text,
+      'post[likes]': 0,
+      'post[dislikes]': 0,
+      'post[post_id]': id
     },
     success: function(response) {
-      console.log(response);
+      $('#post_'+id+' .write_comment').slideUp(400, function() {
+        $(this).remove();
+        $.ajax({
+          url: 'posts/'+id+'.json',
+          dataType: 'json',
+          success: function(p) {
+            addComment(p, response);
+            $('#post_'+id+' .post_comment').html(p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : ''));
+          }
+        });
+      });
     }
   });
 }

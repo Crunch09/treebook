@@ -275,6 +275,9 @@ div#navigation ul a:hover {
 .post_like img, .post_dislike img {
   vertical-align: bottom;
 }
-.post_comment .do_comment {
+.do_comment {
+  cursor: pointer;
+}
+.showAllComments {
   cursor: pointer;
 }
