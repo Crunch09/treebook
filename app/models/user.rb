@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
 
   attr_accessor :posts_by_user
 
+
   def image
     default_url = "http://localhost:3000/assets/derp.png"
     gravatar_id = Digest::MD5.hexdigest(self.email.downcase)
@@ -32,12 +33,12 @@ class User < ActiveRecord::Base
 
   # zeigt alle Posts an die ich von einem anderen User sehen darf
   def shared_posts owner_id = nil
-    owner_id ||= posts_by_user
+    owner_id ||= User.current.posts_by_user
     available_posts = []
     p = Post.where('user_id' => owner_id)
     p.each do |p|
       p.trees.each do |t|
-        if t.users.include? self
+        if t.users.include? User.current
           available_posts << p
           break
         end
@@ -45,4 +46,14 @@ class User < ActiveRecord::Base
     end
     available_posts 
   end
+
+  #werden benötigt um innerhalb von shared_posts auf den current_user zuzugreifen
+  def self.current
+    Thread.current[:user]
+  end
+
+  def self.current=(user)
+    Thread.current[:user] = user
+  end
+
 end

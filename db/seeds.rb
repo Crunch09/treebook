@@ -11,8 +11,11 @@ chris = User.create({ name:"Brandt", firstname:"Christian", password: "123456", 
 flo = User.create({ name:"Thomas", firstname:"Florian", password: "123456", password_confirmation: "123456", email:"florian.thomas@mni.thm.de"})
 
 trees = Tree.create([{ user: flo, title: "the first one"}, {user: chris, title: "first tree"}])
-# user in tree des anderen hinzufügen
-trees.first.users << chris
-trees.first.save
+# user chris in tree von user flo einfuegen
+t = trees.first
+t.users << chris
+t.save
 posts = Post.create([{ user: flo, text: "my first post"}, { user: chris, text: "the first reply"}])
-Post.first.trees << Tree.first
+p = posts.first
+p.trees << t
+p.save

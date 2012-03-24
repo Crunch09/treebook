@@ -26,8 +26,11 @@ class UsersController < ApplicationController
 	def show
 		@user = User.find params[:id]
 		current_user.posts_by_user = params[:id]
+		current_user.save
+		User.current = current_user
 		respond_to do |format|
-			format.json {render json: @user.to_json(:methods => :shared_posts)}
+			format.json {render json: @user.to_json(:methods => :shared_posts,
+													:except => [:access_secret, :access_token] )}
 		end
 	end
 
