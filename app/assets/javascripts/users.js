@@ -204,9 +204,9 @@ $(function() {
         for(var i = 0; i < resp.length; i++) {
           var p = resp[i];
           addPost(p);
-          for(var i = p.comments.length-1; i > p.comments.length-4; i--) {
-            if(i >= 0)
-              addComment(p, i);
+          for(var j = p.comments.length-1; j > p.comments.length-4; j--) {
+            if(j >= 0)
+              addComment(p, j);
           }
           if(p.comments.length > 4) {
             addShowAllCommentsLink(p);
@@ -227,21 +227,6 @@ var checkUserCache = function(id) {
       dataType: 'json',
       success: function(u) {
         users[u.id] = u;
-<<<<<<< HEAD
-=======
-        $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">vor '+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> <span class="post_comment"></span></div></div>');
-        if(p.text.length > 200) {
-          $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
-          $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
-            var pt = $(this).siblings('.post_text');
-            var t = pt.data('text');
-            var s = pt.text();
-            pt.data('text', s);
-            pt.html(t);
-            $(this).text($(this).text() == "Mehr anzeigen" ? "Weniger anzeigen" : "Mehr anzeigen");
-          });
-        }
->>>>>>> 25af928ab2a71f9fe619494299536c7b4293459c
       }
     });
   }
@@ -250,7 +235,7 @@ var checkUserCache = function(id) {
 
 var addPost = function(p) {
   var u = checkUserCache(p.user_id);
-  $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.created_at+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+' <span onclick="comment('+p.id+')">Kommentieren</span></span></div></div>');
+  $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+' <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></span></div></div>');
   if(p.text.length > 200) {
     $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
     $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
@@ -267,7 +252,7 @@ var addPost = function(p) {
 var addComment = function(p, i) {
   var u = checkUserCache(p.user_id);
   var c = p.comments[i];
-  $('#post_'+p.id).after('<div id="comment_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.created_at+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+c.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+c.dislikes+'</span></div></div>');
+  $('#post_'+p.id).after('<div id="comment_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+c.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+c.dislikes+'</span></div></div>');
   if(p.text.length > 200) {
     $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
     $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
