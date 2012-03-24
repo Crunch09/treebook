@@ -246,7 +246,11 @@ div#navigation ul a:hover {
   padding: 5px;
 }
 .comment {
+  padding: 5px;
   margin-left: 20px;
+  margin-top: -1px;
+  border-left: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
 }
 .post:not(:last-child) {
   border-bottom: 1px solid #CCC;
