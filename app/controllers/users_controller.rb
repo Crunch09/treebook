@@ -29,7 +29,7 @@ class UsersController < ApplicationController
 		current_user.save
 		User.current = current_user
 		respond_to do |format|
-			format.json {render json: @user.to_json(:methods => :shared_posts,
+				format.json {render json: @user.to_json(:methods => [:image, :shared_posts],
 													:except => [:access_secret, :access_token] )}
 		end
 	end

@@ -31,11 +31,11 @@ class User < ActiveRecord::Base
     !self.access_token.nil? && !self.access_secret.nil?
   end
 
-  # zeigt alle Posts an die ich von einem anderen User sehen darf
+  # zeigt alle "FirstLevel"-Posts an die ich von einem anderen User sehen darf
   def shared_posts owner_id = nil
     owner_id ||= User.current.posts_by_user
     available_posts = []
-    p = Post.where('user_id' => owner_id)
+    p = Post.where('user_id' => owner_id, 'post_id' => nil)
     p.each do |p|
       p.trees.each do |t|
         if t.users.include? User.current
