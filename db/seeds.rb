@@ -15,7 +15,7 @@ trees = Tree.create([{ user: flo, title: "the first one"}, {user: chris, title: 
 t = trees.first
 t.users << chris
 t.save
-posts = Post.create([{ user: flo, text: "my first post"}, { user: chris, text: "the first reply"}])
+posts = Post.create([{ user: flo, text: "my first post", likes: 0, dislikes: 0}, { user: chris, text: "the first reply", likes: 0, dislikes: 0}])
 p = posts.first
 p.trees << t
 p.save

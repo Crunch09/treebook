@@ -203,9 +203,35 @@ $(function() {
       success: function(resp) {
         for(var i = 0; i < resp.length; i++) {
           var p = resp[i];
-          $('#Stream').prepend('<div class="post"><div class="post_user">'+p.user_id+'</div><div class="post_date">'+p.created_at+'</div><div class="post_msg">'+p.text+'</div></div>');
+          addPost(p);
         }
       }
     });
   }
 });
+
+var users = new Array();
+
+var addPost = function(p) {
+  if(users[p.user_id] == undefined) {
+    $.ajax({
+      url: 'users/'+p.user_id+'.json',
+      dataType: 'json',
+      success: function(u) {
+        users[u.id] = u;
+        $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_date">'+p.created_at+'</div><div class="post_avatar"></div><div class="post_user">'+u.firstname+' '+u.name+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> <span class="post_comment"></span></div></div>');
+        if(p.text.length > 200) {
+          $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
+          $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
+            var pt = $(this).siblings('.post_text');
+            var t = pt.data('text');
+            var s = pt.text();
+            pt.data('text', s);
+            pt.html(t);
+            $(this).text($(this).text() == "Mehr anzeigen" ? "Weniger anzeigen" : "Mehr anzeigen");
+          });
+        }
+      }
+    });
+  }
+}
