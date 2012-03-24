@@ -204,6 +204,13 @@ $(function() {
         for(var i = 0; i < resp.length; i++) {
           var p = resp[i];
           addPost(p);
+          for(var i = p.comments.length-1; i > p.comments.length-4; i--) {
+            if(i >= 0)
+              addComment(p, i);
+          }
+          if(p.comments.length > 4) {
+            addShowAllCommentsLink(p);
+          }
         }
       }
     });
@@ -212,26 +219,84 @@ $(function() {
 
 var users = new Array();
 
-var addPost = function(p) {
-  if(users[p.user_id] == undefined) {
+var checkUserCache = function(id) {
+  if(users[id] == undefined) {
     $.ajax({
-      url: 'users/'+p.user_id+'.json',
+      async: false,
+      url: 'users/'+id+'.json',
       dataType: 'json',
       success: function(u) {
         users[u.id] = u;
-        $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.created_at+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> <span class="post_comment"></span></div></div>');
-        if(p.text.length > 200) {
-          $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
-          $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
-            var pt = $(this).siblings('.post_text');
-            var t = pt.data('text');
-            var s = pt.text();
-            pt.data('text', s);
-            pt.html(t);
-            $(this).text($(this).text() == "Mehr anzeigen" ? "Weniger anzeigen" : "Mehr anzeigen");
-          });
-        }
       }
     });
   }
+  return users[id];
+}
+
+var addPost = function(p) {
+  var u = checkUserCache(p.user_id);
+  $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.created_at+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+p.dislikes+'</span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+' <span onclick="comment('+p.id+')">Kommentieren</span></span></div></div>');
+  if(p.text.length > 200) {
+    $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
+    $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
+      var pt = $(this).siblings('.post_text');
+      var t = pt.data('text');
+      var s = pt.text();
+      pt.data('text', s);
+      pt.html(t);
+      $(this).text($(this).text() == "Mehr anzeigen" ? "Weniger anzeigen" : "Mehr anzeigen");
+    });
+  }
+}
+
+var addComment = function(p, i) {
+  var u = checkUserCache(p.user_id);
+  var c = p.comments[i];
+  $('#post_'+p.id).after('<div id="comment_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.created_at+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" />'+c.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" />'+c.dislikes+'</span></div></div>');
+  if(p.text.length > 200) {
+    $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
+    $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
+      var pt = $(this).siblings('.post_text');
+      var t = pt.data('text');
+      var s = pt.text();
+      pt.data('text', s);
+      pt.html(t);
+      $(this).text($(this).text() == "Mehr anzeigen" ? "Weniger anzeigen" : "Mehr anzeigen");
+    });
+  }
+}
+
+var showAllComments = function(p) {
+  for(var i = p.comments.length-4; i >= 0; i++) {
+    addComment(p, i);
+  }
+}
+
+var addShowAllCommentsLink = function(p) {
+  $('#post_'+p.id).after('<div class="showAllComments">Zeige alle '+p.comments.length-4+' vorherigen Kommentare</div>');
+  $('#post_'+p.id).next('.showAllComments').click(function() {
+    showAllComments(p);
+  });
+}
+
+var comment = function(id) {
+  $('.write_comment').remove();
+  $('#post_'+id).append("<div class='write_comment'><input type='text' name='comment_text' /><input type='button' onclick='sendComment("+id+")' value='Abschicken' /></div>");
+}
+
+var sendComment = function(id) {
+  var text = $('#post_'+id+' .write_comment input[name="comment_text"]').val();
+  $.ajax({
+    url: 'posts',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'user_id': gon.user_id,
+      'text': text,
+      'post_id': id
+    },
+    success: function(response) {
+      console.log(response);
+    }
+  });
 }
