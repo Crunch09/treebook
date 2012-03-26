@@ -207,6 +207,15 @@ $(function() {
             }
           });
         });
+      } else {
+        // collect users trees
+        var jsonTrees = new Array();
+        $('#navigation a[name^="tree_"]').each(function() {
+          var tree_data = $(this).attr("name").split("_");
+          jsonTrees.push({ "id": tree_data[1], "label": tree_data[2], "value": tree_data[2] });
+        });
+        
+        $('input[name="status_trees_input"]').autocomplete("option", "source", jsonTrees);
       }
     });
     

@@ -30,11 +30,29 @@ var show = function(str) {
           users.push(gon.user_id);
           console.log(users);
           $('#Stream div.post').each(function() {
-            console.log($(this));
-            console.log($(this).data('user_id')+": "+arrayHas(users, $(this).data('user_id')));
-            if(!arrayHas(users, $(this).data('user_id'))) {
-              $(this).hide();
-              $(this).nextUntil('.post').hide();
+            var showOwnInTree = false;
+            if($(this).data('user_id') == gon.user_id) {
+              for(var i = 0; i < $(this).data('trees').length; i++) {
+                if($(this).data('trees')[i].id == tree.id) {
+                  showOwnInTree = true;
+                  break;
+                }
+              }
+              if(!showOwnInTree) {
+                $(this).hide();
+                $(this).nextUntil('.post').hide();
+              } else {
+                $(this).show();
+                $(this).nextUntil('.post').show();
+              }
+            } else {
+              if(!arrayHas(users, $(this).data('user_id'))) {
+                $(this).hide();
+                $(this).nextUntil('.post').hide();
+              } else {
+                $(this).show();
+                $(this).nextUntil('.post').show();
+              }
             }
           });
           $('#navigation').find('a').removeClass('active');
