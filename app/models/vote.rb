@@ -8,14 +8,10 @@ class Vote < ActiveRecord::Base
   	validates :post, :presence => true
 
   	def likes
-  		Post.find(self.post_id).likes
+  			Post.find(self.post_id).likes
   	end
 
   	def dislikes
-  		Post.find(self.post_id).dislikes
-  	end
-
-  	def as_json(options={})
-    	super(:methods => [:likes, :dislikes])
+  			Post.find(self.post_id).dislikes
   	end
 end

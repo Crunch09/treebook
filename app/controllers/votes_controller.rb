@@ -10,7 +10,7 @@ class VotesController < ApplicationController
 		        		@vote.post.dislikes = @vote.post.dislikes + 1
 		        	end
 		        	@vote.post.save
-		        	format.json { render json: @vote.as_json, status: :created, location: @vote }
+		        	format.json { render json: @vote.to_json(:methods => [:likes, :dislikes]), status: :created, location: @vote }
 		      	else
 		        	format.json { render json: @vote.errors, status: :unprocessable_entity }
 		      	end
