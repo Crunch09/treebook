@@ -259,7 +259,7 @@ var addPost = function(p) {
     'user_name': u.name,
     'post_time_ago': p.time_ago,
     'post_text': p.text,
-    'trees': []
+    'trees': p.trees
   });
   if(p.text.length > 200) {
     $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
@@ -277,22 +277,28 @@ var addPost = function(p) {
 var addComment = function(p, i, where) {
   var c = (i.id == undefined ? p.comments[i] : i);
   var u = checkUserCache(c.user_id);
+  var insertAfter;
   if(where == 'after') {
     if($('#post_'+p.id).nextAll('.post').length > 0) {
-      $('#post_'+p.id).nextAll('.post').before('<div id="post_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" /><span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" /><span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
+      insertAfter = $('#post_'+p.id).nextUntil('.post').last();
+      if(insertAfter.length == 0) {
+        insertAfter = $('#post_'+p.id);
+      }
     } else {
-      $('#Stream').append('<div id="post_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" /><span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" /><span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
+      insertAfter = $('#Stream div[id^="post_"]:last');
     }
   } else {
-    $('#post_'+p.id).after('<div id="post_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" /><span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" /><span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
+    insertAfter = $('#post_'+p.id);
   }
+  console.log(insertAfter);
+  insertAfter.after('<div id="post_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" /><span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" /><span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
   $('#post_'+p.id).data({
     'user_id': u.id,
     'user_firstname': u.firstname,
     'user_name': u.name,
     'post_time_ago': c.time_ago,
     'post_text': c.text,
-    'trees': []
+    'trees': c.trees
   });
   if(c.text.length > 200) {
     $('#post_'+c.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
@@ -333,6 +339,11 @@ var comment = function(id) {
 
 var sendComment = function(id) {
   var text = $('#post_'+id+' .write_comment textarea[name="comment_text"]').val();
+  var trees = new Array();
+  var ptrees = $('#post_'+id).data('trees');
+  for(var i = 0; i < ptrees.length; i++) {
+    trees.push(ptrees[i].id);
+  }
   $.ajax({
     url: 'posts',
     type: 'POST',
@@ -342,7 +353,8 @@ var sendComment = function(id) {
       'post[text]': text,
       'post[likes]': 0,
       'post[dislikes]': 0,
-      'post[post_id]': id
+      'post[post_id]': id,
+      'post[tree_ids]': trees
     },
     success: function(response) {
       $('#post_'+id+' .write_comment').slideUp(400, function() {
