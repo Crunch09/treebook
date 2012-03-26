@@ -365,9 +365,10 @@ var like = function(id) {
       if(response.id > 0) {
         $('#post_'+id+' .post_like_amnt').text(response.likes);
         $('#post_'+id+' .post_dislike_amnt').text(response.dislikes);
-      } else {
-        makeToast(response);
       }
+    },
+    error: function(response) {
+      makeToast(response.responseText);
     }
   });
 }
@@ -386,9 +387,10 @@ var dislike = function(id) {
       if(response.id > 0) {
         $('#post_'+id+' .post_like_amnt').text(response.likes);
         $('#post_'+id+' .post_dislike_amnt').text(response.dislikes);
-      } else {
-        makeToast(response);
       }
+    },
+    error: function(response) {
+      makeToast(response.responseText);
     }
   });
 }
