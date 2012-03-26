@@ -121,4 +121,15 @@ class UsersController < ApplicationController
 		  flash[:notice] = "Deine Fotos sind jetzt mit Treebook verbunden!"
 		  redirect_to images_path
 	end
+
+	def search
+		unless current_user.nil?
+			gon.user_id = current_user.id
+		end
+		@users = User.select { |e| e != current_user  }
+		respond_to do |format|
+			format.json { render json: @users.to_json(:only => [:id, :firstname, :name]) }
+		end
+	end
+
 end
