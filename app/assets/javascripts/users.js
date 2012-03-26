@@ -103,6 +103,18 @@ $(function() {
       });
     });
     
+    // init sidebar
+    setInputDefault($('#friendfinder input[name="friendsearch"]'), "Suche");
+    $('#friendfinder input[name="friendsearch"]').bind('keyup', function() {
+      if($(this).val().length > 2) {
+        $.ajax({
+          
+        })
+      } else {
+        cleanSearchResult();
+      }
+    });
+    
     show('Startseite');
     
     // STATUS UPDATE

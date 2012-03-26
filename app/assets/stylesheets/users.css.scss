@@ -162,15 +162,16 @@ div#main {
   position: absolute;
   top: 39px;
   left: 50%;
-  margin-left: -510px;
+  margin-left: -530px;
   z-index: 1;
-  width: 1020px;
+  width: 1060px;
 }
 
 div#navigation {
   float: left;
   width: 200px;
   padding: 24px 10px;
+  margin: 0px;
 }
 
 div#navigation ul {
@@ -206,9 +207,16 @@ div#navigation ul a:hover {
   cursor: pointer;
 }
 
+#sidebar {
+  float: right;
+  width: 200px;
+  padding: 24px 10px;
+  margin: 0px;
+}
+
 #content {
   width: 600px;
-  margin-left: 220px;
+  margin: 0px 0px 0px 220px;
   padding: 24px 10px;
   border: 1px solid #DDDDDD;
 }
@@ -277,6 +285,7 @@ div#navigation ul a:hover {
 }
 .post_like img, .post_dislike img {
   vertical-align: bottom;
+  cursor: pointer;
 }
 .do_comment {
   cursor: pointer;
