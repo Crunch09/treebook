@@ -7,7 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 
-chris = User.create({ name: "Brandt", firstname: "Christian", password: nil, email: "christianbrandt90@gmail.com" })
+chris = User.create({ name:"Brandt", firstname:"Christian", password: "123456", password_confirmation: "123456", email:"christianbrandt90@gmail.com"})
 flo = User.create({ name:"Thomas", firstname:"Florian", password: "123456", password_confirmation: "123456", email:"florian.thomas@mni.thm.de"})
 
 trees = Tree.create([{ user: flo, title: "the first one"}, {user: chris, title: "first tree"}])
