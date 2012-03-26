@@ -27,7 +27,7 @@ var show = function(str) {
           for(var i = 0; i < tree.users.length; i++) {
             users.push(tree.users[i].id);
           }
-          //users.push(gon.user_id);
+          users.push(gon.user_id);
           console.log(users);
           $('#Stream div.post').each(function() {
             console.log($(this));
