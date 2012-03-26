@@ -24,6 +24,6 @@ class Post < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(:methods => [:time_ago, :comments, :votes])
+    super(:include => :trees, :methods => [:time_ago, :comments, :votes])
   end
 end
