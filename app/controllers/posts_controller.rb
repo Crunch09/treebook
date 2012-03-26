@@ -6,21 +6,22 @@ class PostsController < ApplicationController
   # GET /posts.json
   def index
     @posts = Post.where(:post_id => nil).order('created_at ASC')
-
+    User.current = current_user
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @posts.to_json(:methods => [:comments, :time_ago]) }
+      format.json { render json: @posts.to_json(:methods => [:comments, :time_ago, :votes]) }
     end
   end
 
   # GET /posts/1
   # GET /posts/1.json
   def show
+    User.current = current_user
     @post = Post.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @post.to_json(:methods => [:comments, :time_ago]) }
+      format.json { render json: @post.to_json(:methods => [:comments, :time_ago, :votes]) }
     end
   end
 
@@ -43,12 +44,13 @@ class PostsController < ApplicationController
   # POST /posts
   # POST /posts.json
   def create
+    User.current = current_user
     @post = Post.new(params[:post])
 
     respond_to do |format|
       if @post.save
         format.html { redirect_to @post, notice: 'Post was successfully created.' }
-        format.json { render json: @post.to_json(:methods => [:comments, :time_ago]), status: :created, location: @post }
+        format.json { render json: @post.as_json, status: :created, location: @post }
       else
         format.html { render action: "new" }
         format.json { render json: @post.errors, status: :unprocessable_entity }

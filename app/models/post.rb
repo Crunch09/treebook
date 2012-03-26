@@ -6,6 +6,7 @@ class Post < ActiveRecord::Base
   has_and_belongs_to_many :trees
 
   attr_accessible :text, :likes, :dislikes, :user, :comment_to, :user_id, :post_id, :trees, :tree_ids
+  attr_accessor :time_ago
   
   validates :text, :presence => true
   validates :user, :presence => true
@@ -14,7 +15,15 @@ class Post < ActiveRecord::Base
   	Post.where(:post_id => self.id).order("created_at DESC")
   end
 
+  def votes
+    Vote.where(:post_id => self.id, :user_id => User.current.id).select("upvote")
+  end
+
   def time_ago
     time_ago_in_words(self.created_at)
+  end
+
+  def as_json(options={})
+    super(:methods => [:time_ago, :comments, :votes])
   end
 end
