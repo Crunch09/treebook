@@ -19,7 +19,7 @@ var show = function(str) {
         url: 'trees/'+str.substring(5)+'.json',
         dataType: 'json',
         success: function(tree) {
-          //console.log(tree);
+          console.log(tree);
         }
       });
     }
