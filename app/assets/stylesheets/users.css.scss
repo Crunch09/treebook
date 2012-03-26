@@ -187,6 +187,11 @@ div#navigation ul a {
   line-height: 25px;
   padding: 5px;
   cursor: pointer;
+  vertical-align: middle;
+}
+
+div#navigation ul a img {
+  vertical-align: middle;
 }
 
 div#navigation ul a:hover {
