@@ -13,6 +13,16 @@ var show = function(str) {
     $('#'+str).show();
     $('#navigation').find('a').removeClass('active');
     $('#navigation').find('a[name="'+str+'"]').addClass('active');
+  } else {
+    if(str.substring(0,5) == "tree:") {
+      $.ajax({
+        url: 'trees/'+str.substring(5)+'.json',
+        dataType: 'json',
+        success: function(tree) {
+          //console.log(tree);
+        }
+      });
+    }
   }
 }
 
@@ -112,4 +122,11 @@ var arrayFind = function(arr, val) {
     if(arr[i] == val) return arr[i];
   }
   return false;
+}
+
+var makeTextareaGrowable = function(txt) {
+  txt.bind('keyup', function() {
+    var lines = parseInt($(this).val().length/parseInt($(this).attr("cols")));
+    $(this).attr("rows", lines+2);
+  });
 }

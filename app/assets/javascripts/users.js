@@ -106,10 +106,10 @@ $(function() {
     show('Startseite');
     
     // STATUS UPDATE
-    setInputDefault($('#content input[name="status_update"]'), "Teile deine Gedanken!");
-    
+    setInputDefault($('#content textarea[name="status_update"]'), "Teile deine Gedanken!");
+    makeTextareaGrowable($('#content textarea[name="status_update"]'));
     // show selectable trees and post-button on focus
-    $('#content input[name="status_update"]').bind('focus', function() {
+    $('#content textarea[name="status_update"]').bind('focus', function() {
       if($(this).nextAll('input[name="send_post"]').length == 0) {
         $(this).after('<input type="button" name="send_post" value="Teilen" /><input type="text" name="treetag" value="|all" class="treetag"/><ul class="status_trees"><li>Alle</li></ul>');
         
@@ -182,8 +182,9 @@ $(function() {
               'post[tree_ids]': chosenTrees
             },
             success: function(newPost) {
-              $('input[name="status_update"]').val("").trigger("blur").siblings("*").remove();
-              $('#Stream').prepend('<div class="post"><div class="post_user">'+newPost.user_id+'</div><div class="post_date">vor '+newPost.time_ago+'</div><div class="post_msg">'+newPost.text+'</div></div>');
+              $('textarea[name="status_update"]').val("").trigger("blur").siblings("*").remove();
+              addPost(newPost);
+              //$('#Stream').prepend('<div class="post"><div class="post_user">'+newPost.firstname+'</div><div class="post_date">vor '+newPost.time_ago+'</div><div class="post_msg">'+newPost.text+'</div></div>');
               $('#Stream .post:first').css('backgroundColor', '#DDD').animate({
                 'backgroundColor': '#FFF'
               }, 1500);
@@ -204,7 +205,6 @@ $(function() {
         for(var i = 0; i < resp.length; i++) {
           var p = resp[i];
           addPost(p);
-          console.log(p.comments);
           for(var j = 0; j < 3; j++) {
             if(j < p.comments.length)
               addComment(p, j);
@@ -237,6 +237,7 @@ var checkUserCache = function(id) {
 var addPost = function(p) {
   var u = checkUserCache(p.user_id);
   $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+p.id+')" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+p.id+')" />'+p.dislikes+'</span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></div></div>');
+  $('#post_'+p.id).data('user_id', u.id);
   if(p.text.length > 200) {
     $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
     $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
@@ -262,9 +263,10 @@ var addComment = function(p, i, where) {
   } else {
     $('#post_'+p.id).after('<div id="comment_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" />'+c.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" />'+c.dislikes+'</span></div></div>');
   }
-  if(p.text.length > 200) {
-    $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
-    $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
+  $('#comment_'+c.id).data('user_id', u.id);
+  if(c.text.length > 200) {
+    $('#comment_'+c.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
+    $('#comment_'+c.id+' .post_toggle').html("Mehr anzeigen").click(function() {
       var pt = $(this).siblings('.post_text');
       var t = pt.data('text');
       var s = pt.text();
@@ -291,10 +293,11 @@ var addShowAllCommentsLink = function(p) {
 
 var comment = function(id) {
   $('.write_comment').remove();
-  $('#post_'+id).append("<div class='write_comment'><input type='text' name='comment_text' /><input type='button' onclick='sendComment("+id+")' value='Abschicken' /><input type='button' name='cancel_comment' value='Abbrechen' /></div>");
+  $('#post_'+id).append("<div class='write_comment'><textarea cols='50' name='comment_text'></textarea><br /><input type='button' onclick='sendComment("+id+")' value='Abschicken' /><input type='button' name='cancel_comment' value='Abbrechen' /></div>");
   $('#post_'+id+' .write_comment input[name="cancel_comment"]').click(function() {
     $('.write_comment').remove();
   });
+  makeTextareaGrowable($('#post_'+id+' .write_comment textarea[name="comment_text"]'));
   $('#post_'+id+' .write_comment input[type="button"]').button();
 }
 
@@ -328,9 +331,15 @@ var sendComment = function(id) {
 }
 
 var like = function(id) {
+  /*
   $.ajax({
     url: 'posts/'+id+'.json',
     type: 'PUT',
     
   });
+  */
+}
+
+var dislike = function(id) {
+  return;
 }
