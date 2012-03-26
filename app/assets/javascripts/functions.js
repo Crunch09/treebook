@@ -149,12 +149,10 @@ var setInputDefault = function(input, str) {
 
 var addTree = function() {
   if($('input[name="newTree"]').length == 0) {
-    $('li:has(a[name="addTree"])').before('<li style="display: none"><input type="text" name="newTree" value="" size="25" />');
+    $('li:has(a[name="addTree"])').before('<li style="display: none"><input type="text" name="newTree" value="" size="25" /><input type="button" name="saveNewTree" value="OK" /><input type="button" name="discardNewTree" value="X" />');
     var nTree = $('input[name="newTree"]');
     setInputDefault(nTree, "Mein neuer Tree");
-    nTree.after('<input type="button" name="saveNewTree" value="OK" />');
     nTreeBt = nTree.next('input[name="saveNewTree"]');
-    nTreeBt.after('<input type="button" name="discardNewTree" value="X" />');
     nTreeBtDis = nTreeBt.next('input[name="discardNewTree"]');
     
     nTree.parents('li').slideDown(300, function() {
