@@ -13,13 +13,33 @@ var show = function(str) {
     $('#'+str).show();
     $('#navigation').find('a').removeClass('active');
     $('#navigation').find('a[name="'+str+'"]').addClass('active');
+    if(str == "Startseite") {
+      $('#Stream div[id^="post_"]').show();
+      $('#Stream').prev('h3').text("Stream");
+    }
   } else {
     if(str.substring(0,5) == "tree:") {
       $.ajax({
         url: 'trees/'+str.substring(5)+'.json',
         dataType: 'json',
         success: function(tree) {
-          console.log(tree);
+          var users = new Array();
+          for(var i = 0; i < tree.users.length; i++) {
+            users.push(tree.users[i].id);
+          }
+          //users.push(gon.user_id);
+          console.log(users);
+          $('#Stream div.post').each(function() {
+            console.log($(this));
+            console.log($(this).data('user_id')+": "+arrayHas(users, $(this).data('user_id')));
+            if(!arrayHas(users, $(this).data('user_id'))) {
+              $(this).hide();
+              $(this).nextUntil('.post').hide();
+            }
+          });
+          $('#navigation').find('a').removeClass('active');
+          $('#navigation').find('a[name="tree_'+tree.id+'_'+tree.title+'"]').addClass('active');
+          $('#Stream').prev('h3').text(tree.title);
         }
       });
     }
