@@ -19,7 +19,7 @@ var show = function(str) {
         url: 'trees/'+str.substring(5)+'.json',
         dataType: 'json',
         success: function(tree) {
-          //console.log(tree);
+          console.log(tree);
         }
       });
     }
@@ -150,7 +150,7 @@ var addTree = function() {
           success: function(t) {
             var li = $('input[name="newTree"]').parents('li');
             li.empty();
-            li.append('<a href="#" name="tree_'+t.title+'" onclick="show(\'tree:'+t.id+'\')">'+t.title+'</a>');
+            li.append('<a href="#" name="tree_'+t.title+'" onclick="show(\'tree:'+t.id+'\')"><img alt="Tree_icon" src="/assets/tree_icon.png"> '+t.title+'</a>');
             makeToast("Tree erfolgreich erstellt!");
           }
         });

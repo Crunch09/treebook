@@ -36,7 +36,7 @@
       <li><b>Meine Trees</b></li>
       <% my_trees = current_user.owned_trees %>
       <% my_trees.each do |t| %>
-      <%=raw  "<li><a href=\"#\" name=\"tree_#{t.id}_#{t.title}\" onclick=\"show('tree:#{t.id}')\">#{t.title}</a></li>" %>
+      <%=raw  "<li><a href=\"#\" name=\"tree_#{t.id}_#{t.title}\" onclick=\"show('tree:#{t.id}')\">#{image_tag("tree_icon.png")} #{t.title}</a></li>" %>
       <% end %>
       <li><a href="#" name="addTree" onclick="addTree()">+ neuer Tree</a></li>
     </ul>
