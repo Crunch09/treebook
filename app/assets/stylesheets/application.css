@@ -12,7 +12,10 @@
  *= require_tree .
 */
 
-input[type="text"], textarea {
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
     border: 1px solid #CCC;
     padding: 4px;
     transition: all 0.4s;
@@ -20,7 +23,10 @@ input[type="text"], textarea {
     -webkit-transition: all 0.4s;
 }
 
-input[type="text"]:focus, textarea:focus {
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus {
     border: 1px solid #009900;
     box-shadow: 0px 0px 4px #008800;
 }

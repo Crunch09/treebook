@@ -1,7 +1,14 @@
 $(function() {
+  $('input[type="button"], input[type="submit"]').button();
+  
   // check for error message
   if($('.alert').text() != "") {
     makeToast($('.alert').text());
+  }
+  
+  // check for notice message
+  if($('.notice').text() != "") {
+    makeToast($('.notice').text());
   }
   
   // check for login layer
@@ -109,11 +116,13 @@ $(function() {
       if($(this).val().length > 2) {
         $.ajax({
           
-        })
+        });
       } else {
         cleanSearchResult();
       }
     });
+    
+    // init content
     
     show('Startseite');
     
@@ -314,7 +323,7 @@ var comment = function(id) {
 }
 
 var sendComment = function(id) {
-  var text = $('#post_'+id+' .write_comment input[name="comment_text"]').val();
+  var text = $('#post_'+id+' .write_comment textarea[name="comment_text"]').val();
   $.ajax({
     url: 'posts',
     type: 'POST',
