@@ -1,3 +1,5 @@
+var autoRefreshRate = 10000;
+
 $(function() {
   $('input[type="button"], input[type="submit"]').button();
   
@@ -278,7 +280,7 @@ var refreshPostTimeAgo = function() {
       });
     });
     refreshPostTimeAgo();
-  }, 10000);
+  }, autoRefreshRate);
 }
 
 var users = new Array();
