@@ -54,7 +54,7 @@ class PostsController < ApplicationController
   def create
     User.current = current_user
     @post = Post.new(params[:post])
-
+    @post.text = ERB::Util.h(@post.text)
     respond_to do |format|
       if @post.save
         format.html { redirect_to @post, notice: 'Post was successfully created.' }
