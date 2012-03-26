@@ -363,7 +363,10 @@ var like = function(id) {
     },
     success: function(response) {
       if(response.id > 0) {
-        //$('#post_'+id+' .post_like_amnt').text(response.id);
+        $('#post_'+id+' .post_like_amnt').text(response.likes);
+        $('#post_'+id+' .post_dislike_amnt').text(response.dislikes);
+      } else {
+        makeToast(response);
       }
     }
   });
@@ -381,7 +384,10 @@ var dislike = function(id) {
     },
     success: function(response) {
       if(response.id > 0) {
-        //$('#post_'+id+' .post_dislike_amnt').text(response.id);
+        $('#post_'+id+' .post_like_amnt').text(response.likes);
+        $('#post_'+id+' .post_dislike_amnt').text(response.dislikes);
+      } else {
+        makeToast(response);
       }
     }
   });
