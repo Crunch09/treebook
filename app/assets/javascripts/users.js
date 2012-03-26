@@ -127,7 +127,8 @@ $(function() {
     // show selectable trees and post-button on focus
     $('#content textarea[name="status_update"]').bind('focus', function() {
       if($(this).nextAll('input[name="send_post"]').length == 0) {
-        $(this).after('<input type="button" name="send_post" value="Teilen" /><input type="text" name="treetag" value="|all" class="treetag"/><ul class="status_trees"><li>Alle</li></ul>');
+        var preChosenTree = $('#navigation a[name^="tree_"].active').length > 0 ? [$('#navigation a[name^="tree_"].active').attr("name").split("_")[1], $('#navigation a[name^="tree_"].active').attr("name").split("_")[2]]  : ["all", "Alle"];
+        $(this).after('<input type="button" name="send_post" value="Teilen" /><input type="text" name="treetag" value="|'+preChosenTree[0]+'" class="treetag"/><ul class="status_trees"><li>'+preChosenTree[1]+'</li></ul>');
         
         // collect users trees
         var jsonTrees = new Array();
@@ -136,44 +137,63 @@ $(function() {
           jsonTrees.push({ "id": tree_data[1], "label": tree_data[2], "value": tree_data[2] });
         });
         
-        $('.status_trees').after('<input type="text" name="status_trees_input" />');
-        $('input[name="status_trees_input"]').autocomplete({
-          autoFocus: true,
-          minLength: 0,
-          source: jsonTrees,
-          select: function(event, ui) {
-            $('.status_trees').append('<li>'+ui.item.label+'</li>');
-            if(ui.item.id != "all") {
-              $('input[name="treetag"]').val($('input[name="treetag"]').val().split("|all").join(""));
-              $('.status_trees li:contains("Alle")').remove();
-            } else {
-              $('input[name="treetag"]').val("");
-              $('.status_trees li:not(:contains("Alle"))').remove();
-            }
-            $('input[name="treetag"]').val($('input[name="treetag"]').val()+"|"+ui.item.id);
-            $('input[name="status_trees_input"]').val("");
-          },
-          close: function(event, ui) {
-            $('input[name="status_trees_input"]').val("");
-            var selected = $('input[name="treetag"]').val().substr(1).split("|");
-            var newSource = new Array();
-            for(var i = 0; i < jsonTrees.length; i++) {
-              if(!arrayHas(selected, jsonTrees[i].id)) {
-                newSource.push(jsonTrees[i]);
+        if(preChosenTree[0] != "all") {
+          jsonTrees.push({"id": "all", "label": "Alle", "value": "Alle"});
+        }
+        if(preChosenTree[0] == "all") {
+          $('.status_trees').after('<input type="text" name="status_trees_input" />');
+          $('input[name="status_trees_input"]').autocomplete({
+            autoFocus: true,
+            minLength: 0,
+            source: jsonTrees,
+            create: function(event, ui) {
+              var selected = $('input[name="treetag"]').val().substr(1).split("|");
+              var newSource = new Array();
+              for(var i = 0; i < jsonTrees.length; i++) {
+                if(!arrayHas(selected, jsonTrees[i].id)) {
+                  newSource.push(jsonTrees[i]);
+                }
+              }
+              if(newSource.length > 0) {
+                $(this).autocomplete("option", "source", newSource);
+              } else {
+                $(this).hide();
+              }
+            },
+            select: function(event, ui) {
+              $('.status_trees').append('<li>'+ui.item.label+'</li>');
+              if(ui.item.id != "all") {
+                $('input[name="treetag"]').val($('input[name="treetag"]').val().split("|all").join(""));
+                $('.status_trees li:contains("Alle")').remove();
+              } else {
+                $('input[name="treetag"]').val("");
+                $('.status_trees li:not(:contains("Alle"))').remove();
+              }
+              $('input[name="treetag"]').val($('input[name="treetag"]').val()+"|"+ui.item.id);
+              $('input[name="status_trees_input"]').val("");
+            },
+            close: function(event, ui) {
+              $('input[name="status_trees_input"]').val("");
+              var selected = $('input[name="treetag"]').val().substr(1).split("|");
+              var newSource = new Array();
+              for(var i = 0; i < jsonTrees.length; i++) {
+                if(!arrayHas(selected, jsonTrees[i].id)) {
+                  newSource.push(jsonTrees[i]);
+                }
+              }
+              if(newSource.length > 0) {
+                $(this).autocomplete("option", "source", newSource);
+              } else {
+                $(this).hide();
               }
             }
-            if(newSource.length > 0) {
-              $(this).autocomplete("option", "source", newSource);
-            } else {
-              $(this).hide();
-            }
-          }
-        }).bind('focus', function() {
-          var e = jQuery.Event("keydown", { keyCode: 40 });
-          $(this).trigger(e);
-        });
-        
-        jsonTrees.push({"id": "all", "label": "Alle", "value": "Alle"});
+          }).bind('focus', function() {
+            var e = jQuery.Event("keydown", { keyCode: 40 });
+            $(this).trigger(e);
+          });
+        } else {
+          $('.status_trees').after('<div style="height: 30px;"></div>');
+        }
         
         $(this).nextAll('input[name="send_post"]').button().click(function() {
           var chosenTrees = $('input[name="treetag"]').val().substr(1).split("|");

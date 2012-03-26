@@ -8,6 +8,7 @@ var makeToast = function(str) {
 }
 
 var show = function(str) {
+  $('textarea[name="status_update"]').val("").trigger("blur").siblings("*").remove();
   if($('#'+str).length > 0) {
     $('#content > div').hide();
     $('#'+str).show();
