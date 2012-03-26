@@ -196,7 +196,7 @@ $(function() {
             dataType: 'json',
             data: {
               'post[user_id]': gon.user_id,
-              'post[text]': $('input[name="status_update"]').val(),
+              'post[text]': $('textarea[name="status_update"]').val(),
               'post[likes]': 0,
               'post[dislikes]': 0,
               'post[post_id]': '',
