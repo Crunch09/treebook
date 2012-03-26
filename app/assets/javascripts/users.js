@@ -13,17 +13,15 @@ $(function() {
   
   // check for login layer
   if($('#login_layer').length > 0) {
-    // init login layer position
-    $('#login_layer > div').position({
-      of: $('#login_layer > b'),
-      my: 'right top',
-      at: 'right bottom',
-      offset: '0 -1'
-    });
-    
     // init functionality slide up/down
     $('#login_layer > b').toggle(function() {
-      $(this).next('div').slideDown(200);
+      // init login layer position
+      $('#login_layer > div').slideDown(200).position({
+        of: $('#login_layer > b'),
+        my: 'right top',
+        at: 'right bottom',
+        offset: '0 -1'
+      });
       
       if($('#signup_layer > div:visible').length > 0)
         $('#signup_layer > b').click();
@@ -47,17 +45,15 @@ $(function() {
   
   // check for signup layer
   if($('#signup_layer').length > 0) {
-    // init layer position
-    $('#signup_layer > div').position({
-      of: $('#signup_layer > b'),
-      my: 'right top',
-      at: 'right bottom',
-      offset: '0 -1'
-    });
-    
     // init functionality slide up/down
     $('#signup_layer > b').toggle(function() {
-      $(this).next('div').slideDown(200);
+      // init layer position
+      $('#signup_layer > div').slideDown(200).position({
+        of: $('#signup_layer > b'),
+        my: 'right top',
+        at: 'right bottom',
+        offset: '0 -1'
+      });
       
       if($('#login_layer > div:visible').length > 0)
         $('#login_layer > b').click();
@@ -82,16 +78,15 @@ $(function() {
   // user is logged in
   if($('#user_menu').length > 0) {
     // USER MENU
-    // init user menu layer position
-    $('#user_menu_layer').position({
-      of: $('#user_menu > b'),
-      my: 'right top',
-      at: 'right bottom',
-      offset: '0 -1'
-    });
     // init user menu
     $('#user_menu > b').toggle(function() {
-      $('#user_menu_layer').slideDown(200);
+      // init user menu layer position
+      $('#user_menu_layer').slideDown(200).position({
+        of: $('#user_menu > b'),
+        my: 'right top',
+        at: 'right bottom',
+        offset: '0 -1'
+      });
       
       $(this).css({
         'borderLeft': '1px solid #666',

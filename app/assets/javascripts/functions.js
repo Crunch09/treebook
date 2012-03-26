@@ -95,16 +95,14 @@ var addSharedComment = function(p, i, where) {
 
 var setInputDefault = function(input, str) {
   input.data('origText', str);
-  input.val(str).css('color', '#999999');
+  input.val(str);
   input.bind('focus', function() {
     if($(this).val() == $(this).data('origText')) {
       $(this).val("");
-      $(this).css('color', '#000000');
     }
   });
   input.bind('blur', function() {
     if($(this).val() == "") {
-      $(this).css('color', '#999999');
       $(this).val($(this).data('origText'));
     }
   });
