@@ -9,7 +9,11 @@ class TreesController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @tree.to_json(:include => { :user => {:only => [:firstname, :name, :id, :email]}}) }
+      if @tree.user == current_user
+        format.json { render json: @tree.to_json(:include => { :user => {:only => [:firstname, :name, :id, :email]}, :users => {:only => [:firstname, :name, :id, :email]}}) }
+      else
+        format.json { render json: "Sie koennen leider nicht auf diesen Tree zugreifen", status: :unprocessable_entity }
+      end
     end
   end
 

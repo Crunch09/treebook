@@ -14,7 +14,7 @@ class PostsController < ApplicationController
     User.current = current_user
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @posts.to_json(:include => :tree_ids, :methods => [:comments, :time_ago, :votes]) }
+      format.json { render json: @posts.to_json(:include => :trees, :methods => [:comments, :time_ago, :votes]) }
     end
   end
 
@@ -26,7 +26,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if (@post.tree_ids & current_user.tree_ids).count > 0 || @post.user_id == current_user.id
-        format.json { render json: @post.to_json(:include => :tree_ids, :methods => [:comments, :time_ago, :votes]) }
+        format.json { render json: @post.to_json(:include => :trees, :methods => [:comments, :time_ago, :votes]) }
       else
         format.json { render json: "Sie haben leider keine Berechtigung diesen Post zu sehen", status: :unprocessable_entity }
       end
