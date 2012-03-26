@@ -352,15 +352,33 @@ var sendComment = function(id) {
 }
 
 var like = function(id) {
-  /*
   $.ajax({
-    url: 'posts/'+id+'.json',
-    type: 'PUT',
-    
+    url: 'vote',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'vote[user_id]': gon.user_id,
+      'vote[post_id]': id,
+      'vote[upvote]': true
+    },
+    success: function(response) {
+      console.log(response);
+    }
   });
-  */
 }
 
 var dislike = function(id) {
-  return;
+  $.ajax({
+    url: 'vote',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'vote[user_id]': gon.user_id,
+      'vote[post_id]': id,
+      'vote[upvote]': false
+    },
+    success: function(response) {
+      console.log(response);
+    }
+  });
 }
