@@ -5,11 +5,16 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    @posts = Post.where(:post_id => nil).order('created_at ASC')
+    # eigene Posts
+    ownPosts = Post.where(:post_id => nil, :user_id => current_user.id)
+    # Posts in Trees in denen man Mitglied ist
+    sharedPosts = Post.select { |e| (e.tree_ids & current_user.tree_ids).count > 0 && e.post_id.nil? && e.user_id != current_user.id  }
+    @posts = (ownPosts + sharedPosts).sort_by( &:created_at ) 
+
     User.current = current_user
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @posts.to_json(:methods => [:comments, :time_ago, :votes]) }
+      format.json { render json: @posts.to_json(:include => :tree_ids, :methods => [:comments, :time_ago, :votes]) }
     end
   end
 
@@ -20,8 +25,11 @@ class PostsController < ApplicationController
     @post = Post.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @post.to_json(:methods => [:comments, :time_ago, :votes]) }
+      if (@post.tree_ids & current_user.tree_ids).count > 0 || @post.user_id == current_user.id
+        format.json { render json: @post.to_json(:include => :tree_ids, :methods => [:comments, :time_ago, :votes]) }
+      else
+        format.json { render json: "Sie haben leider keine Berechtigung diesen Post zu sehen", status: :unprocessable_entity }
+      end
     end
   end
 
