@@ -37,7 +37,7 @@ class TreesController < ApplicationController
   # POST /trees.json
   def create
     @tree = Tree.new(params[:tree])
-
+    @tree.title = ERB::Util.h(@tree.title)
     respond_to do |format|
       if @tree.save
         format.html { redirect_to @tree, notice: 'Tree was successfully created.' }
