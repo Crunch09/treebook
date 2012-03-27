@@ -82,7 +82,7 @@ class TreesController < ApplicationController
   #GET /trees.json
   def index 
       respond_to do |format|
-        format.json { render json: current_user.owned_trees }
+        format.json { render json: current_user.owned_trees.to_json(:include => { :users => {:only => [:firstname, :name, :id, :email]}})}
       end
   end
 
