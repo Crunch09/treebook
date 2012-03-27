@@ -1,29 +1,51 @@
+/**
+ * Steuert das automatische Aktualisieren der Zeiten der Posts (vor X Minuten etc.)
+ */
 var autoRefreshRate = 10000;
-// create a faye client
+
+/**
+ * Erzeugt einen Faye-Client für die Push-Benachrichtigung bei neuen Posts und Kommentaren
+ */
 var client = new Faye.Client('http://localhost:9292/faye', {
     timeout: 60
 });
 
+/**
+ * Dient als Sammlung aller Channels, die für Push-Benachrichtigungen benötigt werden.
+ * Die Größe entspricht der Anzahl der Personen, die der Benutzer in seine Trees mit aufgenommen hat.
+ */
 var receiver = new Array();
 
+/**
+ * Wird ausgeführt, sobald die Seite fertig geladen ist. (Entspricht window.onload)
+ */
 $(function() {
+  /**
+   * Buttons initialisieren
+   */
   $('input[type="button"], input[type="submit"]').button();
   
-  // check for error message
+  /**
+   * Auf Fehlernachrichten prüfen und gegebenenfalls anzeigen
+   */
   if($('.alert').text() != "") {
     makeToast($('.alert').text());
   }
   
-  // check for notice message
+  /**
+   * Auf Hinweisnachrichten prüfen und gegebenenfalls anzeigen
+   */
   if($('.notice').text() != "") {
     makeToast($('.notice').text());
   }
   
-  // check for login layer
+  /**
+   * Prüfen, ob der Login-Layer vorhanden ist (User ist nicht eingeloggt)
+   */
   if($('#login_layer').length > 0) {
-    // init functionality slide up/down
+    // Layer-Toggle initialisieren (slideUp/slideDown)
     $('#login_layer > b').toggle(function() {
-      // init login layer position
+      // Layer-Position neu setzen
       $('#login_layer > div').slideDown(200).position({
         of: $('#login_layer > b'),
         my: 'right top',
@@ -31,8 +53,10 @@ $(function() {
         offset: '0 -1'
       });
       
+      // Registrierungsformular ausblenden, sofern es sichtbar ist
       if($('#signup_layer > div:visible').length > 0)
         $('#signup_layer > b').click();
+      // Login-Top-Bar-Button einfärben
       $(this).css({
         'borderLeft': '1px solid #666',
         'borderRight': '1px solid #666',
@@ -41,7 +65,9 @@ $(function() {
         'backgroundImage': $('#top_bar').css('backgroundImage')
       });
     }, function() {
+      // Layer wieder einfahren
       $(this).next('div').slideUp(200);
+      // Login-Top-Bar-Button zurücksetzen
       $(this).css({
         'borderLeft': '1px solid transparent',
         'borderRight': '1px solid transparent',
@@ -51,11 +77,11 @@ $(function() {
     });
   }
   
-  // check for signup layer
+  /**
+   * Gleiches Spiel, wie beim Login-Layer, nur jetzt für den Registrierungs-Layer
+   */
   if($('#signup_layer').length > 0) {
-    // init functionality slide up/down
     $('#signup_layer > b').toggle(function() {
-      // init layer position
       $('#signup_layer > div').slideDown(200).position({
         of: $('#signup_layer > b'),
         my: 'right top',
@@ -83,12 +109,14 @@ $(function() {
     });
   }
   
-  // user is logged in
+  /**
+   * Prüfen, ob das User-Menü vorhanden ist (User ist eingeloggt)
+   */
   if($('#user_menu').length > 0) {
-    // USER MENU
-    // init user menu
+    /**
+     * User-Menü initialisieren (fast genauso, wie Login-/Registrierungs-Layer)
+     */
     $('#user_menu > b').toggle(function() {
-      // init user menu layer position
       $('#user_menu_layer').slideDown(200).position({
         of: $('#user_menu > b'),
         my: 'right top',
@@ -113,7 +141,9 @@ $(function() {
       });
     });
     
-    // init sidebar
+    /**
+     * Rechte Spalte (Suche) initialisieren
+     */
     setInputDefault($('#friendfinder input[name="friendsearch"]'), "Suche");
     $('#friendfinder input[name="friendsearch"]').bind('keyup', function() {
       if($(this).val().length > 2) {
@@ -125,36 +155,48 @@ $(function() {
       }
     });
     
-    // init content
-    
+    /**
+     * Startseite aktivieren (Main-Stream)
+     */
     show('Startseite');
     
-    // STATUS UPDATE
+    /**
+     * Status-Update initialisieren
+     */
     setInputDefault($('#content textarea[name="status_update"]'), "Teile deine Gedanken!");
     makeTextareaGrowable($('#content textarea[name="status_update"]'));
-    // show selectable trees and post-button on focus
+    /**
+     * Beim erstmaligen Fokusieren des Textfeldes die Tree-Auswahl und den Teilen-Button einblenden
+     */
     $('#content textarea[name="status_update"]').bind('focus', function() {
       if($(this).nextAll('input[name="send_post"]').length == 0) {
+        /**
+         * Vorausgewählten Tree setzen: Wenn im Main-Stream, dann "Alle", wenn in einem Tree-Stream, dann den entsprechenden Tree
+         */
         var preChosenTree = $('#navigation a[name^="tree_"].active').length > 0 ? [$('#navigation a[name^="tree_"].active').attr("name").split("_")[1], $('#navigation a[name^="tree_"].active').attr("name").split("_")[2]]  : ["all", "Alle"];
         $(this).after('<input type="button" name="send_post" value="Teilen" /><input type="text" name="treetag" value="|'+preChosenTree[0]+'" class="treetag"/><ul class="status_trees"><li>'+preChosenTree[1]+'</li></ul>');
         
-        // collect users trees
+        /**
+         * Trees in einem Array zusammenfassen
+         */
         var jsonTrees = new Array();
         $('#navigation a[name^="tree_"]').each(function() {
           var tree_data = $(this).attr("name").split("_");
           jsonTrees.push({ "id": tree_data[1], "label": tree_data[2], "value": tree_data[2] });
         });
         
-        if(preChosenTree[0] != "all") {
-          jsonTrees.push({"id": "all", "label": "Alle", "value": "Alle"});
-        }
+        /**
+         * Sofern im Main-Stream, die Tree-Auswahl initialisieren
+         */
         if(preChosenTree[0] == "all") {
           $('.status_trees').after('<input type="text" name="status_trees_input" />');
+          // Autocomplete initialisieren
           $('input[name="status_trees_input"]').autocomplete({
             autoFocus: true,
             minLength: 0,
             source: jsonTrees,
             create: function(event, ui) {
+              // Beim Erstellen den vorausgewählten Tree aus den Auswahlmöglichkeiten nehmen
               var selected = $('input[name="treetag"]').val().substr(1).split("|");
               var newSource = new Array();
               for(var i = 0; i < jsonTrees.length; i++) {
@@ -163,17 +205,20 @@ $(function() {
                 }
               }
               if(newSource.length > 0) {
-                $(this).autocomplete("option", "source", newSource);
+                $(this).show().autocomplete("option", "source", newSource);
               } else {
                 $(this).hide();
               }
             },
             select: function(event, ui) {
+              // Bei Auswahl eines Trees, diesen an die Liste anhängen
               $('.status_trees').append('<li>'+ui.item.label+'</li>');
               if(ui.item.id != "all") {
+                // Falls es sich um einen bestimmten Tree handelt, "Alle" entfernen
                 $('input[name="treetag"]').val($('input[name="treetag"]').val().split("|all").join(""));
                 $('.status_trees li:contains("Alle")').remove();
               } else {
+                // Falls es sich um "Alle" handelt, alle vorausgewählten entfernen
                 $('input[name="treetag"]').val("");
                 $('.status_trees li:not(:contains("Alle"))').remove();
               }
@@ -181,6 +226,7 @@ $(function() {
               $('input[name="status_trees_input"]').val("");
             },
             close: function(event, ui) {
+              // Beim Schließen (nachdem ein Tree ausgewählt wurde), die Auswahlmöglichkeiten aktualisieren
               $('input[name="status_trees_input"]').val("");
               var selected = $('input[name="treetag"]').val().substr(1).split("|");
               var newSource = new Array();
@@ -196,15 +242,24 @@ $(function() {
               }
             }
           }).bind('focus', function() {
+            // Keydown simulieren, wenn das Feld fokusiert wird, um die Auswahl-Liste direkt anzuzeigen
             var e = jQuery.Event("keydown", { keyCode: 40 });
             $(this).trigger(e);
           });
         } else {
+          /**
+           * Bei der Tree-Stream-Ansicht können die ausgewählten Trees nicht geändert werden
+           */
           $('.status_trees').after('<div style="height: 30px;"></div>');
         }
         
+        /**
+         * Teilen-Button initialisieren
+         */
         $(this).nextAll('input[name="send_post"]').button().click(function() {
+          // ausgewählte Trees auslesen
           var chosenTrees = $('input[name="treetag"]').val().substr(1).split("|");
+          // sofern "Alle" ausgewählt ist, die ID's aller Trees sammeln
           if(arrayHas(chosenTrees, "all")) {
             chosenTrees = new Array();
             for(var i = 0; i < jsonTrees.length; i++) {
@@ -213,6 +268,7 @@ $(function() {
               }
             }
           }
+          // AJAX-POST absetzen, um den Post an den Server zu senden
           $.ajax({
             url: 'posts',
             type: 'POST',
@@ -226,8 +282,11 @@ $(function() {
               'post[tree_ids]': chosenTrees
             },
             success: function(newPost) {
+              // Bei Erfolg, Status-Update zurücksetzen
               $('textarea[name="status_update"]').val("").trigger("blur").siblings("*").remove();
+              // den Post direkt anzeigen
               addPost(newPost);
+              // und Abonennten über den neuen Post informieren
               client.publish('/posts/'+gon.user_id, { post_id: newPost.id });
               $('#Stream .post:first').css('backgroundColor', '#DDD').animate({
                 'backgroundColor': '#FFF'
@@ -236,7 +295,7 @@ $(function() {
           });
         });
       } else {
-        // collect users trees
+        // Autocomplete und Teilen-Button sind bereits da, es werden nur die vorhandenen Trees neu geladen
         var jsonTrees = new Array();
         $('#navigation a[name^="tree_"]').each(function() {
           var tree_data = $(this).attr("name").split("_");
@@ -247,30 +306,48 @@ $(function() {
       }
     });
     
-    // FAYE RECEIVER
-    
+    /**
+     * FAYE Receiver initialisieren
+     *
+     * Erstmal alle vorhandenen Trees laden
+     */
     $.ajax({
       url: 'trees.json',
       dataType: 'json',
       success: function(trees) {
         for(var i = 0; i < trees.length; i++) {
           for(var j = 0; j < trees[i].users.length; j++) {
+            // für jeden User einen Listener auf seinen Channel erstellen
             receiver[trees[i].users[j].id] = client.subscribe('/posts/'+trees[i].users[j].id, function(message) {
+              // Wenn der entsprechende User einen Post oder einen Kommentar abschickt, so wird hier die Info darüber ankommen
               if(message.post_id != undefined && message.response_id != undefined) {
-                // NEW COMMENT
+                /**
+                 * Hier handelt es sich um einen neuen Kommentar
+                 *
+                 * Prüfen, ob ich den dazugehörigen Post und den Kommentar lesen darf
+                 */
                 $.ajax({
                   url: 'posts/'+message.response_id+'.json',
                   dataType: 'json',
                   success: function(response) {
+                    // Ja, den Post darf ich lesen
                     $.ajax({
                       url: 'posts/'+message.post_id+'.json',
                       dataType: 'json',
                       success: function(post) {
+                        /**
+                         * Ja, den Kommentar darf ich lesen, also zeige ich ihn an
+                         */
                         addComment(post, response, 'after');
                         if($(window).scrollTop() > $('#post_'+message.response_id).offset().top) {
+                          /**
+                           * Falls ich gerade irgendwo weiter unten lese, wird nur ganz oben eine Benachrichtigung angezeigt.
+                           * Dies verhindert ein ungewolltes "herunterschieben" der Seite während dem Lesen.
+                           */
                           $('#post_'+message.response_id).hide();
                           showNewPostsAvailable();
                         }
+                        // Anzahl der Kommentare im betreffenden Post aktualisieren
                         updateCommentsAmount(message.post_id, post.comments.length);
                       }
                     });
@@ -278,13 +355,23 @@ $(function() {
                 });
               }
               if(message.post_id != undefined && message.response_id == undefined) {
-                // NEW POST
+                /**
+                 * Hier handelt es sich um einen neuen Post
+                 *
+                 * Prüfen, ob ich den Post lesen darf
+                 */
                 $.ajax({
                   url: 'posts/'+message.post_id+'.json',
                   dataType: 'json',
                   success: function(post) {
+                    /**
+                     * Ja, den Post darf ich lesen, also zeige ich ihn an
+                     */
                     addPost(post);
                     if($(window).scrollTop() > $('#post_'+message.post_id).offset().top) {
+                      /**
+                       * Wieder die Prüfung, ob ich irgendwo weiter unten lese
+                       */
                       $('#post_'+message.post_id).hide();
                       showNewPostsAvailable();
                     }
@@ -297,14 +384,18 @@ $(function() {
       }
     });
     
-    // STREAM
+    /**
+     * Main-Stream initialisieren
+     */
     
     var posts = new Array();
     
+    // Alle verfügbaren Posts laden
     $.ajax({
       url: 'posts.json',
       dataType: 'json',
       success: function(resp) {
+        // und nach und nach inklusive den letzten 3 Kommentaren anzeigen
         for(var i = 0; i < resp.length; i++) {
           var p = resp[i];
           addPost(p);
@@ -313,16 +404,21 @@ $(function() {
               addComment(p, j);
           }
           if(p.comments.length > 3) {
+            // bei mehr als 3 Kommentaren, einen Link zum Anzeigen der vorherigen Kommentare anzeigen
             addShowAllCommentsLink(p);
           }
         }
       }
     });
     
+    // Post-Datum-Aktualisierung starten
     refreshPostTimeAgo();
   }
 });
 
+/**
+ * Aktualisiert das Datum aller Posts und Kommentare im Intervall autoRefreshRate
+ */
 var refreshPostTimeAgo = function() {
   window.setTimeout(function() {
     $('.post:visible, .comment:visible').each(function() {
@@ -339,6 +435,9 @@ var refreshPostTimeAgo = function() {
   }, autoRefreshRate);
 }
 
+/**
+ * Dient als Cache, damit die grundlegenden User-Infos nicht für jeden neuen Post/Kommentar neu geladen werden
+ */
 var users = new Array();
 
 var checkUserCache = function(id) {
@@ -355,9 +454,15 @@ var checkUserCache = function(id) {
   return users[id];
 }
 
+/**
+ * Fügt einen Post an den Anfang des Streams hinzu
+ */
 var addPost = function(p) {
+  // User-Cache prüfen
   var u = checkUserCache(p.user_id);
+  // HTML hinzufügen
   $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+p.id+')" /><span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+p.id+')" /><span class="post_dislike_amnt">'+p.dislikes+'</span></span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></div></div>');
+  // Post mit jQuery-Meta-Daten füttern
   $('#post_'+p.id).data({
     'user_id': u.id,
     'user_firstname': u.firstname,
@@ -367,6 +472,7 @@ var addPost = function(p) {
     'trees': p.trees
   });
   if(p.text.length > 200) {
+    // Sofern der Post länger als 200 Zeichen ist, wird ein "Mehr/Weniger anzeigen"-Link generiert.
     $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
     $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
       var pt = $(this).siblings('.post_text');
@@ -379,23 +485,34 @@ var addPost = function(p) {
   }
 }
 
+/**
+ * Fügt einen Kommentar an das Ende der Kommentarkette des kommentierten Posts an
+ */
 var addComment = function(p, i, where) {
+  // Prüfen ob Kommentar als Index oder Objekt angegeben wurde
   var c = (i.id == undefined ? p.comments[i] : i);
+  // User-Cache prüfen
   var u = checkUserCache(c.user_id);
   var insertAfter;
+  // Prüfen, wo genau der Kommentar angefügt werden soll
   if(where == 'after') {
     if($('#post_'+p.id).nextAll('.post').length > 0) {
-      insertAfter = $('#post_'+p.id).nextUntil('.post').last();
+      // hinter eventuell bereits vorhandene Kommentare
+      insertAfter = $('#post_'+p.id).nextUntil('.post:visible').last();
       if(insertAfter.length == 0) {
+        // oder direkt hinter den Post (erster Kommentar)
         insertAfter = $('#post_'+p.id);
       }
     } else {
-      insertAfter = $('#Stream div[id^="post_"]:last');
+      // ans Ende des Streams
+      insertAfter = $('#Stream div[id^="post_"]:visible:last');
     }
   } else {
     insertAfter = $('#post_'+p.id);
   }
+  // HTML erzeugen
   insertAfter.after('<div id="post_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" /><span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" /><span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
+  // Kommentar mit jQuery-Meta-Daten füttern
   $('#post_'+c.id).data({
     'user_id': u.id,
     'user_firstname': u.firstname,
@@ -405,6 +522,7 @@ var addComment = function(p, i, where) {
     'trees': c.trees
   });
   if(c.text.length > 200) {
+    // Wieder die Prüfung auf mehr als 200 Zeichen
     $('#post_'+c.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
     $('#post_'+c.id+' .post_toggle').html("Mehr anzeigen").click(function() {
       var pt = $(this).siblings('.post_text');
@@ -417,12 +535,18 @@ var addComment = function(p, i, where) {
   }
 }
 
+/**
+ * Zeigt alle Kommentare zu einem Post an (nicht angezeigte werden explizit vom Server geladen)
+ */
 var showAllComments = function(p) {
   for(var i = 3; i < p.comments.length; i++) {
     addComment(p, i);
   }
 }
 
+/**
+ * Fügt den "Zeige alle X vorherigen Kommentare"-Link hinter dem Post hinzu
+ */
 var addShowAllCommentsLink = function(p) {
   $('#post_'+p.id).after('<div class="showAllComments comment">Zeige alle '+(p.comments.length-3)+' vorherigen Kommentare</div>');
   $('#post_'+p.id).next('.showAllComments').click(function() {
@@ -431,6 +555,9 @@ var addShowAllCommentsLink = function(p) {
   });
 }
 
+/**
+ * Generiert das Formular zum Verfassen eines Kommentars
+ */
 var comment = function(id) {
   $('.write_comment').remove();
   $('#post_'+id).append("<div class='write_comment'><textarea cols='50' name='comment_text'></textarea><br /><input type='button' onclick='sendComment("+id+")' value='Abschicken' /><input type='button' name='cancel_comment' value='Abbrechen' /></div>");
@@ -441,13 +568,11 @@ var comment = function(id) {
   $('#post_'+id+' .write_comment input[type="button"]').button();
 }
 
+/**
+ * Sendet den erfassten Kommentar an den Server
+ */
 var sendComment = function(id) {
   var text = $('#post_'+id+' .write_comment textarea[name="comment_text"]').val();
-  var trees = new Array();
-  var ptrees = $('#post_'+id).data('trees');
-  for(var i = 0; i < ptrees.length; i++) {
-    trees.push(ptrees[i].id);
-  }
   $.ajax({
     url: 'posts',
     type: 'POST',
@@ -477,10 +602,16 @@ var sendComment = function(id) {
   });
 }
 
+/**
+ * Aktualisiert die angezeigte Anzahl der Kommentare für den Post mit der ID id
+ */
 var updateCommentsAmount = function(id, amnt) {
   $('#post_'+id+' .post_comment').html(amnt+' Kommentar'+(amnt != 1 ? 'e' : ''));
 }
 
+/**
+ * Zeigt die Benachrichtigung am Anfang des Streams, dass neue Posts vorhanden sind (die via Faye-Listener geladen wurden)
+ */
 var showNewPostsAvailable = function() {
   if($('#showNewPosts').length == 0) {
     $('#Stream').before('<div id="showNewPosts"><span>0</span> neue Posts</div>');
@@ -494,6 +625,9 @@ var showNewPostsAvailable = function() {
   $('#showNewPosts').html("<span>"+c+"</span> "+t);
 }
 
+/**
+ * Sendet ein "Like" für den Post mit der ID id an den Server
+ */
 var like = function(id) {
   $.ajax({
     url: 'vote',
@@ -516,6 +650,9 @@ var like = function(id) {
   });
 }
 
+/**
+ * Sendet ein "Dislike" für den Post mit der ID id an den Server
+ */
 var dislike = function(id) {
   $.ajax({
     url: 'vote',

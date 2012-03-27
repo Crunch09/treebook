@@ -185,7 +185,7 @@ var addTree = function() {
           success: function(t) {
             var li = $('input[name="newTree"]').parents('li');
             li.empty();
-            li.append('<a href="#" name="tree_'+t.title+'" onclick="show(\'tree:'+t.id+'\')"><img alt="Tree_icon" src="/assets/tree_icon.png"> '+t.title+'</a>');
+            li.append('<a href="#" name="tree_'+t.id+'_'+t.title+'" onclick="show(\'tree:'+t.id+'\')"><img alt="Tree_icon" src="/assets/tree_icon.png"> '+t.title+'</a>');
             makeToast("Tree erfolgreich erstellt!");
           }
         });

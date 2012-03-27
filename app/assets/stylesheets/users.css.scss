@@ -259,6 +259,9 @@ div#navigation ul a:hover {
 
 .post {
   padding: 5px;
+  margin-top: -1px;
+  border-top: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
 }
 .comment {
   padding: 5px;
@@ -267,8 +270,8 @@ div#navigation ul a:hover {
   border-left: 1px solid #CCC;
   border-bottom: 1px solid #CCC;
 }
-.post:not(:last-child) {
-  border-bottom: 1px solid #CCC;
+.post:last-child {
+  border-bottom: 0px;
 }
 .post_user {
   font-weight: bold;
