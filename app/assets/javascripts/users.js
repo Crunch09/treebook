@@ -3,11 +3,10 @@ var autoRefreshRate = 10000;
 var client = new Faye.Client('http://localhost:9292/faye', {
     timeout: 60
 });
-$(function() {
 
-  var subscription = client.subscribe('/posts/new', function(message) {
-    alert(message.text);
-  });
+var receiver = new Array();
+
+$(function() {
   $('input[type="button"], input[type="submit"]').button();
   
   // check for error message
@@ -248,6 +247,23 @@ $(function() {
       }
     });
     
+    // FAYE RECEIVER
+    
+    $.ajax({
+      url: 'trees.json',
+      dataType: 'json',
+      success: function(trees) {
+        for(var i = 0; i < trees.length; i++) {
+          for(var j = 0; j < trees[i].users; j++) {
+            console.log("listening on /posts/"+trees[i].users[j].id);
+            receiver[trees[i].users[j].id] = client.subscribe('/posts/'+trees[i].users[j].id, function(message) {
+              alert(message.text);
+            });
+          }
+        }
+      }
+    });
+    
     // STREAM
     
     var posts = new Array();
@@ -393,7 +409,6 @@ var comment = function(id) {
 }
 
 var sendComment = function(id) {
-  client.publish('/posts/new', {text: 'Hi there'});
   var text = $('#post_'+id+' .write_comment textarea[name="comment_text"]').val();
   var trees = new Array();
   var ptrees = $('#post_'+id).data('trees');
@@ -421,6 +436,8 @@ var sendComment = function(id) {
           success: function(p) {
             addComment(p, response, 'after');
             $('#post_'+id+' .post_comment').html(p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : ''));
+            client.publish('/posts/'+gon.user_id, {text: text});
+            alert("published '"+text+"' to /posts/"+gon.user_id);
           }
         });
       });
