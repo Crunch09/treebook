@@ -228,7 +228,7 @@ $(function() {
             success: function(newPost) {
               $('textarea[name="status_update"]').val("").trigger("blur").siblings("*").remove();
               addPost(newPost);
-              client.publish('/posts/'+gon.user_id, { post: newPost });
+              client.publish('/posts/'+gon.user_id, { post_id: newPost.id });
               $('#Stream .post:first').css('backgroundColor', '#DDD').animate({
                 'backgroundColor': '#FFF'
               }, 1500);
@@ -256,22 +256,40 @@ $(function() {
         for(var i = 0; i < trees.length; i++) {
           for(var j = 0; j < trees[i].users.length; j++) {
             receiver[trees[i].users[j].id] = client.subscribe('/posts/'+trees[i].users[j].id, function(message) {
-              if(message.post != undefined && message.response != undefined) {
+              if(message.post_id != undefined && message.response_id != undefined) {
                 // NEW COMMENT
-                addComment(message.post, message.response, 'after');
-                if($(window).scrollTop() > $('#post_'+message.response.id).offset().top) {
-                  $('#post_'+message.response.id).hide();
-                  showNewPostsAvailable();
-                }
-                updateCommentsAmount(message.post.id, message.post.comments.length);
+                $.ajax({
+                  url: 'posts/'+message.response_id+'.json',
+                  dataType: 'json',
+                  success: function(response) {
+                    $.ajax({
+                      url: 'posts/'+message.post_id+'.json',
+                      dataType: 'json',
+                      success: function(post) {
+                        addComment(post, response, 'after');
+                        if($(window).scrollTop() > $('#post_'+message.response_id).offset().top) {
+                          $('#post_'+message.response_id).hide();
+                          showNewPostsAvailable();
+                        }
+                        updateCommentsAmount(message.post_id, post.comments.length);
+                      }
+                    });
+                  }
+                });
               }
-              if(message.post != undefined && message.response == undefined) {
+              if(message.post_id != undefined && message.response_id == undefined) {
                 // NEW POST
-                addPost(message.post);
-                if($(window).scrollTop() > $('#post_'+message.post.id).offset().top) {
-                  $('#post_'+message.post.id).hide();
-                  showNewPostsAvailable();
-                }
+                $.ajax({
+                  url: 'posts/'+message.post_id+'.json',
+                  dataType: 'json',
+                  success: function(post) {
+                    addPost(post);
+                    if($(window).scrollTop() > $('#post_'+message.post_id).offset().top) {
+                      $('#post_'+message.post_id).hide();
+                      showNewPostsAvailable();
+                    }
+                  }
+                });
               }
             });
           }
@@ -451,7 +469,7 @@ var sendComment = function(id) {
           success: function(p) {
             addComment(p, response, 'after');
             updateCommentsAmount(id, p.comments.length);
-            client.publish('/posts/'+gon.user_id, { post: p, response: response });
+            client.publish('/posts/'+gon.user_id, { post_id: p.id, response_id: response.id });
           }
         });
       });
