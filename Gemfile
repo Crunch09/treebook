@@ -15,12 +15,16 @@ gem 'devise'
 #load Gon
 gem 'gon'
 
+gem 'faye'
+gem 'thin'
 
 # load Omniauth plugins
 gem 'omniauth-facebook'
 gem 'omniauth-flickr'
 
 gem 'flickraw'
+
+gem 'foreman'
 
 # Gems used only for assets and not required
 # in production environments by default.

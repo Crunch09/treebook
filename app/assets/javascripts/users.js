@@ -1,6 +1,13 @@
 var autoRefreshRate = 10000;
-
+// create a faye client
+var client = new Faye.Client('http://localhost:9292/faye', {
+    timeout: 60
+});
 $(function() {
+
+  var subscription = client.subscribe('/posts/new', function(message) {
+    alert(message.text);
+  });
   $('input[type="button"], input[type="submit"]').button();
   
   // check for error message
@@ -386,6 +393,7 @@ var comment = function(id) {
 }
 
 var sendComment = function(id) {
+  client.publish('/posts/new', {text: 'Hi there'});
   var text = $('#post_'+id+' .write_comment textarea[name="comment_text"]').val();
   var trees = new Array();
   var ptrees = $('#post_'+id).data('trees');
