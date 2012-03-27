@@ -228,7 +228,7 @@ $(function() {
             success: function(newPost) {
               $('textarea[name="status_update"]').val("").trigger("blur").siblings("*").remove();
               addPost(newPost);
-              //$('#Stream').prepend('<div class="post"><div class="post_user">'+newPost.firstname+'</div><div class="post_date">vor '+newPost.time_ago+'</div><div class="post_msg">'+newPost.text+'</div></div>');
+              client.publish('/posts/'+gon.user_id, { post: newPost });
               $('#Stream .post:first').css('backgroundColor', '#DDD').animate({
                 'backgroundColor': '#FFF'
               }, 1500);
@@ -255,11 +255,23 @@ $(function() {
       success: function(trees) {
         for(var i = 0; i < trees.length; i++) {
           for(var j = 0; j < trees[i].users.length; j++) {
-            console.log("listening on /posts/"+trees[i].users[j].id);
             receiver[trees[i].users[j].id] = client.subscribe('/posts/'+trees[i].users[j].id, function(message) {
               if(message.post != undefined && message.response != undefined) {
+                // NEW COMMENT
                 addComment(message.post, message.response, 'after');
+                if($(window).scrollTop() > $('#post_'+message.response.id).offset().top) {
+                  $('#post_'+message.response.id).hide();
+                  showNewPostsAvailable();
+                }
                 updateCommentsAmount(message.post.id, message.post.comments.length);
+              }
+              if(message.post != undefined && message.response == undefined) {
+                // NEW POST
+                addPost(message.post);
+                if($(window).scrollTop() > $('#post_'+message.post.id).offset().top) {
+                  $('#post_'+message.post.id).hide();
+                  showNewPostsAvailable();
+                }
               }
             });
           }
@@ -449,6 +461,19 @@ var sendComment = function(id) {
 
 var updateCommentsAmount = function(id, amnt) {
   $('#post_'+id+' .post_comment').html(amnt+' Kommentar'+(amnt != 1 ? 'e' : ''));
+}
+
+var showNewPostsAvailable = function() {
+  if($('#showNewPosts').length == 0) {
+    $('#Stream').before('<div id="showNewPosts"><span>0</span> neue Posts</div>');
+    $('#showNewPosts').click(function() {
+      $('#navigation .active').click();
+      $(this).slideUp(400, function() { $(this).remove(); });
+    });
+  }
+  var c = parseInt($('#showNewPosts > span').text())+1;
+  var t = c == 1 ? "neuer Post" : "neue Posts";
+  $('#showNewPosts').html("<span>"+c+"</span> "+t);
 }
 
 var like = function(id) {

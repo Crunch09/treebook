@@ -301,3 +301,13 @@ div#navigation ul a:hover {
 .showAllComments {
   cursor: pointer;
 }
+#showNewPosts {
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #999;
+  background-color: #EEE;
+  cursor: pointer;
+}
+#showNewPosts:hover {
+  text-decoration: underline;
+}
