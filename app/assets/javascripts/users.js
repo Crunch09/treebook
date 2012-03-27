@@ -254,10 +254,13 @@ $(function() {
       dataType: 'json',
       success: function(trees) {
         for(var i = 0; i < trees.length; i++) {
-          for(var j = 0; j < trees[i].users; j++) {
+          for(var j = 0; j < trees[i].users.length; j++) {
             console.log("listening on /posts/"+trees[i].users[j].id);
             receiver[trees[i].users[j].id] = client.subscribe('/posts/'+trees[i].users[j].id, function(message) {
-              alert(message.text);
+              if(message.post != undefined && message.response != undefined) {
+                addComment(message.post, message.response, 'after');
+                updateCommentsAmount(message.post.id, message.post.comments.length);
+              }
             });
           }
         }
@@ -425,7 +428,7 @@ var sendComment = function(id) {
       'post[likes]': 0,
       'post[dislikes]': 0,
       'post[post_id]': id,
-      'post[tree_ids]': trees
+      'post[tree_ids]': []
     },
     success: function(response) {
       $('#post_'+id+' .write_comment').slideUp(400, function() {
@@ -435,14 +438,17 @@ var sendComment = function(id) {
           dataType: 'json',
           success: function(p) {
             addComment(p, response, 'after');
-            $('#post_'+id+' .post_comment').html(p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : ''));
-            client.publish('/posts/'+gon.user_id, {text: text});
-            alert("published '"+text+"' to /posts/"+gon.user_id);
+            updateCommentsAmount(id, p.comments.length);
+            client.publish('/posts/'+gon.user_id, { post: p, response: response });
           }
         });
       });
     }
   });
+}
+
+var updateCommentsAmount = function(id, amnt) {
+  $('#post_'+id+' .post_comment').html(amnt+' Kommentar'+(amnt != 1 ? 'e' : ''));
 }
 
 var like = function(id) {
