@@ -33,17 +33,21 @@ class User < ActiveRecord::Base
 
   # zeigt alle "FirstLevel"-Posts an die ich von einem anderen User sehen darf
   def shared_posts owner_id = nil
-    owner_id ||= User.current.posts_by_user
     available_posts = []
-    p = Post.where('user_id' => owner_id, 'post_id' => nil)
-    p.each do |p|
-      p.trees.each do |t|
-        if t.users.include? User.current
-          available_posts << p
-          available_posts.last.time_ago = p.time_ago
-          break
+    unless self == User.current
+      owner_id ||= User.current.posts_by_user
+      p = Post.where('user_id' => owner_id, 'post_id' => nil)
+      p.each do |p|
+        p.trees.each do |t|
+          if t.users.include? User.current
+            available_posts << p
+            available_posts.last.time_ago = p.time_ago
+            break
+          end
         end
       end
+    else
+      available_posts = self.posts.where(:post_id => nil)
     end
     available_posts
   end
