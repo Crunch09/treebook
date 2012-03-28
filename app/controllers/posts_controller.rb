@@ -28,7 +28,7 @@ class PostsController < ApplicationController
       if (@post.tree_ids & current_user.tree_ids).count > 0 || (@post.user_id == current_user.id) || (@post.trees.empty? && !@post.post_id.nil?)
         format.json { render json: @post.to_json(:include => :trees, :methods => [:comments, :time_ago, :votes]) }
       else
-        format.json { render json: "Sie haben leider keine Berechtigung diesen Post zu sehen", status: :unprocessable_entity }
+        format.json { render json: "Du darfst diesen Post leider nicht sehen.", status: :unprocessable_entity }
       end
     end
   end
