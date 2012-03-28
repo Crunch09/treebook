@@ -474,6 +474,9 @@ var addPost = function(p) {
     'trees': p.trees
   });
   if(u.id == gon.user_id) {
+    /**
+     * Optionen zum Bearbeiten und Löschen des Beitrags anzeigen, wenn der aktuelle Benutzer der Autor des Beitrags ist.
+     */
     $('#post_'+p.id).append('<div class="post_admin ui-state-default ui-corner-all"><span class="ui-icon ui-icon-triangle-1-s"></span></div>')
     $('#post_'+p.id+' .post_admin').hover(
       function() { $(this).addClass('ui-state-hover'); }, 
@@ -491,8 +494,25 @@ var addPost = function(p) {
           'post_id': p.id
         });
         $('.post_admin_actions li:contains("bearbeiten")').click(function() {
+          $('#post_'+p.id+' .post_admin').click();
           var id = $('.post_admin_actions').data('post_id');
-          $('#post_'+id+' .post_text')
+          $('#post_'+id+' .post_text').wrapInner('<textarea name="post_text" />');
+          $('#post_'+id+' .post_text').after('<input type="button" name="save_post_text" value="Speichern" />');
+          $('#post_'+id+' input[name="save_post_text"]').button().click(function() {
+            $.ajax({
+              url: 'posts/'+id+'.json',
+              type: 'PUT',
+              dataType: 'json',
+              data: {
+                'post[text]': $('#post_'+id+' textarea[name="post_text"]').val()
+              },
+              success: function(response) {
+                $('#post_'+id+' .post_text').text($('#post_'+id+' textarea[name="post_text"]').val());
+                $('#post_'+id+' input[name="save_post_text"]').remove();
+                makeToast("Dein Beitrag wurde bearbeitet.");
+              }
+            });
+          });
         });
         $('.post_admin_actions li:contains("löschen")').click(function() {
           var id = $('.post_admin_actions').data('post_id');
@@ -512,7 +532,6 @@ var addPost = function(p) {
         });
       } else {
         if($(this).siblings('div:last').hasClass('post_admin_actions')) {
-          console.log("YES");
           $('.post_admin_actions').slideUp(400, function() { $(this).remove(); });
         } else {
           $('.post_admin_actions').remove();
@@ -571,6 +590,74 @@ var addComment = function(p, i, where) {
     'post_text': c.text,
     'trees': c.trees
   });
+  if(u.id == gon.user_id) {
+    /**
+     * Optionen zum Bearbeiten und Löschen des Beitrags anzeigen, wenn der aktuelle Benutzer der Autor des Beitrags ist.
+     */
+    $('#post_'+c.id).append('<div class="post_admin ui-state-default ui-corner-all"><span class="ui-icon ui-icon-triangle-1-s"></span></div>')
+    $('#post_'+c.id+' .post_admin').hover(
+      function() { $(this).addClass('ui-state-hover'); }, 
+      function() { $(this).removeClass('ui-state-hover'); }
+	).click(function() {
+      if($('.post_admin_actions').length == 0) {
+        $(this).after('<div class="post_admin_actions"><ul><li>bearbeiten</li><li>löschen</li></ul></div>');
+        $('.post_admin_actions').slideDown(400).position({
+          of: $('#post_'+c.id+' .post_admin'),
+          my: 'right top',
+          at: 'right bottom',
+          offset: '0 2',
+          collision: 'flip flip'
+        }).data({
+          'post_id': c.id
+        });
+        $('.post_admin_actions li:contains("bearbeiten")').click(function() {
+          $('#post_'+c.id+' .post_admin').click();
+          var id = $('.post_admin_actions').data('post_id');
+          $('#post_'+id+' .post_text').wrapInner('<textarea cols="80" name="post_text" />');
+          makeTextareaGrowable($('#post_'+id+' textarea[name="post_text"]'));
+          $('#post_'+id+' .post_text').after('<input type="button" name="save_post_text" value="Speichern" />');
+          $('#post_'+id+' input[name="save_post_text"]').button().click(function() {
+            $.ajax({
+              url: 'posts/'+id+'.json',
+              type: 'PUT',
+              dataType: 'json',
+              data: {
+                'post[text]': $('#post_'+id+' textarea[name="post_text"]').val()
+              },
+              success: function(response) {
+                $('#post_'+id+' .post_text').text($('#post_'+id+' textarea[name="post_text"]').val());
+                $('#post_'+id+' input[name="save_post_text"]').remove();
+                makeToast("Dein Kommentar wurde bearbeitet.");
+              }
+            });
+          });
+        });
+        $('.post_admin_actions li:contains("löschen")').click(function() {
+          var id = $('.post_admin_actions').data('post_id');
+          var conf = confirm("Möchten Sie diesen Kommentar wirklich löschen?");
+          if(conf) {
+            $.ajax({
+              url: 'posts/'+id+'.json',
+              type: 'DELETE',
+              success: function(response) {
+                makeToast("Dein Beitrag wurde gelöscht.");
+                $('#post_'+id).slideUp(400, function() {
+                  $(this).remove();
+                });
+              }
+            });
+          }
+        });
+      } else {
+        if($(this).siblings('div:last').hasClass('post_admin_actions')) {
+          $('.post_admin_actions').slideUp(400, function() { $(this).remove(); });
+        } else {
+          $('.post_admin_actions').remove();
+          $(this).click();
+        }
+      }
+    });
+  }
   if(c.text.length > 200) {
     // Wieder die Prüfung auf mehr als 200 Zeichen
     $('#post_'+c.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");

@@ -265,6 +265,7 @@ div#navigation ul a:hover {
   border-bottom: 1px solid #CCC;
 }
 .comment {
+  position: relative;
   padding: 5px;
   margin-left: 20px;
   margin-top: -1px;
@@ -328,6 +329,9 @@ div#navigation ul a:hover {
 }
 .post_admin_actions ul li:hover {
   background: #EEE;
+}
+textarea[name="post_text"] {
+  width: 100%;
 }
 
 .do_comment {
