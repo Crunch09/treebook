@@ -423,13 +423,15 @@ var refreshPostTimeAgo = function() {
   window.setTimeout(function() {
     $('.post:visible, .comment:visible').each(function() {
       var post = $(this);
-      $.ajax({
-        url: 'posts/'+$(this).attr("id").split("_")[1]+'.json',
-        dataType: 'json',
-        success: function(p) {
-          post.find('.post_date').html(p.time_ago);
-        }
-      });
+      if(post.attr("id") != undefined) {
+        $.ajax({
+          url: 'posts/'+$(this).attr("id").split("_")[1]+'.json',
+          dataType: 'json',
+          success: function(p) {
+            post.find('.post_date').html(p.time_ago);
+          }
+        });
+      }
     });
     refreshPostTimeAgo();
   }, autoRefreshRate);

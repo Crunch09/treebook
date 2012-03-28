@@ -1,3 +1,6 @@
+/**
+ * Zeigt eine "Toast"-Benachrichtigung an.
+ */
 var makeToast = function(str) {
   $('body').append('<div id="toast">'+str+'</div>');
   $('#toast').fadeIn(500, function() {
@@ -7,6 +10,9 @@ var makeToast = function(str) {
   });
 }
 
+/**
+ * Zeigt den durch str verknüpften Inhalt auf der Seite an.
+ */
 var show = function(str) {
   $('textarea[name="status_update"]').val("").trigger("blur").siblings("*").remove();
   if($('#'+str).length > 0) {
@@ -24,12 +30,12 @@ var show = function(str) {
         url: 'trees/'+str.substring(5)+'.json',
         dataType: 'json',
         success: function(tree) {
+          show('Startseite');
           var users = new Array();
           for(var i = 0; i < tree.users.length; i++) {
             users.push(tree.users[i].id);
           }
           users.push(gon.user_id);
-          console.log(users);
           $('#Stream div.post').each(function() {
             var showOwnInTree = false;
             if($(this).data('user_id') == gon.user_id) {
@@ -65,6 +71,9 @@ var show = function(str) {
   }
 }
 
+/**
+ * Zeigt das Benutzerprofil des Benutzer mit der ID user_id
+ */
 var showProfile = function(user_id) {
   $.ajax({
     url: 'users/'+user_id+'.json',
@@ -74,28 +83,42 @@ var showProfile = function(user_id) {
                         "<div class='profile_image'><img src='"+u.image+"' width='64' /></div>"+
                         "<div class='profile_posts'></div>");
       for(var i = 0; i < u.shared_posts.length; i++) {
-          var p = u.shared_posts[i];
-          addSharedPost(p);
-          for(var j = 0; j < 3; j++) {
-            if(j < p.comments.length)
-              addSharedComment(p, j);
-          }
-          if(p.comments.length > 3) {
-            addShowAllCommentsLink(p);
-          }
+        var p = u.shared_posts[i];
+        addSharedPost(p);
+        for(var j = 0; j < 3; j++) {
+          if(j < p.comments.length)
+            addSharedComment(p, j);
         }
+        if(p.comments.length > 3) {
+          addShowAllCommentsLink(p);
+        }
+      }
       show("Profil");
     }
   });
 }
 
+/**
+ * Fügt einen 
+ */
 var addSharedPost = function(p) {
+  // User-Cache prüfen
   var u = checkUserCache(p.user_id);
-  $('#Profil .profile_posts').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+p.id+')" />'+p.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+p.id+')" />'+p.dislikes+'</span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></div></div>');
-  $('#post_'+p.id).data('user_id', u.id);
+  // HTML hinzufügen
+  $('#Stream').prepend('<div id="profilePost_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+p.id+')" /><span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+p.id+')" /><span class="post_dislike_amnt">'+p.dislikes+'</span></span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></div></div>');
+  // Post mit jQuery-Meta-Daten füttern
+  $('#profilePost_'+p.id).data({
+    'user_id': u.id,
+    'user_firstname': u.firstname,
+    'user_name': u.name,
+    'post_time_ago': p.time_ago,
+    'post_text': p.text,
+    'trees': p.trees
+  });
   if(p.text.length > 200) {
-    $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
-    $('#post_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
+    // Sofern der Post länger als 200 Zeichen ist, wird ein "Mehr/Weniger anzeigen"-Link generiert.
+    $('#profilePost_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
+    $('#profilePost_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
       var pt = $(this).siblings('.post_text');
       var t = pt.data('text');
       var s = pt.text();
@@ -107,21 +130,42 @@ var addSharedPost = function(p) {
 }
 
 var addSharedComment = function(p, i, where) {
+  // Prüfen ob Kommentar als Index oder Objekt angegeben wurde
   var c = (i.id == undefined ? p.comments[i] : i);
+  // User-Cache prüfen
   var u = checkUserCache(c.user_id);
+  var insertAfter;
+  // Prüfen, wo genau der Kommentar angefügt werden soll
   if(where == 'after') {
-    if($('#post_'+p.id).nextAll('.post').length > 0) {
-      $('#post_'+p.id).nextAll('.post').before('<div id="comment_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" />'+c.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" />'+c.dislikes+'</span></div></div>');
+    if($('#profilePost_'+p.id).nextAll('.post').length > 0) {
+      // hinter eventuell bereits vorhandene Kommentare
+      insertAfter = $('#profilePost_'+p.id).nextUntil('.post:visible').last();
+      if(insertAfter.length == 0) {
+        // oder direkt hinter den Post (erster Kommentar)
+        insertAfter = $('#profilePost_'+p.id);
+      }
     } else {
-      $('#Profil .profile_posts').append('<div id="comment_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" />'+c.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" />'+c.dislikes+'</span></div></div>');
+      // ans Ende des Streams
+      insertAfter = $('#Profil .profile_posts div[id^="post_"]:visible:last');
     }
   } else {
-    $('#post_'+p.id).after('<div id="comment_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" />'+c.likes+'</span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" />'+c.dislikes+'</span></div></div>');
+    insertAfter = $('#post_'+p.id);
   }
-  $('#comment_'+c.id).data('user_id', u.id);
+  // HTML erzeugen
+  insertAfter.after('<div id="profilePost_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" /><span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" /><span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
+  // Kommentar mit jQuery-Meta-Daten füttern
+  $('#post_'+c.id).data({
+    'user_id': u.id,
+    'user_firstname': u.firstname,
+    'user_name': u.name,
+    'post_time_ago': c.time_ago,
+    'post_text': c.text,
+    'trees': c.trees
+  });
   if(c.text.length > 200) {
-    $('#comment_'+c.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
-    $('#comment_'+c.id+' .post_toggle').html("Mehr anzeigen").click(function() {
+    // Wieder die Prüfung auf mehr als 200 Zeichen
+    $('#profilePost_'+c.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
+    $('#profilePost_'+c.id+' .post_toggle').html("Mehr anzeigen").click(function() {
       var pt = $(this).siblings('.post_text');
       var t = pt.data('text');
       var s = pt.text();
