@@ -146,12 +146,24 @@ $(function() {
      */
     setInputDefault($('#friendfinder input[name="friendsearch"]'), "Suche");
     $('#friendfinder input[name="friendsearch"]').bind('keyup', function() {
-      if($(this).val().length > 2) {
+      var searchTag = $(this).val();
+      if(searchTag.length > 2) {
         $.ajax({
-          
+          url: 'search/'+searchTag+'.json',
+          dataType: 'json',
+          success: function(result) {
+            $('.friendresult').empty();
+            for(var i = 0; i < result.length; i++) {
+              $('.friendresult').append('<div class="user" id="searchresult_'+result[i].id+'"><img src="'+result[i].image+'" height="24px" />'+result[i].firstname+' '+result[i].name+'</div>');
+              $('#searchresult_'+result[i].id).click(function() {
+                var id = $(this).attr("id").split("_")[1];
+                showProfile(id);
+              });
+            }
+          }
         });
       } else {
-        cleanSearchResult();
+        $('.friendresult').empty();
       }
     });
     

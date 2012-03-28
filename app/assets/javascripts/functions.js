@@ -85,8 +85,65 @@ var showProfile = function(user_id) {
     success: function(u) {
       $('#Profil').html("<h3>"+u.firstname+" "+u.name+"</h3>"+
                         "<div class='profile_image'><img src='"+u.image+"' width='64' /></div>"+
-                        "<div class='profile_posts'></div>");
+                        "<div class='profile_menu'>"+
+                        "<ul>"+
+                        "<li>Beiträge</li>"+
+                        "<li>Über mich</li>"+
+                        "<li>Fotos</li>"+
+                        "<span style='clear: left;'></span>"+
+                        "</ul>"+
+                        "</div>"+
+                        "<div class='profile_posts'></div>"+
+                        "<div class='profile_about'></div>"+
+                        "<div class='profile_photos'></div>");
       console.log(u);
+      
+      /**
+       * Gravatar-Login-Link einblenden, wenn das eigene Profil aufgerufen wird und das Bild mit der Maus überfahren wird
+       */
+      if(u.id == gon.user_id) {
+        $('.profile_image img').hover(function() {
+          if($('.editGravatar').length == 0) {
+            $(this).after('<span class="editGravatar ui-state-default ui-corner-all"><a href="https://de.gravatar.com/site/login/" target="_blank"><span class="ui-icon ui-icon-pencil"></span></a></span>');
+            $('.editGravatar').hover(
+              function() { $(this).addClass('ui-state-hover'); }, 
+              function() { $(this).removeClass('ui-state-hover'); }
+            );
+          }
+          $('.editGravatar').position({
+            of: $('.profile_image img'),
+            my: 'right top',
+            at: 'right top',
+            offset: '-1 1',
+            collision: 'flip flip'
+          });
+        }, function() {
+          return;
+        });
+      }
+      
+      /**
+       * Profil-Menü initialisieren
+       */
+      $('.profile_menu li:contains("Beiträge")').click(function() {
+        $('.profile_about, .profile_photos').hide();
+        $('.profile_posts').show();
+        $('.profile_menu li').removeClass('profile_menu_active');
+        $(this).addClass('profile_menu_active');
+      });
+      $('.profile_menu li:contains("Über mich")').click(function() {
+        $('.profile_posts, .profile_photos').hide();
+        $('.profile_about').show();
+        $('.profile_menu li').removeClass('profile_menu_active');
+        $(this).addClass('profile_menu_active');
+      });
+      $('.profile_menu li:contains("Fotos")').click(function() {
+        $('.profile_posts, .profile_about').hide();
+        $('.profile_photos').show();
+        $('.profile_menu li').removeClass('profile_menu_active');
+        $(this).addClass('profile_menu_active');
+      });
+      
       for(var i = 0; i < u.shared_posts.length; i++) {
         var p = u.shared_posts[i];
         addSharedPost(p);
@@ -99,6 +156,7 @@ var showProfile = function(user_id) {
         }
       }
       show("Profil");
+      $('.profile_menu li:contains("Beiträge")').click();
     }
   });
 }

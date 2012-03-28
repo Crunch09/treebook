@@ -351,3 +351,93 @@ textarea[name="post_text"] {
 #showNewPosts:hover {
   text-decoration: underline;
 }
+
+/** SUCHE **/
+
+.friendresult {
+  max-height: 400px;
+  margin-top: 10px;
+  overflow-y: auto;
+}
+.friendresult .user {
+  padding: 4px;
+  line-height: 25px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.friendresult .user:hover {
+  background: #F4F4F4;
+}
+.friendresult .user img {
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+
+/** PROFILE **/
+
+#Profil {
+  position: relative;
+}
+
+#Profil > h3 {
+  position: relative;
+  margin-left: 80px;
+  margin-top: 10px;
+}
+
+.profile_image {
+  position: relative;
+  margin-top: -55px;
+  margin-bottom: 5px;
+}
+
+.editGravatar {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  opacity: 0.5;
+  z-index: 6;
+}
+.editGravatar:hover {
+  opacity: 1;
+}
+
+.profile_menu {
+  position: relative;
+  margin: 0px -10px;
+  padding-left: 10px;
+  border-top: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+  background: #F4F4F4;
+}
+.profile_menu ul {
+  display: block;
+  position: relative;
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  height: 30px;
+}
+.profile_menu ul li {
+  float: left;
+  padding: 5px;
+  line-height: 20px;
+  cursor: pointer;
+  color: #666;
+}
+.profile_menu ul li:hover {
+  color: #000;
+}
+.profile_menu_active {
+  font-weight: bold;
+  color: #000;
+}
+
+.profile_posts,
+.profile_about,
+.profile_photos {
+  display: none;
+  position: relative;
+}
