@@ -425,7 +425,7 @@ var refreshPostTimeAgo = function() {
       var post = $(this);
       if(post.attr("id") != undefined) {
         $.ajax({
-          url: 'posts/'+$(this).attr("id").split("_")[1]+'.json',
+          url: 'posts/'+post.attr("id").split("_")[1]+'.json',
           dataType: 'json',
           success: function(p) {
             post.find('.post_date').html(p.time_ago);
@@ -473,6 +473,54 @@ var addPost = function(p) {
     'post_text': p.text,
     'trees': p.trees
   });
+  if(u.id == gon.user_id) {
+    $('#post_'+p.id).append('<div class="post_admin ui-state-default ui-corner-all"><span class="ui-icon ui-icon-triangle-1-s"></span></div>')
+    $('#post_'+p.id+' .post_admin').hover(
+      function() { $(this).addClass('ui-state-hover'); }, 
+      function() { $(this).removeClass('ui-state-hover'); }
+	).click(function() {
+      if($('.post_admin_actions').length == 0) {
+        $(this).after('<div class="post_admin_actions"><ul><li>bearbeiten</li><li>löschen</li></ul></div>');
+        $('.post_admin_actions').slideDown(400).position({
+          of: $('#post_'+p.id+' .post_admin'),
+          my: 'right top',
+          at: 'right bottom',
+          offset: '0 2',
+          collision: 'flip flip'
+        }).data({
+          'post_id': p.id
+        });
+        $('.post_admin_actions li:contains("bearbeiten")').click(function() {
+          var id = $('.post_admin_actions').data('post_id');
+          $('#post_'+id+' .post_text')
+        });
+        $('.post_admin_actions li:contains("löschen")').click(function() {
+          var id = $('.post_admin_actions').data('post_id');
+          var conf = confirm("Möchten Sie diesen Beitrag wirklich löschen?");
+          if(conf) {
+            $.ajax({
+              url: 'posts/'+id+'.json',
+              type: 'DELETE',
+              success: function(response) {
+                makeToast("Dein Beitrag wurde gelöscht.");
+                $('#post_'+id).add($('#post_'+id).nextUntil('.post')).slideUp(400, function() {
+                  $(this).remove();
+                });
+              }
+            });
+          }
+        });
+      } else {
+        if($(this).siblings('div:last').hasClass('post_admin_actions')) {
+          console.log("YES");
+          $('.post_admin_actions').slideUp(400, function() { $(this).remove(); });
+        } else {
+          $('.post_admin_actions').remove();
+          $(this).click();
+        }
+      }
+    });
+  }
   if(p.text.length > 200) {
     // Sofern der Post länger als 200 Zeichen ist, wird ein "Mehr/Weniger anzeigen"-Link generiert.
     $('#post_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");

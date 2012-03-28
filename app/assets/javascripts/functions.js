@@ -14,6 +14,10 @@ var makeToast = function(str) {
  * Zeigt den durch str verknüpften Inhalt auf der Seite an.
  */
 var show = function(str) {
+  if(str != 'Profil') {
+    $('div[id^="profilePost_"]').remove();
+    $('#Profil').empty();
+  }
   $('textarea[name="status_update"]').val("").trigger("blur").siblings("*").remove();
   if($('#'+str).length > 0) {
     $('#content > div').hide();
@@ -82,6 +86,7 @@ var showProfile = function(user_id) {
       $('#Profil').html("<h3>"+u.firstname+" "+u.name+"</h3>"+
                         "<div class='profile_image'><img src='"+u.image+"' width='64' /></div>"+
                         "<div class='profile_posts'></div>");
+      console.log(u);
       for(var i = 0; i < u.shared_posts.length; i++) {
         var p = u.shared_posts[i];
         addSharedPost(p);
@@ -90,7 +95,7 @@ var showProfile = function(user_id) {
             addSharedComment(p, j);
         }
         if(p.comments.length > 3) {
-          addShowAllCommentsLink(p);
+          addShowAllProfileCommentsLink(p);
         }
       }
       show("Profil");
@@ -105,7 +110,7 @@ var addSharedPost = function(p) {
   // User-Cache prüfen
   var u = checkUserCache(p.user_id);
   // HTML hinzufügen
-  $('#Stream').prepend('<div id="profilePost_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+p.id+')" /><span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+p.id+')" /><span class="post_dislike_amnt">'+p.dislikes+'</span></span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></div></div>');
+  $('#Profil .profile_posts').prepend('<div id="profilePost_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+p.id+')" /><span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+p.id+')" /><span class="post_dislike_amnt">'+p.dislikes+'</span></span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></div></div>');
   // Post mit jQuery-Meta-Daten füttern
   $('#profilePost_'+p.id).data({
     'user_id': u.id,
@@ -149,7 +154,7 @@ var addSharedComment = function(p, i, where) {
       insertAfter = $('#Profil .profile_posts div[id^="post_"]:visible:last');
     }
   } else {
-    insertAfter = $('#post_'+p.id);
+    insertAfter = $('#profilePost_'+p.id);
   }
   // HTML erzeugen
   insertAfter.after('<div id="profilePost_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" /><span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" /><span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
@@ -174,6 +179,17 @@ var addSharedComment = function(p, i, where) {
       $(this).text($(this).text() == "Mehr anzeigen" ? "Weniger anzeigen" : "Mehr anzeigen");
     });
   }
+}
+
+/**
+ * Fügt den "Zeige alle X vorherigen Kommentare"-Link hinter dem Post hinzu
+ */
+var addShowAllProfileCommentsLink = function(p) {
+  $('#profilePost_'+p.id).after('<div class="showAllComments comment">Zeige alle '+(p.comments.length-3)+' vorherigen Kommentare</div>');
+  $('#profilePost_'+p.id).next('.showAllComments').click(function() {
+    showAllComments(p);
+    $(this).remove();
+  });
 }
 
 var setInputDefault = function(input, str) {
