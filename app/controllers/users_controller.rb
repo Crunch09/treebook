@@ -136,7 +136,7 @@ class UsersController < ApplicationController
 				@matches = User.find(:all, :conditions => ["firstname LIKE ? AND name LIKE ? ", "#{keywords.first}%", "#{keywords[1]}%"])
 			end
 			respond_to do |format|
-				format.json { render json: @matches.to_json(:only => [:firstname, :name, :id])}
+				format.json { render json: @matches.to_json(:only => [:firstname, :name, :id], :methods => [:image])}
 			end
 		end
 		
