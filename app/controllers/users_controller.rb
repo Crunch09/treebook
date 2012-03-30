@@ -48,53 +48,26 @@ class UsersController < ApplicationController
 		  		# I stick mine in memcache with their session key as the cache key
 		  		@auth_url = flickr.get_authorize_url(token['oauth_token'], :perms => 'write')
 	  		else
-		  		flickr.access_token = current_user.access_token
-		  		flickr.access_secret = current_user.access_secret
-		  		@photosets = flickr.photosets.getList
+		  		@album = current_user.get_photos
 	  		end
 	  	else
 	  		#pruefen ob dieser User eine Flickr-Id besitzt
 	  		u = User.find params[:id]
-	  		if u.flickr_id.nil?
+	  		unless u.got_flickr_connection?
 	  			redirect_to root_url
 	  			return
 	  		else
-	  			flickr.access_token = u.access_token
-		  		flickr.access_secret = u.access_secret
-		  		@photosets = flickr.photosets.getList
+		  		@album = u.get_photos
 		  	end
 		end
 		
 
 	  	respond_to do |format|
 			format.html 
-			format.json { render json: @photosets }
+			format.json { render json: @album }
 	  	end
 	end
 
-	#ein Photoset anzeigen
-	def gallery
-		flickr = FlickRaw::Flickr.new
-		@photos = flickr.photosets.getPhotos(:photoset_id => params[:id]).photo
-		respond_to do |format|
-			format.html
-			format.json { render json: @photos}
-		end
-	end
-
-	#ein foto anzeigen
-	def photo
-		flickr = FlickRaw::Flickr.new
-		flickr.access_token = current_user.access_token
-	  	flickr.access_secret = current_user.access_secret
-		@photo = flickr.photos.getInfo(:photo_id => params[:id])
-		# TODO das sollte verschoben werden
-		flickr.photos.comments.addComment(:photo_id => params[:id], :comment_text => "Ein weiterer Test")
-		respond_to do |format|
-			format.html
-			format.json { render json: @photo}
-		end
-	end
 
 	# Nach der Authentifizierung schickt Flickr die Antwort an diese Action
 	def flickrcallback

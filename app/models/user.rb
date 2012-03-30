@@ -52,6 +52,20 @@ class User < ActiveRecord::Base
     available_posts
   end
 
+  def get_photos
+    flickr.access_token = self.access_token
+    flickr.access_secret = self.access_secret
+    album = Hash.new
+    album[:photosets] = flickr.photosets.getList
+    album[:photosets].each do |p|
+      p.to_hash[:fotos] = flickr.photosets.getPhotos(:photoset_id => p.id).photo
+      p.to_hash[:fotos].each do |f|
+        f.to_hash[:url] = "http://farm#{f.farm}.staticflickr.com/#{f.server}/#{f.id}_#{f.secret}.jpg"
+      end
+    end
+    album
+  end
+
   def to_s
     "#{self.firstname} #{self.name}"
   end
