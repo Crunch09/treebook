@@ -27,6 +27,7 @@ var show = function(str) {
     if(str == "Startseite") {
       $('#Stream div[id^="post_"]').show();
       $('#Stream').prev('h3').text("Stream");
+      $('#actions').html('');
     }
   } else {
     if(str.substring(0,5) == "tree:") {
@@ -69,6 +70,67 @@ var show = function(str) {
           $('#navigation').find('a').removeClass('active');
           $('#navigation').find('a[name="tree_'+tree.id+'_'+tree.title+'"]').addClass('active');
           $('#Stream').prev('h3').text(tree.title);
+          $('#actions').html('<span>'+tree.users.length+' Person'+(tree.users.length == 1 ? '' : 'en')+'</span><span>Bearbeiten</span><span>Löschen</span>').show();
+          $('#actions span:eq(0)').click(function() {
+            // Personen in diesem Tree auflisten
+            $('body').append('<div id="tree_users_list"></div>');
+            for(var i = 0; i < tree.users.length; i++) {
+              var u = tree.users[i];
+              $('#tree_users_list').append('<div class="user"><img src="'+u.image+'" /> '+u.firstname+' '+u.name+'</div>')
+            }
+            $('#tree_users_list').dialog({
+              modal: true,
+              buttons: {
+                "Schließen": function() {
+                  $(this).dialog("close");
+                }
+              },
+              close: function() {
+                $(this).remove();
+              }
+            })
+          });
+          $('#actions span:eq(1)').click(function() {
+            var newName = prompt("Geben Sie den Namen des Trees ein.", tree.title);
+            if(newName != "" && newName != tree.title) {
+              $.ajax({
+                url: 'trees/'+tree.id+'.json',
+                type: 'PUT',
+                data: {
+                  'tree[title]': newName
+                },
+                success: function(response) {
+                  var navTree = $('#navigation a[name="tree_'+tree.id+'_'+tree.title+'"]');
+                  var img = navTree.find('img');
+                  $('#navigation a[name="tree_'+tree.id+'_'+tree.title+'"]').html(" "+newName).attr("name", "tree_"+tree.id+"_"+newName);
+                  img.prependTo(navTree);
+                  navTree.click();
+                },
+                error: function(e) {
+                  console.log(e);
+                }
+              });
+            }
+          });
+          $('#actions span:eq(2)').click(function() {
+            var conf = confirm("Möchten Sie diesen Tree wirklich löschen? Dadurch gehen Ihnen auch die mit diesem Tree verknüpften Kontakte verloren!");
+            if(conf) {
+              $.ajax({
+                url: 'trees/'+tree.id+'.json',
+                type: 'DELETE',
+                success: function(response) {
+                  var navTree = $('#navigation a[name="tree_'+tree.id+'_'+tree.title+'"]');
+                  navTree.slideUp(400, function() {
+                    $(this).remove();
+                  });
+                  show('Startseite');
+                },
+                error: function(e) {
+                  console.log(e);
+                }
+              });
+            }
+          });
         }
       });
     }
@@ -96,7 +158,6 @@ var showProfile = function(user_id) {
                         "<div class='profile_posts'></div>"+
                         "<div class='profile_about'></div>"+
                         "<div class='profile_photos'></div>");
-      console.log(u);
       
       /**
        * Gravatar-Login-Link einblenden, wenn das eigene Profil aufgerufen wird und das Bild mit der Maus überfahren wird
@@ -144,6 +205,10 @@ var showProfile = function(user_id) {
         $(this).addClass('profile_menu_active');
       });
       
+      /* Beiträge einfügen */
+      if(u.shared_posts.length == 0) {
+        $('.profile_posts').html("<br />"+u.firstname+" hat noch keine Beiträge verfasst.");
+      }
       for(var i = 0; i < u.shared_posts.length; i++) {
         var p = u.shared_posts[i];
         addSharedPost(p);
