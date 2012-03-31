@@ -95,6 +95,7 @@ var show = function(str) {
             })
           });
           $('#actions span:eq(1)').click(function() {
+            // Tree umbenennen
             var newName = prompt("Geben Sie den Namen des Trees ein.", tree.title);
             if(newName != null && newName != "" && newName != tree.title) {
               $.ajax({
@@ -117,6 +118,7 @@ var show = function(str) {
             }
           });
           $('#actions span:eq(2)').click(function() {
+            // Tree löschen
             var conf = confirm("Möchten Sie diesen Tree wirklich löschen? Dadurch gehen Ihnen auch die mit diesem Tree verknüpften Kontakte verloren!");
             if(conf) {
               $.ajax({
@@ -125,7 +127,7 @@ var show = function(str) {
                 success: function(response) {
                   var navTree = $('#navigation a[name="tree_'+tree.id+'_'+tree.title+'"]');
                   navTree.slideUp(400, function() {
-                    $(this).remove();
+                    $(this).parent('li').remove();
                   });
                   show('Startseite');
                 },
