@@ -156,8 +156,88 @@ $(function() {
             for(var i = 0; i < result.length; i++) {
               $('.friendresult').append('<div class="user" id="searchresult_'+result[i].id+'"><img src="'+result[i].image+'" height="24px" />'+result[i].firstname+' '+result[i].name+'</div>');
               $('#searchresult_'+result[i].id).click(function() {
-                var id = $(this).attr("id").split("_")[1];
-                showProfile(id);
+                if(!$(this).data('drag')) {
+                  var id = $(this).attr("id").split("_")[1];
+                  showProfile(id);
+                }
+              }).draggable({
+                containment: '#main',
+                revert: true,
+                start: function(event, ui) {
+                  $(this).data('drag', true).css({
+                    'zIndex': '10',
+                    'backgroundColor': 'rgba(255,255,255,0.4)',
+                    'border': '1px dashed #555'
+                  });
+                  $('#navigation a[name^="tree_"]').droppable({
+                    activate: function(event, ui) {
+                      $(this).css({
+                        'border': '1px dashed #555',
+                        'marginTop': '-1px'
+                      });
+                    },
+                    deactivate: function(event, ui) {
+                      $(this).css({
+                        'border': 'none',
+                        'marginTop': '0px'
+                      });
+                    },
+                    over: function(event, ui) {
+                      $(this).css({
+                        'backgroundColor': '#EFEFEF'
+                      });
+                    },
+                    out: function(event, ui) {
+                      $(this).css({
+                        'backgroundColor': '#FFFFFF'
+                      });
+                    },
+                    drop: function(event, ui) {
+                      var treeUI = $(this);
+                      $(this).css({
+                        'backgroundColor': '#FFFFFF'
+                      });
+                      var user = $('#'+ui.draggable.context.id);
+                      var userid = user.attr("id").split("_")[1];
+                      var treeid = $(this).attr("name").split("_")[1];
+                      $.ajax({
+                        url: 'trees/'+treeid+'.json',
+                        dataType: 'json',
+                        success: function(tree) {
+                          var userids = [];
+                          for(var u in tree.users) {
+                            userids.push(tree.users[u].id);
+                          }
+                          if(arrayHas(userids, userid)) {
+                            makeToast(user.text()+" ist bereits in diesem Tree.")
+                          } else {
+                            userids.push(userid);
+                            $.ajax({
+                              url: 'trees/'+treeid+'.json',
+                              type: 'PUT',
+                              data: {
+                                'tree[user_ids]': userids
+                              },
+                              success: function(response) {
+                                makeToast(user.text()+" ist jetzt in "+tree.title);
+                              },
+                              error: function(e) {
+                                console.log(e);
+                              }
+                            });
+                          }
+                        }
+                      });
+                    }
+                  });
+                },
+                stop: function(event, ui) {
+                  $(this).data('drag', false).css({
+                    'zIndex': '1',
+                    'backgroundColor': '#FFFFFF',
+                    'border': 'none'
+                  });
+                }
               });
             }
           }
