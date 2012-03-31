@@ -41,7 +41,6 @@ class User < ActiveRecord::Base
         p.trees.each do |t|
           if t.users.include? User.current
             available_posts << p
-            available_posts.last.time_ago = p.time_ago
             break
           end
         end
