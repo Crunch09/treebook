@@ -233,6 +233,21 @@ div#navigation ul a:hover {
   display: none;
 }
 
+#actions {
+  display: none;
+  float: right;
+}
+#actions span {
+  padding: 4px;
+  margin-left: 10px;
+  border: 1px solid rgba(0,0,0,0);
+}
+#actions span:hover {
+  cursor: pointer;
+  border: 1px solid #999;
+  background: #EFEFEF;
+}
+
 #Startseite textarea[name="status_update"] {
   color: #999999;
 }
