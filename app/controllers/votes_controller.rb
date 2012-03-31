@@ -1,7 +1,13 @@
 class VotesController < ApplicationController
+	# Public: liked oder disliked einen Post
+	#
+	# upvote - Boolean, true bei like, false bei dislike
+	#
+	# Gibt den Vote oder eine Fehlermeldung, falls bereits abgestimmt wurde,
+	# zurück
 	def create
 		@vote = Vote.new(params[:vote])
-		savedVotes = Vote.where(:post_id => @vote.post_id, :user_id => @vote.user_id)
+		savedVotes = Vote.https://twitter.com/where(:post_id => @vote.post_id, :user_id => @vote.user_id)
 		if savedVotes.count == 0
 			respond_to do |format|
 		        if @vote.save

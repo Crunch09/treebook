@@ -5,8 +5,7 @@ class Post < ActiveRecord::Base
     :foreign_key => "post_id"
   has_and_belongs_to_many :trees
 
-  attr_accessible :text, :likes, :dislikes, :user, :comment_to, :user_id, :post_id, :trees, :tree_ids
-  attr_accessor :time_ago
+  attr_accessible :text, :likes, :dislikes, :user, :comment_to, :user_id, :post_id, :trees, :tree_ids, :time_ago
   
   validates :text, :presence => true
   validates :user, :presence => true

@@ -7,8 +7,14 @@ class UsersController < ApplicationController
 	FlickRaw.api_key= "42026bbf6f026bb43201488328dd61b0"
 	FlickRaw.shared_secret= "043bd220b6b52509"
 
-	#GET /users
-	#GET /users.json
+	# Public: Wird als Startseite benutzt
+	#
+	# Beispiele:
+	#
+	#  GET /users
+	#  GET /users.json
+	#
+	# Gibt die Startseite zurück und eine Meldung, falls kein User eingeloggt ist
 	def index
 		@users = User.all
 		unless current_user.nil?
@@ -21,8 +27,15 @@ class UsersController < ApplicationController
 		end
 	end
 
-	#GET /users/#id
-	#GET /users/#id.json
+	# Public: Infos zu einem User
+	#
+	# id - Id des Users
+	#
+	# Beispiel:
+	#
+	#  GET /users/#id.json
+	#
+	# Gibt Usereigenschaften zurück
 	def show
 		@user = User.find params[:id]
 		current_user.posts_by_user = params[:id]
@@ -34,8 +47,16 @@ class UsersController < ApplicationController
 		end
 	end
 
-	#GET /images
-	#GET /images.json
+	# Public: Stellt Infos zu allen Flickr-Photosets eines Users bereitet
+	#
+	# id - Id des Users, standardmäßig der eingeloggte User
+	#
+	# Beispiele: 
+	# 
+	#  GET /images.json
+	#
+	# Gibt Photosets und darin enthalene Bilder eines Users zurück bzw.
+	# einen Link um eine Flickr-Verbindung zu erstellen
 	def images
 		flickr = FlickRaw::Flickr.new
 
@@ -69,7 +90,13 @@ class UsersController < ApplicationController
 	end
 
 
-	# Nach der Authentifizierung schickt Flickr die Antwort an diese Action
+	# Public: Nach der Authentifizierung schickt Flickr
+	#         die Antwort an diese Action
+	# 
+	# oauth_token OAuth-token von Flickr
+	# oauth_verifier OAuth-Verifizierung von Flickr
+	#
+	# Leitet zum images_path weiter
 	def flickrcallback
 
 	      flickr = FlickRaw::Flickr.new
@@ -95,6 +122,11 @@ class UsersController < ApplicationController
 		  redirect_to images_path
 	end
 
+	# Public: Sucht alle User, die auf das Suchwort passen
+	#
+	# keyword - Suchstring
+	#
+	# Gibt alle Treffer zurück
 	def search
 		if params[:keyword].nil?
 			respond_to do |format|
@@ -104,6 +136,8 @@ class UsersController < ApplicationController
 			keyword = params[:keyword].chomp
 			keywords = keyword.split(' ', 2)
 			if keywords.count == 1
+				# wenn nur ein Wort übergeben wurde, 
+				# nach Vor- oder Nachname suchen
 				@matches = User.find(:all, :conditions => ["firstname LIKE ? OR name LIKE ? ", "#{keywords.first}%", "#{keywords.first}%"])
 			else
 				@matches = User.find(:all, :conditions => ["firstname LIKE ? AND name LIKE ? ", "#{keywords.first}%", "#{keywords[1]}%"])
