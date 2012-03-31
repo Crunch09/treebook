@@ -73,7 +73,22 @@ var show = function(str) {
           $('#actions').html('<span>'+tree.users.length+' Person'+(tree.users.length == 1 ? '' : 'en')+'</span><span>Bearbeiten</span><span>Löschen</span>').show();
           $('#actions span:eq(0)').click(function() {
             // Personen in diesem Tree auflisten
-            console.log(tree);
+            $('body').append('<div id="tree_users_list"></div>');
+            for(var i = 0; i < tree.users.length; i++) {
+              var u = tree.users[i];
+              $('#tree_users_list').append('<div class="user"><img src="'+u.image+'" /> '+u.firstname+' '+u.name+'</div>')
+            }
+            $('#tree_users_list').dialog({
+              modal: true,
+              buttons: {
+                "Schließen": function() {
+                  $(this).dialog("close");
+                }
+              },
+              close: function() {
+                $(this).remove();
+              }
+            })
           });
           $('#actions span:eq(1)').click(function() {
             var newName = prompt("Geben Sie den Namen des Trees ein.", tree.title);
