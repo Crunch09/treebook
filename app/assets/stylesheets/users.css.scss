@@ -247,6 +247,16 @@ div#navigation ul a:hover {
   border: 1px solid #999;
   background: #EFEFEF;
 }
+#tree_users_list .user {
+  vertical-align: middle;
+}
+#tree_users_list .user:hover {
+  cursor: pointer;
+  background-color: #EFEFEF;
+}
+#tree_users_list .user img {
+  vertical-align: middle;
+}
 
 #Startseite textarea[name="status_update"] {
   color: #999999;

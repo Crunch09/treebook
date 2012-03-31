@@ -76,7 +76,11 @@ var show = function(str) {
             $('body').append('<div id="tree_users_list"></div>');
             for(var i = 0; i < tree.users.length; i++) {
               var u = tree.users[i];
-              $('#tree_users_list').append('<div class="user"><img src="'+u.image+'" /> '+u.firstname+' '+u.name+'</div>')
+              $('#tree_users_list').append('<div class="user" name="'+u.id+'"><img src="'+u.image+'" /> '+u.firstname+' '+u.name+'</div>');
+              $('#tree_users_list .user:last').click(function() {
+                showProfile($(this).attr("name"));
+                $('#tree_users_list').dialog("close");
+              });
             }
             $('#tree_users_list').dialog({
               modal: true,
