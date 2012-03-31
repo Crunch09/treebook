@@ -96,7 +96,7 @@ var show = function(str) {
           });
           $('#actions span:eq(1)').click(function() {
             var newName = prompt("Geben Sie den Namen des Trees ein.", tree.title);
-            if(newName != "" && newName != tree.title) {
+            if(newName != null && newName != "" && newName != tree.title) {
               $.ajax({
                 url: 'trees/'+tree.id+'.json',
                 type: 'PUT',
@@ -224,6 +224,35 @@ var showProfile = function(user_id) {
           addShowAllProfileCommentsLink(p);
         }
       }
+      
+      /* Fotos einfügen */
+      if(u.id == gon.user_id) {
+        $.ajax({
+          url: 'images.json',
+          dataType: 'json',
+          success: function(imgs) {
+            if(imgs == null) {
+              $.ajax({
+                url: 'images',
+                success: function(f) {
+                  $('.profile_photos').append('<br /><span><a href="'+f.url+'">Verknüpfe jetzt deinen Treebook-Account mit <img src="assets/social/flickr16px.png" /> flickr&reg;</a></span>');
+                  $('.profile_photos span, .profile_photos span img').css('verticalAlign', 'middle');
+                }
+              });
+            }
+          }
+        });
+      } else {
+        $.ajax({
+          url: 'images/'+u.id+'.json',
+          dataType: 'json',
+          success: function(imgs) {
+            console.log("images");
+            console.log(imgs);
+          }
+        });
+      }
+      
       show("Profil");
       $('.profile_menu li:contains("Beiträge")').click();
     }
