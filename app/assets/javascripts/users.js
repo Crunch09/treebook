@@ -162,7 +162,14 @@ $(function() {
                 }
               }).draggable({
                 containment: '#main',
-                revert: true,
+                revert: function(drop) {
+                  if(drop !== false) {
+                    if(drop.is('#navigation a[name^="tree_"]')) {
+                      $(this).fadeOut(200);
+                    }
+                  }
+                  return true;
+                },
                 start: function(event, ui) {
                   $(this).data('drag', true).css({
                     'zIndex': '10',
@@ -183,20 +190,26 @@ $(function() {
                       });
                     },
                     over: function(event, ui) {
-                      $(this).css({
-                        'backgroundColor': '#EFEFEF'
-                      });
+                      if(!$(this).hasClass('active')) {
+                        $(this).css({
+                          'backgroundColor': '#EFEFEF'
+                        });
+                      }
                     },
                     out: function(event, ui) {
-                      $(this).css({
-                        'backgroundColor': '#FFFFFF'
-                      });
+                      if(!$(this).hasClass('active')) {
+                        $(this).css({
+                          'backgroundColor': '#FFFFFF'
+                        });
+                      }
                     },
                     drop: function(event, ui) {
                       var treeUI = $(this);
-                      $(this).css({
-                        'backgroundColor': '#FFFFFF'
-                      });
+                      if(!$(this).hasClass('active')) {
+                        $(this).css({
+                          'backgroundColor': '#FFFFFF'
+                        });
+                      }
                       var user = $('#'+ui.draggable.context.id);
                       var userid = user.attr("id").split("_")[1];
                       var treeid = $(this).attr("name").split("_")[1];
@@ -232,6 +245,7 @@ $(function() {
                   });
                 },
                 stop: function(event, ui) {
+                  $(this).fadeIn();
                   $(this).data('drag', false).css({
                     'zIndex': '1',
                     'backgroundColor': '#FFFFFF',
