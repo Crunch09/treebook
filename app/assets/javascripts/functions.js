@@ -296,11 +296,24 @@ var showProfile = function(user_id) {
                     $('.profile_photoset').fadeOut();
                     var g = $('.profile_photos .gallery');
                     for(var i = 0; i < set.fotos.length; i++) {
-                      g.find('.thumbs').append('<div class="thumb"></div>');
+                      g.find('.thumbs').append('<div class="thumb"><a rel="photo_group" href="'+set.fotos[i].url+'" title="'+set.fotos[i].title+'"><img alt="'+set.fotos[i].title+'" src="'+set.fotos[i].url+'" /></a><span class="title"></span></div>');
+                      var title = set.fotos[i].title.length > 12 ? set.fotos[i].title.substring(0,12)+"..." : set.fotos[i].title;
                       g.find('.thumb:last').css({
                         'background': 'url("'+set.fotos[i].url+'")'
+                      }).find('.title').text(title);
+                      g.find('.thumb:last').click(function(e) {
+                        var link = $(this).find('a');
+                        if(e.target === link[0]) return false;
+                        link.trigger('click');
+                        return false;
                       });
                     }
+                    g.find('a[rel="photo_group"]').fancybox({
+                      'titlePosition' 	: 'over',
+                      'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
+                          return '<span id="fancybox-title-over">'+title+'</span>';
+                      }
+                    });
                     g.prepend('<input type="button" value="Zurück" name="back_to_photosets" />');
                     g.find('input[name="back_to_photosets"]').button().click(function() {
                       $('.profile_photos .gallery').fadeOut(function() {
