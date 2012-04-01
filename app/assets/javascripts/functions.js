@@ -348,8 +348,8 @@ var showProfile = function(user_id) {
                         });
                       }
                     });
-                    g.prepend('<input type="button" value="Zurück" name="back_to_photosets" />');
-                    g.find('input[name="back_to_photosets"]').button().click(function() {
+                    g.prepend('<button name="back_to_photosets"><i class="icon-arrow-left"></i> Zurück</button>');
+                    g.find('button[name="back_to_photosets"]').button().click(function() {
                       $('.profile_photos .gallery').fadeOut(function() {
                         $('.profile_photoset').fadeIn();
                         $(this).find('.thumbs, .pic, .description, .comments').empty();

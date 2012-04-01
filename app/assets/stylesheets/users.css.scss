@@ -535,7 +535,7 @@ textarea[name="post_text"] {
 .profile_photos .gallery {
   display: none;
 }
-.profile_photos .gallery input[name="back_to_photosets"] {
+.profile_photos .gallery button[name="back_to_photosets"] {
   float: right;
 }
 .profile_photos .gallery .thumbs {
