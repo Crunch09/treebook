@@ -233,7 +233,7 @@ var showProfile = function(user_id) {
           url: 'images.json',
           dataType: 'json',
           success: function(imgs) {
-            if(imgs == null) {
+            if(imgs.url) {
               $.ajax({
                 url: 'images',
                 success: function(f) {
@@ -251,6 +251,9 @@ var showProfile = function(user_id) {
           success: function(imgs) {
             console.log("images");
             console.log(imgs);
+          },
+          error: function(e) {
+            $('.profile_photos').append('<br />'+e.responseText.replace("Dieser User", u.firstname));
           }
         });
       }
