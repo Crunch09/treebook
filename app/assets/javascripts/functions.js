@@ -316,7 +316,7 @@ var addSharedPost = function(p) {
   // User-Cache prüfen
   var u = checkUserCache(p.user_id);
   // HTML hinzufügen
-  $('#Profil .profile_posts').prepend('<div id="profilePost_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+p.id+')" /><span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+p.id+')" /><span class="post_dislike_amnt">'+p.dislikes+'</span></span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></div></div>');
+  $('#Profil .profile_posts').prepend('<div id="profilePost_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="plike('+p.id+')" /><span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="pdislike('+p.id+')" /><span class="post_dislike_amnt">'+p.dislikes+'</span></span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="pcomment('+p.id+')">Kommentieren</span></div></div>');
   // Post mit jQuery-Meta-Daten füttern
   $('#profilePost_'+p.id).data({
     'user_id': u.id,
@@ -530,6 +530,103 @@ var addShowAllProfileCommentsLink = function(p) {
   $('#profilePost_'+p.id).next('.showAllComments').click(function() {
     showAllComments(p);
     $(this).remove();
+  });
+}
+
+/**
+ * Generiert das Formular zum Verfassen eines Kommentars
+ */
+var pcomment = function(id) {
+  $('.write_comment').remove();
+  $('#profilePost_'+id).append("<div class='write_comment'><textarea cols='50' name='comment_text'></textarea><br /><input type='button' onclick='psendComment("+id+")' value='Abschicken' /><input type='button' name='cancel_comment' value='Abbrechen' /></div>");
+  $('#profilePost_'+id+' .write_comment input[name="cancel_comment"]').click(function() {
+    $('.write_comment').remove();
+  });
+  makeTextareaGrowable($('#profilePost_'+id+' .write_comment textarea[name="comment_text"]'));
+  $('#profilePost_'+id+' .write_comment input[type="button"]').button();
+}
+
+/**
+ * Sendet den erfassten Kommentar an den Server
+ */
+var psendComment = function(id) {
+  var text = $('#profilePost_'+id+' .write_comment textarea[name="comment_text"]').val();
+  $.ajax({
+    url: 'posts',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'post[user_id]': gon.user_id,
+      'post[text]': text,
+      'post[likes]': 0,
+      'post[dislikes]': 0,
+      'post[post_id]': id,
+      'post[tree_ids]': []
+    },
+    success: function(response) {
+      $('#profilePost_'+id+' .write_comment').slideUp(400, function() {
+        $(this).remove();
+        $.ajax({
+          url: 'posts/'+id+'.json',
+          dataType: 'json',
+          success: function(p) {
+            addComment(p, response, 'after');
+            updateCommentsAmount(id, p.comments.length);
+            client.publish('/posts/'+gon.user_id, { post_id: p.id, response_id: response.id });
+          }
+        });
+      });
+    }
+  });
+}
+
+/**
+ * Sendet ein "Like" für den Post mit der ID id an den Server
+ */
+var plike = function(id) {
+  $.ajax({
+    url: 'vote',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'vote[user_id]': gon.user_id,
+      'vote[post_id]': id,
+      'vote[upvote]': true
+    },
+    success: function(response) {
+      if(response.id > 0) {
+        $('#profilePost_'+id+' .post_like_amnt').text(response.likes);
+        $('#profilePost_'+id+' .post_dislike_amnt').text(response.dislikes);
+      }
+    },
+    error: function(response) {
+      makeToast(response.responseText);
+    }
+  });
+}
+
+/**
+ * Sendet ein "Dislike" für den Post mit der ID id an den Server
+ */
+var pdislike = function(id) {
+  $.ajax({
+    url: 'vote',
+    type: 'POST',
+    dataType: 'json',
+    data: {
+      'vote[user_id]': gon.user_id,
+      'vote[post_id]': id,
+      'vote[upvote]': false
+    },
+    success: function(response) {
+      if(response.id > 0) {
+        $('#profilePost_'+id+' .post_like_amnt').text(response.likes);
+        $('#profilePost_'+id+' .post_dislike_amnt').text(response.dislikes);
+      }
+    },
+    error: function(response) {
+      makeToast(response.responseText);
+    }
   });
 }
 
