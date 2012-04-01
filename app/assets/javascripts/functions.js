@@ -164,11 +164,12 @@ var showProfile = function(user_id) {
                         "<div class='profile_posts'></div>"+
                         "<div class='profile_about'></div>"+
                         "<div class='profile_photos'>"+
-                        " <div id='controls'></div>"+
-                        " <div id='loading'></div>"+
-                        " <div id='slideshow'></div>"+
-                        " <div id='caption'></div>"+
-                        " <div id='thumbs'></div>"+
+                        " <div class='gallery'>"+
+                        "  <div class='thumbs'></div>"+
+                        "  <div class='pic'></div>"+
+                        "  <div class='description'></div>"+
+                        "  <div class='comments'></div>"+
+                        " </div>"+
                         "</div>"+
                         "<br style='clear: left;' />");
       
@@ -290,6 +291,27 @@ var showProfile = function(user_id) {
                     $(this).find('.thumbs').slideUp(400, function() {
                       $(this).remove();
                     });
+                  }).click(function() {
+                    var set = $(this).data('set');
+                    $('.profile_photoset').fadeOut();
+                    var g = $('.profile_photos .gallery');
+                    for(var i = 0; i < set.fotos.length; i++) {
+                      g.find('.thumbs').append('<div class="thumb"></div>');
+                      g.find('.thumb:last').css({
+                        'background': 'url("'+set.fotos[i].url+'")'
+                      });
+                    }
+                    g.prepend('<input type="button" value="Zurück" name="back_to_photosets" />');
+                    g.find('input[name="back_to_photosets"]').button().click(function() {
+                      $('.profile_photos .gallery').fadeOut(function() {
+                        $('.profile_photoset').fadeIn();
+                        $(this).find('.thumbs, .pic, .description, .comments').empty();
+                      });
+                      $(this).fadeOut(function() {
+                        $(this).remove();
+                      });
+                    });
+                    g.delay(400).fadeIn();
                   });
                 }
               }
