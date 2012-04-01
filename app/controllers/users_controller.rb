@@ -128,9 +128,18 @@ class UsersController < ApplicationController
         format.json { render json: "Bitte gib eine Photo-Id an", status: :unprocessable_entity }
       end
     else
-      @comments = flickr.photos.comments.getList :photo_id => params[:id]
+      @comments = Hash.new
+      @comments[:comments] = flickr.photos.comments.getList :photo_id => params[:id]
+      # Falls möglich den Autor des Kommentars mit dem entsprechenden
+      # Treebook-User verknüpfen
+      @comments[:comments].each do |c|
+        u = User.where(:flickr_id => c.author)
+        unless u.empty?
+          c.to_hash[:treebook_id] = u.first.id
+        end
+      end
       respond_to do |format|
-        format.json { render json: @comments }
+        format.json { render json: @comments[:comments] }
       end
     end
   end
