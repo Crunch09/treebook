@@ -174,6 +174,38 @@ class UsersController < ApplicationController
     end
   end
 
+  # Public: Titel und Beschreibung eines Fotos aktualisieren
+  #
+  # title - Neuer Titel des Fotos
+  # description - Neue Beschreibung des Fotos
+  #
+  # Beispiele:
+  #
+  #  POST /edit_photo/12345.json
+  #
+  # Gibt ein leere Antwort oder eine Fehlermeldung zurück
+  def edit_photo
+
+    flickr = FlickRaw::Flickr.new
+    flickr.access_token = current_user.access_token
+    flickr.access_secret = current_user.access_secret
+
+    if params[:photo_id].nil? || params[:title].nil? || params[:description].nil?
+      respond_to do |format|
+        format.json { render json: "Bitte gib ein Foto, Titel und Kommentar an", status: :unprocessable_entity}
+      end
+      return
+    else
+      @comment = flickr.photos.setMeta(:photo_id => params[:photo_id],
+                                       :title => params[:title],
+                                       :description => params[:description])
+      respond_to do |format|
+        format.json { render json: @comment }
+      end
+    end
+  end
+
+
 
   # Public: Nach der Authentifizierung schickt Flickr
   #         die Antwort an diese Action
