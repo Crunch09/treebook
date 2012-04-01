@@ -6,8 +6,8 @@
   <% end %>
     <div id="user_menu_layer">
       <ul>
-        <li><a onclick="showProfile(<%= "#{current_user.id}" %>)">Mein Profil</a></li>
-        <li><%= link_to "Ausloggen", destroy_user_session_path, :method => 'delete' %></li>
+        <li><a onclick="showProfile(<%= "#{current_user.id}" %>)"><i class="icon-user"></i> Mein Profil</a></li>
+        <li><%= link_to raw('<i class="icon-signout"></i> Ausloggen'), destroy_user_session_path, :method => 'delete' %></li>
       </ul>
     </div>
   </div>
@@ -30,15 +30,16 @@
       <br style="clear: left;" />
     </span>
     <ul>
-      <li><a href="#" name="Startseite" onclick="show('Startseite')">Startseite</a></li>
-      <li><a href="#" name="Fotos" onclick="showProfile(<%= "#{current_user.id}" %>, 'Fotos')">Fotos</a></li>
+      <li><a href="#" name="Startseite" onclick="show('Startseite')"><i class="icon-home"></i> Startseite</a></li>
+      <li><a href="#" name="Fotos" onclick="showProfile(<%= "#{current_user.id}" %>, 'Fotos')"><i class="icon-picture"></i> Fotos</a></li>
       <br />
       <li><b>Meine Trees</b></li>
       <% my_trees = current_user.owned_trees %>
       <% my_trees.each do |t| %>
       <%=raw  "<li><a href=\"#\" name=\"tree_#{t.id}_#{t.title}\" onclick=\"show('tree:#{t.id}')\">#{image_tag("tree_icon.png")} #{t.title}</a></li>" %>
       <% end %>
-      <li><a href="#" name="addTree" onclick="addTree()">+ neuer Tree</a></li>
+      <li><a href="#" name="addTree" onclick="addTree()"><i class="icon-plus"></i> neuer Tree</a></li>
+      <li><a href="#" name="Credits" onclick="show('Credits')" class="shy"><i class="icon-info-sign"></i> Credits</a></li>
     </ul>
   </div>
   <div id="content">
@@ -54,6 +55,12 @@
     </div>
     <div id="Profil">
     
+    </div>
+    <div id="Credits">
+      <h3>Credits</h3>
+      <ul>
+        <li>Icon-Set: <a href="http://fortawesome.github.com/Font-Awesome" target="_blank">Font Awesome</a>
+      </ul>
     </div>
   </div>
 </div>

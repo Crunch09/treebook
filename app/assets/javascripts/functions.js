@@ -156,9 +156,9 @@ var showProfile = function(user_id) {
                         "<div class='profile_image'><img src='"+u.image+"' width='64' /></div>"+
                         "<div class='profile_menu'>"+
                         "<ul>"+
-                        "<li>Beiträge</li>"+
-                        "<li>Über mich</li>"+
-                        "<li>Fotos</li>"+
+                        "<li><i class='icon-list'></i> Beiträge</li>"+
+                        "<li><i class='icon-user'></i> Über mich</li>"+
+                        "<li><i class='icon-picture'></i> Fotos</li>"+
                         "<span style='clear: left;'></span>"+
                         "</ul>"+
                         "</div>"+
@@ -371,6 +371,7 @@ var showProfile = function(user_id) {
       
       if(args[1] != undefined) {
         $('.profile_menu li:contains("'+args[1]+'")').click();
+        $('#navigation a[name="'+args[1]+'"]').addClass('active');
       } else {
         $('.profile_menu li:contains("Beiträge")').click();
       }
@@ -385,7 +386,7 @@ var addSharedPost = function(p) {
   // User-Cache prüfen
   var u = checkUserCache(p.user_id);
   // HTML hinzufügen
-  $('#Profil .profile_posts').prepend('<div id="profilePost_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="plike('+p.id+')" /><span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="pdislike('+p.id+')" /><span class="post_dislike_amnt">'+p.dislikes+'</span></span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="pcomment('+p.id+')">Kommentieren</span></div></div>');
+  $('#Profil .profile_posts').prepend('<div id="profilePost_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes" onclick="plike('+p.id+')"><i class="icon-thumbs-up"></i> <span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes" onclick="pdislike('+p.id+')"><i class="icon-thumbs-down"></i> <span class="post_dislike_amnt">'+p.dislikes+'</span></span> <span class="post_comment"><i class="icon-comments"></i> '+p.comments.length+'</span> - <span class="do_comment" onclick="pcomment('+p.id+')"><i class="icon-comment"></i> Kommentieren</span></div></div>');
   // Post mit jQuery-Meta-Daten füttern
   $('#profilePost_'+p.id).data({
     'user_id': u.id,
@@ -405,7 +406,7 @@ var addSharedPost = function(p) {
       function() { $(this).removeClass('ui-state-hover'); }
 	).click(function() {
       if($('.post_admin_actions').length == 0) {
-        $(this).after('<div class="post_admin_actions"><ul><li>bearbeiten</li><li>löschen</li></ul></div>');
+        $(this).after('<div class="post_admin_actions"><ul><li><i class="icon-edit"></i> bearbeiten</li><li><i class="icon-remove"></i> löschen</li></ul></div>');
         $('.post_admin_actions').slideDown(400).position({
           of: $('#profilePost_'+p.id+' .post_admin'),
           my: 'right top',
@@ -419,8 +420,8 @@ var addSharedPost = function(p) {
           $('#profilePost_'+p.id+' .post_admin').click();
           var id = $('.post_admin_actions').data('post_id');
           $('#profilePost_'+id+' .post_text').wrapInner('<textarea name="post_text" />');
-          $('#profilePost_'+id+' .post_text').after('<input type="button" name="save_post_text" value="Speichern" />');
-          $('#profilePost_'+id+' input[name="save_post_text"]').button().click(function() {
+          $('#profilePost_'+id+' .post_text').after('<button name="save_post_text"><i class="icon-ok"></i> Speichern</button>');
+          $('#profilePost_'+id+' button[name="save_post_text"]').button().click(function() {
             $.ajax({
               url: 'posts/'+id+'.json',
               type: 'PUT',
@@ -430,7 +431,7 @@ var addSharedPost = function(p) {
               },
               success: function(response) {
                 $('#profilePost_'+id+' .post_text, #post_'+id+' .post_text').text($('#profilePost_'+id+' textarea[name="post_text"]').val());
-                $('#profilePost_'+id+' input[name="save_post_text"]').remove();
+                $('#profilePost_'+id+' button[name="save_post_text"]').remove();
                 makeToast("Dein Beitrag wurde bearbeitet.");
               }
             });
@@ -499,7 +500,7 @@ var addSharedComment = function(p, i, where) {
     insertAfter = $('#profilePost_'+p.id);
   }
   // HTML erzeugen
-  insertAfter.after('<div id="profilePost_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" /><span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" /><span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
+  insertAfter.after('<div id="profilePost_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes" onclick="plike('+c.id+')"><i class="icon-thumbs-up"></i> <span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes" onclick="pdislike('+c.id+')"><i class="icon-thumbs-down"></i> <span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
   // Kommentar mit jQuery-Meta-Daten füttern
   $('#post_'+c.id).data({
     'user_id': u.id,
@@ -519,7 +520,7 @@ var addSharedComment = function(p, i, where) {
       function() { $(this).removeClass('ui-state-hover'); }
 	).click(function() {
       if($('.post_admin_actions').length == 0) {
-        $(this).after('<div class="post_admin_actions"><ul><li>bearbeiten</li><li>löschen</li></ul></div>');
+        $(this).after('<div class="post_admin_actions"><ul><li><i class="icon-edit"></i> bearbeiten</li><li><i class="icon-remove"></i> löschen</li></ul></div>');
         $('.post_admin_actions').slideDown(400).position({
           of: $('#profilePost_'+c.id+' .post_admin'),
           my: 'right top',
@@ -534,8 +535,8 @@ var addSharedComment = function(p, i, where) {
           var id = $('.post_admin_actions').data('post_id');
           $('#profilePost_'+id+' .post_text').wrapInner('<textarea cols="80" name="post_text" />');
           makeTextareaGrowable($('#post_'+id+' textarea[name="post_text"]'));
-          $('#profilePost_'+id+' .post_text').after('<input type="button" name="save_post_text" value="Speichern" />');
-          $('#profilePost_'+id+' input[name="save_post_text"]').button().click(function() {
+          $('#profilePost_'+id+' .post_text').after('<button name="save_post_text"><i class="icon-ok"></i> Speichern</button>');
+          $('#profilePost_'+id+' button[name="save_post_text"]').button().click(function() {
             $.ajax({
               url: 'posts/'+id+'.json',
               type: 'PUT',
@@ -545,7 +546,7 @@ var addSharedComment = function(p, i, where) {
               },
               success: function(response) {
                 $('#profilePost_'+id+' .post_text, #post_'+id+' .post_text').text($('#post_'+id+' textarea[name="post_text"]').val());
-                $('#profilePost_'+id+' input[name="save_post_text"]').remove();
+                $('#profilePost_'+id+' button[name="save_post_text"]').remove();
                 makeToast("Dein Kommentar wurde bearbeitet.");
               }
             });
@@ -607,12 +608,12 @@ var addShowAllProfileCommentsLink = function(p) {
  */
 var pcomment = function(id) {
   $('.write_comment').remove();
-  $('#profilePost_'+id).append("<div class='write_comment'><textarea cols='50' name='comment_text'></textarea><br /><input type='button' onclick='psendComment("+id+")' value='Abschicken' /><input type='button' name='cancel_comment' value='Abbrechen' /></div>");
-  $('#profilePost_'+id+' .write_comment input[name="cancel_comment"]').click(function() {
+  $('#profilePost_'+id).append("<div class='write_comment'><textarea cols='50' name='comment_text'></textarea><br /><button onclick='psendComment("+id+")'><i class='icon-ok'></i> Abschicken</button><button name='cancel_comment'><i class='icon-remove'></i> Abbrechen</button></div>");
+  $('#profilePost_'+id+' .write_comment button[name="cancel_comment"]').click(function() {
     $('.write_comment').remove();
   });
   makeTextareaGrowable($('#profilePost_'+id+' .write_comment textarea[name="comment_text"]'));
-  $('#profilePost_'+id+' .write_comment input[type="button"]').button();
+  $('#profilePost_'+id+' .write_comment button').button();
 }
 
 /**

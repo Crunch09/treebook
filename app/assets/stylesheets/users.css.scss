@@ -199,6 +199,10 @@ div#navigation ul a:hover {
   background-color: #DDDDDD;
 }
 
+.shy {
+  color: #999;
+}
+
 .avatar {
   margin-right: 10px;
   margin-top: 10px;
@@ -317,9 +321,11 @@ div#navigation ul a:hover {
   cursor: pointer;
   color: #060;
 }
-.post_like img, .post_dislike img {
-  vertical-align: bottom;
+.post_like, .post_dislike {
   cursor: pointer;
+}
+.post_comment {
+  cursor: default;
 }
 
 .post_admin {
@@ -357,6 +363,9 @@ textarea[name="post_text"] {
 
 .do_comment {
   cursor: pointer;
+}
+.do_comment:hover {
+  color: #999;
 }
 .showAllComments {
   cursor: pointer;

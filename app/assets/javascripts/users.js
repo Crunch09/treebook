@@ -569,7 +569,7 @@ var addPost = function(p) {
   // User-Cache prüfen
   var u = checkUserCache(p.user_id);
   // HTML hinzufügen
-  $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+p.id+')" /><span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+p.id+')" /><span class="post_dislike_amnt">'+p.dislikes+'</span></span> - <span class="post_comment">'+p.comments.length+' Kommentar'+(p.comments.length != 1 ? 'e' : '')+'</span> <span class="do_comment" onclick="comment('+p.id+')">Kommentieren</span></div></div>');
+  $('#Stream').prepend('<div id="post_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes" onclick="like('+p.id+')"><i class="icon-thumbs-up"></i> <span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes" onclick="dislike('+p.id+')"><i class="icon-thumbs-down"></i> <span class="post_dislike_amnt">'+p.dislikes+'</span></span> <span class="post_comment" title="Kommentare"><i class="icon-comments"></i> '+p.comments.length+'</span> - <span class="do_comment" onclick="comment('+p.id+')"><i class="icon-comment"></i> Kommentieren</span></div></div>');
   // Post mit jQuery-Meta-Daten füttern
   $('#post_'+p.id).data({
     'user_id': u.id,
@@ -589,7 +589,7 @@ var addPost = function(p) {
       function() { $(this).removeClass('ui-state-hover'); }
 	).click(function() {
       if($('.post_admin_actions').length == 0) {
-        $(this).after('<div class="post_admin_actions"><ul><li>bearbeiten</li><li>löschen</li></ul></div>');
+        $(this).after('<div class="post_admin_actions"><ul><li><i class="icon-edit"></i> bearbeiten</li><li><i class="icon-remove"></i> löschen</li></ul></div>');
         $('.post_admin_actions').slideDown(400).position({
           of: $('#post_'+p.id+' .post_admin'),
           my: 'right top',
@@ -603,8 +603,8 @@ var addPost = function(p) {
           $('#post_'+p.id+' .post_admin').click();
           var id = $('.post_admin_actions').data('post_id');
           $('#post_'+id+' .post_text').wrapInner('<textarea name="post_text" />');
-          $('#post_'+id+' .post_text').after('<input type="button" name="save_post_text" value="Speichern" />');
-          $('#post_'+id+' input[name="save_post_text"]').button().click(function() {
+          $('#post_'+id+' .post_text').after('<button name="save_post_text"><i class="icon-ok"></i> Speichern</button>');
+          $('#post_'+id+' button[name="save_post_text"]').button().click(function() {
             $.ajax({
               url: 'posts/'+id+'.json',
               type: 'PUT',
@@ -614,7 +614,7 @@ var addPost = function(p) {
               },
               success: function(response) {
                 $('#post_'+id+' .post_text').text($('#post_'+id+' textarea[name="post_text"]').val());
-                $('#post_'+id+' input[name="save_post_text"]').remove();
+                $('#post_'+id+' button[name="save_post_text"]').remove();
                 makeToast("Dein Beitrag wurde bearbeitet.");
               }
             });
@@ -686,7 +686,7 @@ var addComment = function(p, i, where) {
     insertAfter = $('#post_'+p.id);
   }
   // HTML erzeugen
-  insertAfter.after('<div id="post_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes"><img src="assets/like.png" onclick="like('+c.id+')" /><span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes"><img src="assets/dislike.png" onclick="dislike('+c.id+')" /><span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
+  insertAfter.after('<div id="post_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes" onclick="like('+c.id+')"><i class="icon-thumbs-up"></i> <span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes" onclick="dislike('+c.id+')"><i class="icon-thumbs-down"></i> <span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
   // Kommentar mit jQuery-Meta-Daten füttern
   $('#post_'+c.id).data({
     'user_id': u.id,
@@ -706,7 +706,7 @@ var addComment = function(p, i, where) {
       function() { $(this).removeClass('ui-state-hover'); }
 	).click(function() {
       if($('.post_admin_actions').length == 0) {
-        $(this).after('<div class="post_admin_actions"><ul><li>bearbeiten</li><li>löschen</li></ul></div>');
+        $(this).after('<div class="post_admin_actions"><ul><li><i class="icon-edit"></i> bearbeiten</li><li><i class="icon-remove"></i> löschen</li></ul></div>');
         $('.post_admin_actions').slideDown(400).position({
           of: $('#post_'+c.id+' .post_admin'),
           my: 'right top',
@@ -721,8 +721,8 @@ var addComment = function(p, i, where) {
           var id = $('.post_admin_actions').data('post_id');
           $('#post_'+id+' .post_text').wrapInner('<textarea cols="80" name="post_text" />');
           makeTextareaGrowable($('#post_'+id+' textarea[name="post_text"]'));
-          $('#post_'+id+' .post_text').after('<input type="button" name="save_post_text" value="Speichern" />');
-          $('#post_'+id+' input[name="save_post_text"]').button().click(function() {
+          $('#post_'+id+' .post_text').after('<button name="save_post_text"><i class="icon-ok"></i> Speichern</button>');
+          $('#post_'+id+' button[name="save_post_text"]').button().click(function() {
             $.ajax({
               url: 'posts/'+id+'.json',
               type: 'PUT',
@@ -732,7 +732,7 @@ var addComment = function(p, i, where) {
               },
               success: function(response) {
                 $('#post_'+id+' .post_text').text($('#post_'+id+' textarea[name="post_text"]').val());
-                $('#post_'+id+' input[name="save_post_text"]').remove();
+                $('#post_'+id+' button[name="save_post_text"]').remove();
                 makeToast("Dein Kommentar wurde bearbeitet.");
               }
             });
@@ -803,12 +803,12 @@ var addShowAllCommentsLink = function(p) {
  */
 var comment = function(id) {
   $('.write_comment').remove();
-  $('#post_'+id).append("<div class='write_comment'><textarea cols='50' name='comment_text'></textarea><br /><input type='button' onclick='sendComment("+id+")' value='Abschicken' /><input type='button' name='cancel_comment' value='Abbrechen' /></div>");
-  $('#post_'+id+' .write_comment input[name="cancel_comment"]').click(function() {
+  $('#post_'+id).append("<div class='write_comment'><textarea cols='50' name='comment_text'></textarea><br /><button onclick='sendComment("+id+")'><i class='icon-ok'></i> Abschicken</button><button name='cancel_comment'><i class='icon-remove'></i> Abbrechen</div>");
+  $('#post_'+id+' .write_comment button[name="cancel_comment"]').click(function() {
     $('.write_comment').remove();
   });
   makeTextareaGrowable($('#post_'+id+' .write_comment textarea[name="comment_text"]'));
-  $('#post_'+id+' .write_comment input[type="button"]').button();
+  $('#post_'+id+' .write_comment button').button();
 }
 
 /**
