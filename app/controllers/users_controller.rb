@@ -144,6 +144,35 @@ class UsersController < ApplicationController
     end
   end
 
+  # Public: Einen Kommentar zu einem Foto verfassen
+  #
+  # photo_id - Id des Fotos
+  # comment_text - Kommentar
+  #
+  # Beispiele:
+  #
+  #  POST /comment
+  #
+  # Gibt die Id des Kommentars oder eine Fehlermeldung zurück
+  def comment
+    flickr = FlickRaw::Flickr.new
+
+    flickr.access_token = current_user.access_token
+    flickr.access_secret = current_user.access_secret
+
+    if params[:photo_id].nil? || params[:comment_text].nil?
+      respond_to do |format|
+        format.json { render json: "Bitte gib ein Foto und einen Kommentar an", status: :unprocessable_entity}
+      end
+      return
+    else
+      @comment = flickr.photos.comments.addComment(:photo_id => params[:photo_id],
+                                                   :comment_text => params[:comment_text])
+      respond_to do |format|
+        format.json { render json: @comment }
+      end
+    end
+  end
 
 
   # Public: Nach der Authentifizierung schickt Flickr
