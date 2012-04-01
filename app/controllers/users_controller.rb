@@ -89,12 +89,36 @@ class UsersController < ApplicationController
     end
   end
 
+  # Public: Ein Foto zu Flickr hochladen
+  #
+  # photo - Photo, welches hochgeladen werden soll
+  # title - Der Titel des Photos
+  # description - Beschreibung des Photos
+  #
+  # Gibt die Id des hochgeladenen Fotos oder eine Fehlermeldung zurück
+  def upload_photo
+    flickr = FlickRaw::Flickr.new
+
+    if current_user.got_flickr_connection?
+      flickr.access_token = current_user.access_token
+      flickr.access_secret = current_user.access_secret
+      @response = flickr.upload_photo params[:photo], :title => params[:title], :description => params[:description]
+    else
+      @response = "Du hast leider noch keine Flickr-Verbindung hergestellt"
+    end
+
+    respond_to do |format|
+      format.json { render: json: @response }
+    end
+  end
+
+
 
   # Public: Nach der Authentifizierung schickt Flickr
   #         die Antwort an diese Action
   # 
-  # oauth_token OAuth-token von Flickr
-  # oauth_verifier OAuth-Verifizierung von Flickr
+  # oauth_token - OAuth-token von Flickr
+  # oauth_verifier - OAuth-Verifizierung von Flickr
   #
   # Leitet zum images_path weiter
   def flickrcallback
