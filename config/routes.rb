@@ -16,8 +16,7 @@ Treebook::Application.routes.draw do
   match "images" => "users#images", :via => :get, :as => :images
   match "images/:id" => "users#images", :via => :get
   match "upload/" => "users#upload_photo", :via => :post
-  match "gallery/:id" => "users#gallery", :via => :get
-  match "photo/:id" => "users#photo", :via => :get
+  match "photo_comments/:id" => "users#photo_comments", :via => :get
   match "flickrcallback" => "users#flickrcallback", :via => :get, :as => :flickrcallback
   match "vote/" => "votes#create", :via => :post
   match "search/:keyword" => "users#search", :via => :get

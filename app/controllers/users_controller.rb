@@ -112,6 +112,29 @@ class UsersController < ApplicationController
     end
   end
 
+  # Public: Kommentare zu einem Foto laden
+  #
+  # id - Id des Fotos
+  #
+  # Beispiele:
+  #
+  #  GET /photo_comments/12345.json
+  #
+  # Gibt die Kommentare für das Foto mit der übergebenen Id zurück
+  def photo_comments
+    flickr = FlickRaw::Flickr.new
+    if params[:id].nil?
+      respond_to do |format|
+        format.json { render json: "Bitte gib eine Photo-Id an", status: :unprocessable_entity }
+      end
+    else
+      @comments = flickr.photos.comments.getList :photo_id => params[:id]
+      respond_to do |format|
+        format.json { render json: @comments }
+      end
+    end
+  end
+
 
 
   # Public: Nach der Authentifizierung schickt Flickr

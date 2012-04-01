@@ -60,6 +60,7 @@ class User < ActiveRecord::Base
       p.to_hash[:fotos] = flickr.photosets.getPhotos(:photoset_id => p.id).photo
       p.to_hash[:fotos].each do |f|
         f.to_hash[:url] = "http://farm#{f.farm}.staticflickr.com/#{f.server}/#{f.id}_#{f.secret}.jpg"
+        f.to_hash[:description] = flickr.photos.getInfo(:photo_id => f.id).description
       end
     end
     album
