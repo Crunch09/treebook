@@ -31,7 +31,7 @@
     </span>
     <ul>
       <li><a href="#" name="Startseite" onclick="show('Startseite')">Startseite</a></li>
-      <li><a href="#" name="Nachrichten" onclick="show('Nachrichten')">Nachrichten</a></li>
+      <li><a href="#" name="Fotos" onclick="showProfile(<%= "#{current_user.id}" %>, 'Fotos')">Fotos</a></li>
       <br />
       <li><b>Meine Trees</b></li>
       <% my_trees = current_user.owned_trees %>
@@ -51,9 +51,6 @@
         <h3>Stream</h3>
         <div id="Stream"></div>
       </div>
-    </div>
-    <div id="Nachrichten">
-       <h3>Nachrichten</h3>
     </div>
     <div id="Profil">
     

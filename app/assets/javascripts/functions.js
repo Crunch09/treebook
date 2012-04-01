@@ -147,6 +147,7 @@ var show = function(str) {
  * Zeigt das Benutzerprofil des Benutzer mit der ID user_id
  */
 var showProfile = function(user_id) {
+  var args = arguments;
   $.ajax({
     url: 'users/'+user_id+'.json',
     dataType: 'json',
@@ -238,11 +239,15 @@ var showProfile = function(user_id) {
       
       /* Fotos einfügen */
       window.setTimeout(function() {
+        var imgUrl = u.id == gon.user_id ? 'images.json' : 'images/'+u.id+'.json';
         $.ajax({
-          url: 'images.json',
+          url: imgUrl,
           dataType: 'json',
           complete: function() {
             $('.profile_photos .photos_loading').remove();
+          },
+          error: function(e) {
+            $('.profile_photos').append('<br />'+e.responseText.replace("Dieser User", u.firstname));
           },
           success: function(imgs) {
             if(imgs.url) {
@@ -363,7 +368,12 @@ var showProfile = function(user_id) {
       }, 1000);
       
       show("Profil");
-      $('.profile_menu li:contains("Beiträge")').click();
+      
+      if(args[1] != undefined) {
+        $('.profile_menu li:contains("'+args[1]+'")').click();
+      } else {
+        $('.profile_menu li:contains("Beiträge")').click();
+      }
     }
   });
 }
