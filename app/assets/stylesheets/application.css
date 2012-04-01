@@ -16,6 +16,10 @@ a:hover {
   text-decoration: none !important;
 }
 
+[contenteditable]:hover:not(:focus) {
+  outline: 1px dotted #ccc;
+}
+
 #toast {
   display: none;
   position: fixed;

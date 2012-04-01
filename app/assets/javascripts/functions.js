@@ -164,6 +164,7 @@ var showProfile = function(user_id) {
                         "<div class='profile_posts'></div>"+
                         "<div class='profile_about'></div>"+
                         "<div class='profile_photos'>"+
+                        " <div class='photos_loading'><img src='assets/loading_big.gif' /></div>"+
                         " <div class='gallery'>"+
                         "  <div class='thumbs'></div>"+
                         "  <div class='pic'></div>"+
@@ -236,17 +237,25 @@ var showProfile = function(user_id) {
       }
       
       /* Fotos einfügen */
-      if(u.id == gon.user_id) {
+      window.setTimeout(function() {
         $.ajax({
           url: 'images.json',
           dataType: 'json',
+          complete: function() {
+            $('.profile_photos .photos_loading').remove();
+          },
           success: function(imgs) {
             if(imgs.url) {
               $.ajax({
                 url: 'images',
                 success: function(f) {
-                  $('.profile_photos').append('<br /><span><a href="'+f.url+'">Verknüpfe jetzt deinen Treebook-Account mit <img src="assets/social/flickr16px.png" /> flickr&reg;</a></span>');
-                  $('.profile_photos span, .profile_photos span img').css('verticalAlign', 'middle');
+                  if(u.id == gon.user_id) {
+                    $('.profile_photos').append('<br /><span><a href="'+f.url+'">Verknüpfe jetzt deinen Treebook-Account mit <img src="assets/social/flickr16px.png" /> flickr&reg;</a></span>');
+                    $('.profile_photos span, .profile_photos span img').css('verticalAlign', 'middle');
+                  }
+                },
+                error: function(e) {
+                  $('.profile_photos').append('<br />'+e.responseText.replace("Dieser User", u.firstname));
                 }
               });
             } else {
@@ -300,6 +309,9 @@ var showProfile = function(user_id) {
                       var title = set.fotos[i].title.length > 12 ? set.fotos[i].title.substring(0,12)+"..." : set.fotos[i].title;
                       g.find('.thumb:last').css({
                         'background': 'url("'+set.fotos[i].url+'")'
+                      }).data({
+                        'description': set.fotos[i].description,
+                        'title': set.fotos[i].title
                       }).find('.title').text(title);
                       g.find('.thumb:last').click(function(e) {
                         var link = $(this).find('a');
@@ -309,9 +321,26 @@ var showProfile = function(user_id) {
                       });
                     }
                     g.find('a[rel="photo_group"]').fancybox({
-                      'titlePosition' 	: 'over',
+                      'titlePosition' 	: 'inside',
                       'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
-                          return '<span id="fancybox-title-over">'+title+'</span>';
+                        var editable = gon.user_id == u.id ? " contenteditable" : "";
+                        var link = currentArray[currentIndex];
+                        var description = $(link).parents('.thumb').data('description') == "" ? "Keine Beschreibung vorhanden." : $(link).parents('.thumb').data('description');
+                        return '<span id="fancybox-title-inside"><b'+editable+'>'+title+'</b><br /><span'+editable+'>'+description+'</span></span>';
+                      },
+                      'onComplete': function() {
+                        $('#fancybox-title-inside > b[contenteditable]').data('title', $('#fancybox-title-inside > b[contenteditable]').text());
+                        $('#fancybox-title-inside > b[contenteditable]').bind('focus', function() {
+                          $(this).after('<input type="button" name="savePhotoTitle" value="Speichern" />');
+                          $(this).next('input[name="savePhotoTitle"]').click(function() {
+                            var ed = $(this).prev('b[contenteditable]');
+                            if(ed.text() != ed.data('title')) {
+                              makeToast("Der Titel wurde gespeichert.");
+                            }
+                            ed.trigger('focusout');
+                            $(this).remove();
+                          });
+                        });
                       }
                     });
                     g.prepend('<input type="button" value="Zurück" name="back_to_photosets" />');
@@ -331,19 +360,7 @@ var showProfile = function(user_id) {
             }
           }
         });
-      } else {
-        $.ajax({
-          url: 'images/'+u.id+'.json',
-          dataType: 'json',
-          success: function(imgs) {
-            console.log("images");
-            console.log(imgs);
-          },
-          error: function(e) {
-            $('.profile_photos').append('<br />'+e.responseText.replace("Dieser User", u.firstname));
-          }
-        });
-      }
+      }, 1000);
       
       show("Profil");
       $('.profile_menu li:contains("Beiträge")').click();

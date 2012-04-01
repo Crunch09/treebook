@@ -467,6 +467,13 @@ textarea[name="post_text"] {
   margin-top: 5px;
 }
 
+.profile_photos .photos_loading {
+  display: block;
+  width: 100%;
+  padding-top: 20px;
+  text-align: center;
+}
+
 .profile_photoset {
   position: relative;
   width: 150px;
@@ -515,6 +522,7 @@ textarea[name="post_text"] {
   background-size: contain;
   background-repeat: no-repeat !important;
 }
+
 .profile_photos .gallery {
   display: none;
 }
