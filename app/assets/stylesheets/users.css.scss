@@ -493,7 +493,10 @@ textarea[name="post_text"] {
   background-color: rgba(0,0,0,0.6);
   overflow: hidden;
 }
-.profile_photoset > .title > .thumbs > .photo_thumb {
+.profile_photoset .thumbs {
+  display: none;
+}
+.profile_photoset .photo_thumb {
   display: block;
   position: relative;
   width: 56px;

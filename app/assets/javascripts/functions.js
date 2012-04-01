@@ -253,15 +253,13 @@ var showProfile = function(user_id) {
                 for(var i = 0; i < imgs.photosets.length; i++) {
                   var set = imgs.photosets[i];
                   $('.profile_photos').append('<div class="profile_photoset"><span class="title">'+set.title+'</span></div>');
+                  $('.profile_photos .profile_photoset:last').find('.title').data({
+                    'height': $('.profile_photos .profile_photoset:last').find('.title').height()
+                  });
                   $('.profile_photos .profile_photoset:last').css({
                     'background': 'url("'+set.fotos[0].url+'")'
                   }).data('set', set).hover(function() {
                     var set = $(this).data('set');
-                    if($(this).find('.title').data('height') == undefined) {
-                      $(this).find('.title').data({
-                        'height': $(this).find('.title').height()
-                      });
-                    }
                     $(this).find('.title').append('<div class="thumbs"></div>');
                     for(var j = 0; j < set.fotos.length; j++) {
                       if(j < 4) {
@@ -277,6 +275,7 @@ var showProfile = function(user_id) {
                     $(this).find('.title').animate({
                       'height': '150px'
                     }, 400);
+                    $(this).find('.thumbs').slideDown(400);
                   }, function() {
                     $(this).find('.title').animate({
                       'height': $(this).find('.title').data('height')
