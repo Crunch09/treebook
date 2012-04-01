@@ -256,8 +256,15 @@ var showProfile = function(user_id) {
                   $('.profile_photos .profile_photoset:last').find('.title').data({
                     'height': $('.profile_photos .profile_photoset:last').find('.title').height()
                   });
+                  var primary = set.fotos[0].url;
+                  for(var j = 0; j < set.fotos.length; j++) {
+                    if(set.fotos[j].isprimary == 1) {
+                      primary = set.fotos[j].url;
+                      break;
+                    }
+                  }
                   $('.profile_photos .profile_photoset:last').css({
-                    'background': 'url("'+set.fotos[0].url+'")'
+                    'background': 'url("'+primary+'")'
                   }).data('set', set).hover(function() {
                     var set = $(this).data('set');
                     $(this).find('.title').append('<div class="thumbs"></div>');
