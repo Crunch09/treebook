@@ -163,7 +163,14 @@ var showProfile = function(user_id) {
                         "</div>"+
                         "<div class='profile_posts'></div>"+
                         "<div class='profile_about'></div>"+
-                        "<div class='profile_photos'></div>");
+                        "<div class='profile_photos'>"+
+                        " <div id='controls'></div>"+
+                        " <div id='loading'></div>"+
+                        " <div id='slideshow'></div>"+
+                        " <div id='caption'></div>"+
+                        " <div id='thumbs'></div>"+
+                        "</div>"+
+                        "<br style='clear: left;' />");
       
       /**
        * Gravatar-Login-Link einblenden, wenn das eigene Profil aufgerufen wird und das Bild mit der Maus überfahren wird
@@ -241,6 +248,45 @@ var showProfile = function(user_id) {
                   $('.profile_photos span, .profile_photos span img').css('verticalAlign', 'middle');
                 }
               });
+            } else {
+              if(imgs.photosets) {
+                for(var i = 0; i < imgs.photosets.length; i++) {
+                  var set = imgs.photosets[i];
+                  $('.profile_photos').append('<div class="profile_photoset"><span class="title">'+set.title+'</span></div>');
+                  $('.profile_photos .profile_photoset:last').css({
+                    'background': 'url("'+set.fotos[0].url+'")'
+                  }).data('set', set).hover(function() {
+                    var set = $(this).data('set');
+                    if($(this).find('.title').data('height') == undefined) {
+                      $(this).find('.title').data({
+                        'height': $(this).find('.title').height()
+                      });
+                    }
+                    $(this).find('.title').append('<div class="thumbs"></div>');
+                    for(var j = 0; j < set.fotos.length; j++) {
+                      if(j < 4) {
+                        $(this).find('.thumbs').append('<div class="photo_thumb"></div>');
+                        $(this).find('.thumbs > .photo_thumb:last').css({
+                          'background': 'url("'+set.fotos[j].url+'")'
+                        });
+                      } else {
+                        break;
+                      }
+                    }
+                    $(this).find('.thumbs').append('<span style="clear: left;"></span>');
+                    $(this).find('.title').animate({
+                      'height': '150px'
+                    }, 400);
+                  }, function() {
+                    $(this).find('.title').animate({
+                      'height': $(this).find('.title').data('height')
+                    }, 400);
+                    $(this).find('.thumbs').slideUp(400, function() {
+                      $(this).remove();
+                    });
+                  });
+                }
+              }
             }
           }
         });
