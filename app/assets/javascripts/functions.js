@@ -395,7 +395,20 @@ var showProfile = function(user_id) {
                             $(this).nextAll('button[name="send_photo_comment"]').click(function() {
                               var c = $('textarea[name="photo_comment"]').val();
                               if(c != "Schreibe einen Kommentar zu diesem Bild.") {
-                                $('button[name="cancel_photo_comment"]').click();
+                                $.ajax({
+                                  url: 'comment.json',
+                                  type: 'POST',
+                                  data: {
+                                    'photo_id': $('.fancybox-comments input[name="photo_id"]').val(),
+                                    'comment_text': c
+                                  },
+                                  dataType: 'json',
+                                  success: function(response) {
+                                    console.log(response);
+                                    $('button[name="cancel_photo_comment"]').click();
+                                    $('.fancybox-comments textarea').after('<div class="photo_comment"><img src="'+gon.image+'" /><b>'+gon.firstname+' '+gon.name+'</b><br /><small>vor weniger als einer Minute</small><p>'+c+'</p></div>');
+                                  }
+                                });
                               }
                             });
                             $(this).nextAll('button[name="cancel_photo_comment"]').click(function() {
