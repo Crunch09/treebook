@@ -611,3 +611,7 @@ textarea[name="post_text"] {
   box-shadow: 0px 0px 16px #666;
   overflow: auto;
 }
+.fancybox-comments textarea {
+  display: block;
+  width: 100%;
+}

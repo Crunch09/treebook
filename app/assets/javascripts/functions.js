@@ -341,8 +341,28 @@ var showProfile = function(user_id) {
                       'onComplete': function(currentArray, currentIndex) {
                         var photo_id = $(currentArray[currentIndex]).parents('.thumb').data('id');
                         
-                        var cBox = $('<div class="fancybox-comments"><h3>Kommentare</h3><span class="loading"><img src="assets/loading_big.gif" /></span></div>');
+                        var cBox = $('<div class="fancybox-comments"><h3>Kommentare</h3><input type="hidden" name="photo_id" value="'+photo_id+'" /><textarea name="photo_comment"></textarea><span class="loading"><img src="assets/loading_big.gif" /></span></div>');
                         cBox.appendTo('body');
+                        makeTextareaGrowable(cBox.find('textarea'));
+                        setInputDefault(cBox.find('textarea'), "Schreibe einen Kommentar zu diesem Bild.");
+                        
+                        cBox.find('textarea').bind('focus', function() {
+                          if($(this).nextAll('button[name="send_photo_comment"]').length == 0) {
+                            $(this).after('<button name="send_photo_comment"><i class="icon-ok"></i> Abschicken</button> <button name="cancel_photo_comment"><i class="icon-remove"></i> Abbrechen</button>');
+                            $(this).nextAll('button[name="send_photo_comment"]').click(function() {
+                              var c = $('textarea[name="photo_comment"]').val();
+                              if(c != "Schreibe einen Kommentar zu diesem Bild.") {
+                                $('button[name="cancel_photo_comment"]').click();
+                              }
+                            });
+                            $(this).nextAll('button[name="cancel_photo_comment"]').click(function() {
+                              $(this).add($('button[name="send_photo_comment"]')).remove();
+                              $('textarea[name="photo_comment"]').val("").trigger('blur');
+                            });
+                            $(this).nextAll('button').button();
+                          }
+                        });
+                        
                         cBox.css({
                           'width': $('#fancybox-wrap').position().left-20,
                           'height': $(window).height()-parseInt(cBox.css('paddingTop'))-parseInt(cBox.css('paddingBottom'))
@@ -356,7 +376,7 @@ var showProfile = function(user_id) {
                           },
                           success: function(cmts) {
                             if(cmts.length > 0) {
-                              for(var i = 0; i < cmts.length; i++) {
+                              for(var i = cmts.length-1; i >= 0; i--) {
                                 if(cmts[i].treebook_id > 0) {
                                   var user = checkUserCache(cmts[i].treebook_id);
                                   $('.fancybox-comments').append('<div class="photo_comment"><img src="'+user.image+'" /><b>'+user.firstname+' '+user.name+'</b><br /><small>'+cmts[i].time_ago+'</small><p>'+cmts[i]._content+'</p></div>');
