@@ -331,6 +331,7 @@ var showProfile = function(user_id) {
                       });
                     }
                     g.find('a[rel="photo_group"]').fancybox({
+                      'cyclic': true,
                       'titlePosition' 	: 'inside',
                       'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
                         var editable = gon.user_id == u.id ? " contenteditable" : "";
