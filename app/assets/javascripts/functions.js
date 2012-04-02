@@ -334,13 +334,55 @@ var showProfile = function(user_id) {
                       'cyclic': true,
                       'titlePosition' 	: 'inside',
                       'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
-                        var editable = gon.user_id == u.id ? " contenteditable" : "";
+                        var editBtn = gon.user_id == u.id ? '<button name="edit_photo" title="Details bearbeiten"><i class="icon-edit"></i></button>' : "";
                         var link = currentArray[currentIndex];
                         var description = $(link).parents('.thumb').data('description') == "" ? "Keine Beschreibung vorhanden." : $(link).parents('.thumb').data('description');
-                        return '<span id="fancybox-title-inside"><b'+editable+'>'+title+'</b><br /><span'+editable+'>'+description+'</span></span>';
+                        return '<span id="fancybox-title-inside">'+editBtn+'<b name="title">'+title+'</b><br /><span name="description">'+description+'</span></span>';
                       },
                       'onComplete': function(currentArray, currentIndex) {
                         var photo_id = $(currentArray[currentIndex]).parents('.thumb').data('id');
+                        
+                        // Bild Titel und Beschreibung bearbeiten
+                        $('#fancybox-title-inside button').button().css({
+                          'float': 'right'
+                        }).click(function() {
+                          var title = $('#fancybox-title-inside b').text();
+                          var descr = $('#fancybox-title-inside span').text();
+                          $('#fancybox-title-inside b[name="title"]').replaceWith('<input type="text" value="'+title+'" name="'+$(this).attr("name")+'" />');
+                          $('#fancybox-title-inside span[name="description"]').replaceWith('<textarea style="width: 75%;" rows="4" name="'+$(this).attr("name")+'">'+descr+'</textarea>');
+                          $(this).hide();
+                          $(this).after('<button name="save_photo_details"><i class="icon-ok"></i></button>');
+                          $(this).next('button[name="save_photo_details"]').button().click(function() {
+                            var title = $('#fancybox-title-inside input[name="title"]').val();
+                            var descr = $('#fancybox-title-inside textarea[name="description"]').val();
+                            
+                            if(title == "") {
+                              title = "Ohne Titel";
+                            }
+                            if(descr == "") {
+                              descr = "Keine Beschreibung vorhanden.";
+                            }
+                            
+                            $.ajax({
+                              url: 'edit_photo',
+                              type: 'POST',
+                              data: {
+                                'photo_id': $('#fancybox-title-inside input[name="photo_id"]').val(),
+                                'title': title,
+                                'description': descr
+                              },
+                              dataType: 'json',
+                              success: function(r) {
+                                console.log(r);
+                                $('button[name="save_photo_details"]').remove();
+                                $('button[name="edit_photo"]').show();
+                                $('#fancybox-title-inside input[name="title"]').replaceWith('<b name="'+$(this).attr("name")+'">'+title+'</b>');
+                                $('#fancybox-title-inside textarea[name="description"]').replaceWith('<span name="'+$(this).attr("name")+'">'+descr+'</span>');
+                              }
+                            });
+                          });
+                          $.fancybox.resize();
+                        });
                         
                         var cBox = $('<div class="fancybox-comments"><h3>Kommentare</h3><input type="hidden" name="photo_id" value="'+photo_id+'" /><textarea name="photo_comment"></textarea><span class="loading"><img src="assets/loading_big.gif" /></span></div>');
                         cBox.appendTo('body');
@@ -463,11 +505,11 @@ var setInputDefault = function(input, str) {
 
 var addTree = function() {
   if($('input[name="newTree"]').length == 0) {
-    $('li:has(a[name="addTree"])').before('<li style="display: none"><input type="text" name="newTree" value="" size="25" /><input type="button" name="saveNewTree" value="OK" /><input type="button" name="discardNewTree" value="X" />');
+    $('li:has(a[name="addTree"])').before('<li style="display: none"><input type="text" name="newTree" value="" size="25" /><button name="saveNewTree"><i class="icon-ok"></i></button><button name="discardNewTree"><i class="icon-remove"></i></button>');
     var nTree = $('input[name="newTree"]');
     setInputDefault(nTree, "Mein neuer Tree");
-    nTreeBt = nTree.next('input[name="saveNewTree"]');
-    nTreeBtDis = nTreeBt.next('input[name="discardNewTree"]');
+    nTreeBt = nTree.next('button[name="saveNewTree"]');
+    nTreeBtDis = nTreeBt.next('button[name="discardNewTree"]');
     
     nTree.parents('li').slideDown(300, function() {
       nTree.focus();

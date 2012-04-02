@@ -16,6 +16,11 @@ a:hover {
   text-decoration: none !important;
 }
 
+button > span.ui-button-text {
+    padding: .2em .4em !important;
+    font-size: .8em;
+}
+
 [contenteditable]:hover:not(:focus) {
   outline: 1px dotted #ccc;
 }
