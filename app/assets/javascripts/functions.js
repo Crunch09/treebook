@@ -378,6 +378,11 @@ var showProfile = function(user_id) {
                                 $('button[name="edit_photo"]').show();
                                 $('#fancybox-title-inside input[name="title"]').replaceWith('<b name="title">'+photoTitle+'</b>');
                                 $('#fancybox-title-inside textarea[name="description"]').replaceWith('<span name="description">'+photoDescr+'</span>');
+                                var shortTitle = photoTitle.length > 12 ? photoTitle.substring(0,12)+"..." : photoTitle;
+                                $(currentArray[currentIndex]).parents('.thumb').data({
+                                  'title': photoTitle,
+                                  'description': photoDescr
+                                }).find('.title').text(shortTitle);
                               }
                             });
                           });
