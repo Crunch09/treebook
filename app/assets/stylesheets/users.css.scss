@@ -423,12 +423,16 @@ textarea[name="post_text"] {
 }
 
 .editGravatar {
+  background-color: #CCC;
   position: absolute;
-  width: 16px;
-  height: 16px;
+  text-align: center;
+  width: 15px;
+  height: 15px;
+  line-height: 15px;
   cursor: pointer;
   opacity: 0.5;
   z-index: 6;
+  border-radius: 4px;
 }
 .editGravatar:hover {
   opacity: 1;

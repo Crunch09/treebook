@@ -181,12 +181,7 @@ var showProfile = function(user_id) {
       if(u.id == gon.user_id) {
         $('.profile_image img').hover(function() {
           if($('.editGravatar').length == 0) {
-            $(this).after('<span class="editGravatar ui-state-default ui-corner-all"><a href="https://de.gravatar.com/site/login/" target="_blank"><span class="ui-icon ui-icon-pencil"></span></a></span>');
-            $('.editGravatar').hover(
-              function() { $(this).addClass('ui-state-hover'); }, 
-              function() { $(this).removeClass('ui-state-hover'); }
-            );
-          }
+            $(this).after('<span class="editGravatar"><a href="https://de.gravatar.com/site/login/" target="_blank"><i class="icon-edit"></i></a></span>');          }
           $('.editGravatar').position({
             of: $('.profile_image img'),
             my: 'right top',
