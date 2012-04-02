@@ -140,6 +140,7 @@ class UsersController < ApplicationController
           unless u.empty?
             c.to_hash[:treebook_id] = u.first.id
           end
+          c.to_hash[:time_ago] = u.first.time_ago c.datecreate
         end
       else
         @comments[:comments] = []

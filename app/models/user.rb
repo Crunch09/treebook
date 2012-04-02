@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-
+  include ActionView::Helpers::DateHelper
   has_many :authentications
   has_many :posts
   has_many :owned_trees, :class_name => "Tree"
@@ -68,6 +68,10 @@ class User < ActiveRecord::Base
 
   def to_s
     "#{self.firstname} #{self.name}"
+  end
+
+  def time_ago timestamp
+    time_ago_in_words(Time.at(timestamp.to_i))
   end
 
   #werden benötigt um innerhalb von shared_posts auf den current_user zuzugreifen
