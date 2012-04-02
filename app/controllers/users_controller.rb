@@ -19,6 +19,9 @@ class UsersController < ApplicationController
     @users = User.all
     unless current_user.nil?
       gon.user_id = current_user.id
+      gon.firstname = current_user.firstname
+      gon.lastname = current_user.name
+      gon.gravatar = current_user.image
     end
 
     respond_to do |format|
