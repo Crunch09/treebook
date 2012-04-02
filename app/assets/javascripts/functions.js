@@ -337,7 +337,7 @@ var showProfile = function(user_id) {
                         var editBtn = gon.user_id == u.id ? '<button name="edit_photo" title="Details bearbeiten"><i class="icon-edit"></i></button>' : "";
                         var link = currentArray[currentIndex];
                         var description = $(link).parents('.thumb').data('description') == "" ? "Keine Beschreibung vorhanden." : $(link).parents('.thumb').data('description');
-                        return '<span id="fancybox-title-inside">'+editBtn+'<b name="title">'+title+'</b><br /><span name="description">'+description+'</span></span>';
+                        return '<span id="fancybox-title-inside"><input type="hidden" name="photo_id" value="'+$(currentArray[currentIndex]).parents('.thumb').data('id')+'" />'+editBtn+'<b name="title">'+title+'</b><br /><span name="description">'+description+'</span></span>';
                       },
                       'onComplete': function(currentArray, currentIndex) {
                         var photo_id = $(currentArray[currentIndex]).parents('.thumb').data('id');
@@ -348,36 +348,36 @@ var showProfile = function(user_id) {
                         }).click(function() {
                           var title = $('#fancybox-title-inside b').text();
                           var descr = $('#fancybox-title-inside span').text();
-                          $('#fancybox-title-inside b[name="title"]').replaceWith('<input type="text" value="'+title+'" name="'+$(this).attr("name")+'" />');
-                          $('#fancybox-title-inside span[name="description"]').replaceWith('<textarea style="width: 75%;" rows="4" name="'+$(this).attr("name")+'">'+descr+'</textarea>');
+                          $('#fancybox-title-inside b[name="title"]').replaceWith('<input type="text" value="'+title+'" name="title" />');
+                          $('#fancybox-title-inside span[name="description"]').replaceWith('<textarea style="width: 75%;" rows="4" name="description">'+descr+'</textarea>');
                           $(this).hide();
                           $(this).after('<button name="save_photo_details"><i class="icon-ok"></i></button>');
-                          $(this).next('button[name="save_photo_details"]').button().click(function() {
-                            var title = $('#fancybox-title-inside input[name="title"]').val();
-                            var descr = $('#fancybox-title-inside textarea[name="description"]').val();
+                          $(this).next('button[name="save_photo_details"]').button().css({
+                            'float': 'right'
+                          }).click(function() {
+                            var photoTitle = $('#fancybox-title-inside input[name="title"]').val();
+                            var photoDescr = $('#fancybox-title-inside textarea[name="description"]').val();
                             
-                            if(title == "") {
-                              title = "Ohne Titel";
+                            if(photoTitle == "") {
+                              photoTitle = "Ohne Titel";
                             }
-                            if(descr == "") {
-                              descr = "Keine Beschreibung vorhanden.";
+                            if(photoDescr == "") {
+                              photoDescr = "Keine Beschreibung vorhanden.";
                             }
-                            
                             $.ajax({
-                              url: 'edit_photo',
+                              url: 'edit_photo.json',
                               type: 'POST',
                               data: {
                                 'photo_id': $('#fancybox-title-inside input[name="photo_id"]').val(),
-                                'title': title,
-                                'description': descr
+                                'title': photoTitle,
+                                'description': photoDescr
                               },
                               dataType: 'json',
                               success: function(r) {
-                                console.log(r);
                                 $('button[name="save_photo_details"]').remove();
                                 $('button[name="edit_photo"]').show();
-                                $('#fancybox-title-inside input[name="title"]').replaceWith('<b name="'+$(this).attr("name")+'">'+title+'</b>');
-                                $('#fancybox-title-inside textarea[name="description"]').replaceWith('<span name="'+$(this).attr("name")+'">'+descr+'</span>');
+                                $('#fancybox-title-inside input[name="title"]').replaceWith('<b name="title">'+photoTitle+'</b>');
+                                $('#fancybox-title-inside textarea[name="description"]').replaceWith('<span name="description">'+photoDescr+'</span>');
                               }
                             });
                           });
