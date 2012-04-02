@@ -39,6 +39,7 @@ class UsersController < ApplicationController
   def show
     @user = User.find params[:id]
     current_user.posts_by_user = params[:id]
+    @user.gravatar_size = 64
     current_user.save
     User.current = current_user
     respond_to do |format|

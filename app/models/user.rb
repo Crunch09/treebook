@@ -17,13 +17,13 @@ class User < ActiveRecord::Base
                   :birthday, :trees, :posts, :owned_trees, :access_token, :access_secret,
                   :flickr_id
 
-  attr_accessor :posts_by_user
+  attr_accessor :posts_by_user, :gravatar_size
 
 
   def image
     default_url = "http://localhost:3000/assets/derp.png"
     gravatar_id = Digest::MD5.hexdigest(self.email.downcase)
-    img = "http://gravatar.com/avatar/#{gravatar_id}.png?s=48&d=#{CGI.escape(default_url)}"
+    img = "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{self.gravatar_size}&d=#{CGI.escape(default_url)}"
     img
   end
 
