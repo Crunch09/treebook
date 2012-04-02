@@ -490,12 +490,14 @@ $(function() {
       }
     });
     
-    /**
-     * Main-Stream initialisieren
-     */
-    
-    var posts = new Array();
-    
+    // Post-Datum-Aktualisierung starten
+    refreshPostTimeAgo();
+  }
+});
+
+var loadPosts = function() {
+  console.log("loadPosts: "+$('.post').length);
+  if($('.post').length == 0) {
     // Alle verfügbaren Posts laden
     $.ajax({
       url: 'posts.json',
@@ -516,11 +518,24 @@ $(function() {
         }
       }
     });
-    
-    // Post-Datum-Aktualisierung starten
-    refreshPostTimeAgo();
+  } else {
+    console.log($('#Profil .profile_posts .post'));
+    $('#Profil .profile_posts .post').each(function() {
+      console.log($(this));
+      var coll;
+      if($(this).nextAll('.post').length > 0) {
+        coll = $(this).add($(this).nextUntil('.post'));
+      } else {
+        coll = $(this).add($(this).nextAll('.comment'));
+      }
+      if($(this).data('after') != undefined) {
+        coll.insertAfter($(this).data('after'));
+      } else {
+        coll.prependTo($(this).data('prepend'));
+      }
+    });
   }
-});
+}
 
 /**
  * Aktualisiert das Datum aller Posts und Kommentare im Intervall autoRefreshRate

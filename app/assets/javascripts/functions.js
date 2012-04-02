@@ -14,10 +14,6 @@ var makeToast = function(str) {
  * Zeigt den durch str verknüpften Inhalt auf der Seite an.
  */
 var show = function(str) {
-  if(str != 'Profil') {
-    $('div[id^="profilePost_"]').remove();
-    $('#Profil').empty();
-  }
   $('textarea[name="status_update"]').val("").trigger("blur").siblings("*").remove();
   if($('#'+str).length > 0) {
     $('#content > div').hide();
@@ -25,9 +21,9 @@ var show = function(str) {
     $('#navigation').find('a').removeClass('active');
     $('#navigation').find('a[name="'+str+'"]').addClass('active');
     if(str == "Startseite") {
-      $('#Stream div[id^="post_"]').show();
       $('#Stream').prev('h3').text("Stream");
       $('#actions').html('');
+      loadPosts();
     }
   } else {
     if(str.substring(0,5) == "tree:") {
@@ -141,6 +137,10 @@ var show = function(str) {
       });
     }
   }
+  if(str != 'Profil') {
+    $('div[id^="profilePost_"]').remove();
+    $('#Profil').empty();
+  }
 }
 
 /**
@@ -227,13 +227,16 @@ var showProfile = function(user_id) {
       }
       for(var i = 0; i < u.shared_posts.length; i++) {
         var p = u.shared_posts[i];
-        addSharedPost(p);
-        for(var j = 0; j < 3; j++) {
-          if(j < p.comments.length)
-            addSharedComment(p, j);
+        if($('#post_'+p.id).length > 0) {
+          if($('#post_'+p.id).prev('div[id^="post_"]').length > 0) {
+            $('#post_'+p.id).data('after', $('#post_'+p.id).prev('div[id^="post_"]'));
+          } else {
+            $('#post_'+p.id).data('prepend', $('#Stream'));
+          }
+          $('#post_'+p.id).prependTo('.profile_posts');
         }
-        if(p.comments.length > 3) {
-          addShowAllProfileCommentsLink(p);
+        for(var j = 0; j < p.comments.length; j++) {
+          $('#post_'+p.comments[j].id).insertAfter($('#post_'+p.id));
         }
       }
       
@@ -375,327 +378,6 @@ var showProfile = function(user_id) {
       } else {
         $('.profile_menu li:contains("Beiträge")').click();
       }
-    }
-  });
-}
-
-/**
- * Fügt einen 
- */
-var addSharedPost = function(p) {
-  // User-Cache prüfen
-  var u = checkUserCache(p.user_id);
-  // HTML hinzufügen
-  $('#Profil .profile_posts').prepend('<div id="profilePost_'+p.id+'" class="post"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+p.time_ago+'</div><div class="post_text">'+p.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes" onclick="plike('+p.id+')"><i class="icon-thumbs-up"></i> <span class="post_like_amnt">'+p.likes+'</span></span> <span class="post_dislike" title="Dislikes" onclick="pdislike('+p.id+')"><i class="icon-thumbs-down"></i> <span class="post_dislike_amnt">'+p.dislikes+'</span></span> <span class="post_comment"><i class="icon-comments"></i> '+p.comments.length+'</span> - <span class="do_comment" onclick="pcomment('+p.id+')"><i class="icon-comment"></i> Kommentieren</span></div></div>');
-  // Post mit jQuery-Meta-Daten füttern
-  $('#profilePost_'+p.id).data({
-    'user_id': u.id,
-    'user_firstname': u.firstname,
-    'user_name': u.name,
-    'post_time_ago': p.time_ago,
-    'post_text': p.text,
-    'trees': p.trees
-  });
-  if(u.id == gon.user_id) {
-    /**
-     * Optionen zum Bearbeiten und Löschen des Beitrags anzeigen, wenn der aktuelle Benutzer der Autor des Beitrags ist.
-     */
-    $('#profilePost_'+p.id).append('<div class="post_admin ui-state-default ui-corner-all"><span class="ui-icon ui-icon-triangle-1-s"></span></div>')
-    $('#profilePost_'+p.id+' .post_admin').hover(
-      function() { $(this).addClass('ui-state-hover'); }, 
-      function() { $(this).removeClass('ui-state-hover'); }
-	).click(function() {
-      if($('.post_admin_actions').length == 0) {
-        $(this).after('<div class="post_admin_actions"><ul><li><i class="icon-edit"></i> bearbeiten</li><li><i class="icon-remove"></i> löschen</li></ul></div>');
-        $('.post_admin_actions').slideDown(400).position({
-          of: $('#profilePost_'+p.id+' .post_admin'),
-          my: 'right top',
-          at: 'right bottom',
-          offset: '0 2',
-          collision: 'flip flip'
-        }).data({
-          'post_id': p.id
-        });
-        $('.post_admin_actions li:contains("bearbeiten")').click(function() {
-          $('#profilePost_'+p.id+' .post_admin').click();
-          var id = $('.post_admin_actions').data('post_id');
-          $('#profilePost_'+id+' .post_text').wrapInner('<textarea name="post_text" />');
-          $('#profilePost_'+id+' .post_text').after('<button name="save_post_text"><i class="icon-ok"></i> Speichern</button>');
-          $('#profilePost_'+id+' button[name="save_post_text"]').button().click(function() {
-            $.ajax({
-              url: 'posts/'+id+'.json',
-              type: 'PUT',
-              dataType: 'json',
-              data: {
-                'post[text]': $('#profilePost_'+id+' textarea[name="post_text"]').val()
-              },
-              success: function(response) {
-                $('#profilePost_'+id+' .post_text, #post_'+id+' .post_text').text($('#profilePost_'+id+' textarea[name="post_text"]').val());
-                $('#profilePost_'+id+' button[name="save_post_text"]').remove();
-                makeToast("Dein Beitrag wurde bearbeitet.");
-              }
-            });
-          });
-        });
-        $('.post_admin_actions li:contains("löschen")').click(function() {
-          var id = $('.post_admin_actions').data('post_id');
-          var conf = confirm("Möchten Sie diesen Beitrag wirklich löschen?");
-          if(conf) {
-            $.ajax({
-              url: 'posts/'+id+'.json',
-              type: 'DELETE',
-              success: function(response) {
-                makeToast("Dein Beitrag wurde gelöscht.");
-                $('#profilePost_'+id+', #post_'+id).add($('#profilePost_'+id).nextUntil('.post')).add($('#post_'+id).nextUntil('.post')).slideUp(400, function() {
-                  $(this).remove();
-                });
-              }
-            });
-          }
-        });
-      } else {
-        if($(this).siblings('div:last').hasClass('post_admin_actions')) {
-          $('.post_admin_actions').slideUp(400, function() { $(this).remove(); });
-        } else {
-          $('.post_admin_actions').remove();
-          $(this).click();
-        }
-      }
-    });
-  }
-  if(p.text.length > 200) {
-    // Sofern der Post länger als 200 Zeichen ist, wird ein "Mehr/Weniger anzeigen"-Link generiert.
-    $('#profilePost_'+p.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
-    $('#profilePost_'+p.id+' .post_toggle').html("Mehr anzeigen").click(function() {
-      var pt = $(this).siblings('.post_text');
-      var t = pt.data('text');
-      var s = pt.text();
-      pt.data('text', s);
-      pt.html(t);
-      $(this).text($(this).text() == "Mehr anzeigen" ? "Weniger anzeigen" : "Mehr anzeigen");
-    });
-  }
-}
-
-var addSharedComment = function(p, i, where) {
-  // Prüfen ob Kommentar als Index oder Objekt angegeben wurde
-  var c = (i.id == undefined ? p.comments[i] : i);
-  // User-Cache prüfen
-  var u = checkUserCache(c.user_id);
-  var insertAfter;
-  // Prüfen, wo genau der Kommentar angefügt werden soll
-  if(where == 'after') {
-    if($('#profilePost_'+p.id).nextAll('.post').length > 0) {
-      // hinter eventuell bereits vorhandene Kommentare
-      insertAfter = $('#profilePost_'+p.id).nextUntil('.post:visible').last();
-      if(insertAfter.length == 0) {
-        // oder direkt hinter den Post (erster Kommentar)
-        insertAfter = $('#profilePost_'+p.id);
-      }
-    } else {
-      // ans Ende des Streams
-      insertAfter = $('#Profil .profile_posts div[id^="post_"]:visible:last');
-    }
-  } else {
-    insertAfter = $('#profilePost_'+p.id);
-  }
-  // HTML erzeugen
-  insertAfter.after('<div id="profilePost_'+c.id+'" class="comment"><div class="post_user" onclick="showProfile('+u.id+')"><span class="post_avatar"><img src="'+u.image+'" width="32" /></span> '+u.firstname+' '+u.name+'</div><div class="post_date">'+c.time_ago+'</div><div class="post_text">'+c.text+'</div><span class="post_toggle"></span><div class="post_actions"><span class="post_like" title="Likes" onclick="plike('+c.id+')"><i class="icon-thumbs-up"></i> <span class="post_like_amnt">'+c.likes+'</span></span> <span class="post_dislike" title="Dislikes" onclick="pdislike('+c.id+')"><i class="icon-thumbs-down"></i> <span class="post_dislike_amnt">'+c.dislikes+'</span></span></div></div>');
-  // Kommentar mit jQuery-Meta-Daten füttern
-  $('#post_'+c.id).data({
-    'user_id': u.id,
-    'user_firstname': u.firstname,
-    'user_name': u.name,
-    'post_time_ago': c.time_ago,
-    'post_text': c.text,
-    'trees': c.trees
-  });
-  if(u.id == gon.user_id) {
-    /**
-     * Optionen zum Bearbeiten und Löschen des Beitrags anzeigen, wenn der aktuelle Benutzer der Autor des Beitrags ist.
-     */
-    $('#profilePost_'+c.id).append('<div class="post_admin ui-state-default ui-corner-all"><span class="ui-icon ui-icon-triangle-1-s"></span></div>')
-    $('#profilePost_'+c.id+' .post_admin').hover(
-      function() { $(this).addClass('ui-state-hover'); }, 
-      function() { $(this).removeClass('ui-state-hover'); }
-	).click(function() {
-      if($('.post_admin_actions').length == 0) {
-        $(this).after('<div class="post_admin_actions"><ul><li><i class="icon-edit"></i> bearbeiten</li><li><i class="icon-remove"></i> löschen</li></ul></div>');
-        $('.post_admin_actions').slideDown(400).position({
-          of: $('#profilePost_'+c.id+' .post_admin'),
-          my: 'right top',
-          at: 'right bottom',
-          offset: '0 2',
-          collision: 'flip flip'
-        }).data({
-          'post_id': c.id
-        });
-        $('.post_admin_actions li:contains("bearbeiten")').click(function() {
-          $('#profilePost_'+c.id+' .post_admin').click();
-          var id = $('.post_admin_actions').data('post_id');
-          $('#profilePost_'+id+' .post_text').wrapInner('<textarea cols="80" name="post_text" />');
-          makeTextareaGrowable($('#post_'+id+' textarea[name="post_text"]'));
-          $('#profilePost_'+id+' .post_text').after('<button name="save_post_text"><i class="icon-ok"></i> Speichern</button>');
-          $('#profilePost_'+id+' button[name="save_post_text"]').button().click(function() {
-            $.ajax({
-              url: 'posts/'+id+'.json',
-              type: 'PUT',
-              dataType: 'json',
-              data: {
-                'post[text]': $('#post_'+id+' textarea[name="post_text"]').val()
-              },
-              success: function(response) {
-                $('#profilePost_'+id+' .post_text, #post_'+id+' .post_text').text($('#post_'+id+' textarea[name="post_text"]').val());
-                $('#profilePost_'+id+' button[name="save_post_text"]').remove();
-                makeToast("Dein Kommentar wurde bearbeitet.");
-              }
-            });
-          });
-        });
-        $('.post_admin_actions li:contains("löschen")').click(function() {
-          var id = $('.post_admin_actions').data('post_id');
-          var conf = confirm("Möchten Sie diesen Kommentar wirklich löschen?");
-          if(conf) {
-            $.ajax({
-              url: 'posts/'+id+'.json',
-              type: 'DELETE',
-              success: function(response) {
-                makeToast("Dein Beitrag wurde gelöscht.");
-                $('#profilePost_'+id+', #post_'+id).slideUp(400, function() {
-                  $(this).remove();
-                });
-              }
-            });
-          }
-        });
-      } else {
-        if($(this).siblings('div:last').hasClass('post_admin_actions')) {
-          $('.post_admin_actions').slideUp(400, function() { $(this).remove(); });
-        } else {
-          $('.post_admin_actions').remove();
-          $(this).click();
-        }
-      }
-    });
-  }
-  if(c.text.length > 200) {
-    // Wieder die Prüfung auf mehr als 200 Zeichen
-    $('#profilePost_'+c.id+' .post_text').data('text', p.text).html(p.text.substring(0,200)+"...");
-    $('#profilePost_'+c.id+' .post_toggle').html("Mehr anzeigen").click(function() {
-      var pt = $(this).siblings('.post_text');
-      var t = pt.data('text');
-      var s = pt.text();
-      pt.data('text', s);
-      pt.html(t);
-      $(this).text($(this).text() == "Mehr anzeigen" ? "Weniger anzeigen" : "Mehr anzeigen");
-    });
-  }
-}
-
-/**
- * Fügt den "Zeige alle X vorherigen Kommentare"-Link hinter dem Post hinzu
- */
-var addShowAllProfileCommentsLink = function(p) {
-  $('#profilePost_'+p.id).after('<div class="showAllComments comment">Zeige alle '+(p.comments.length-3)+' vorherigen Kommentare</div>');
-  $('#profilePost_'+p.id).next('.showAllComments').click(function() {
-    showAllComments(p);
-    $(this).remove();
-  });
-}
-
-/**
- * Generiert das Formular zum Verfassen eines Kommentars
- */
-var pcomment = function(id) {
-  $('.write_comment').remove();
-  $('#profilePost_'+id).append("<div class='write_comment'><textarea cols='50' name='comment_text'></textarea><br /><button onclick='psendComment("+id+")'><i class='icon-ok'></i> Abschicken</button><button name='cancel_comment'><i class='icon-remove'></i> Abbrechen</button></div>");
-  $('#profilePost_'+id+' .write_comment button[name="cancel_comment"]').click(function() {
-    $('.write_comment').remove();
-  });
-  makeTextareaGrowable($('#profilePost_'+id+' .write_comment textarea[name="comment_text"]'));
-  $('#profilePost_'+id+' .write_comment button').button();
-}
-
-/**
- * Sendet den erfassten Kommentar an den Server
- */
-var psendComment = function(id) {
-  var text = $('#profilePost_'+id+' .write_comment textarea[name="comment_text"]').val();
-  $.ajax({
-    url: 'posts',
-    type: 'POST',
-    dataType: 'json',
-    data: {
-      'post[user_id]': gon.user_id,
-      'post[text]': text,
-      'post[likes]': 0,
-      'post[dislikes]': 0,
-      'post[post_id]': id,
-      'post[tree_ids]': []
-    },
-    success: function(response) {
-      $('#profilePost_'+id+' .write_comment').slideUp(400, function() {
-        $(this).remove();
-        $.ajax({
-          url: 'posts/'+id+'.json',
-          dataType: 'json',
-          success: function(p) {
-            addComment(p, response, 'after');
-            updateCommentsAmount(id, p.comments.length);
-            client.publish('/posts/'+gon.user_id, { post_id: p.id, response_id: response.id });
-          }
-        });
-      });
-    }
-  });
-}
-
-/**
- * Sendet ein "Like" für den Post mit der ID id an den Server
- */
-var plike = function(id) {
-  $.ajax({
-    url: 'vote',
-    type: 'POST',
-    dataType: 'json',
-    data: {
-      'vote[user_id]': gon.user_id,
-      'vote[post_id]': id,
-      'vote[upvote]': true
-    },
-    success: function(response) {
-      if(response.id > 0) {
-        $('#profilePost_'+id+' .post_like_amnt').text(response.likes);
-        $('#profilePost_'+id+' .post_dislike_amnt').text(response.dislikes);
-      }
-    },
-    error: function(response) {
-      makeToast(response.responseText);
-    }
-  });
-}
-
-/**
- * Sendet ein "Dislike" für den Post mit der ID id an den Server
- */
-var pdislike = function(id) {
-  $.ajax({
-    url: 'vote',
-    type: 'POST',
-    dataType: 'json',
-    data: {
-      'vote[user_id]': gon.user_id,
-      'vote[post_id]': id,
-      'vote[upvote]': false
-    },
-    success: function(response) {
-      if(response.id > 0) {
-        $('#profilePost_'+id+' .post_like_amnt').text(response.likes);
-        $('#profilePost_'+id+' .post_dislike_amnt').text(response.dislikes);
-      }
-    },
-    error: function(response) {
-      makeToast(response.responseText);
     }
   });
 }
