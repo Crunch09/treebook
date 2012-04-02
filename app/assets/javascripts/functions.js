@@ -148,6 +148,8 @@ var show = function(str) {
  */
 var showProfile = function(user_id) {
   var args = arguments;
+  // Profil-Beiträge wieder in den Stream einfügen
+  loadPosts();
   $.ajax({
     url: 'users/'+user_id+'.json',
     dataType: 'json',
@@ -228,11 +230,10 @@ var showProfile = function(user_id) {
           } else {
             $('#post_'+p.id).data('prepend', $('#Stream'));
           }
-          $('#post_'+p.id).prependTo('.profile_posts');
         }
-        for(var j = 0; j < p.comments.length; j++) {
-          $('#post_'+p.comments[j].id).insertAfter($('#post_'+p.id));
-        }
+        var comments = $('#post_'+p.id).nextAll('.post').length > 0 ? $('#post_'+p.id).nextUntil('.post') : $('#post_'+p.id).nextAll('.comment');
+        $('#post_'+p.id).prependTo('.profile_posts');
+        comments.insertAfter($('#post_'+p.id));
       }
       
       /* Fotos einfügen */

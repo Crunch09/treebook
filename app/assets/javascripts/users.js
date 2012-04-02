@@ -496,7 +496,6 @@ $(function() {
 });
 
 var loadPosts = function() {
-  console.log("loadPosts: "+$('.post').length);
   if($('.post').length == 0) {
     // Alle verfügbaren Posts laden
     $.ajax({
@@ -519,9 +518,8 @@ var loadPosts = function() {
       }
     });
   } else {
-    console.log($('#Profil .profile_posts .post'));
+    $('.post, .comment').show();
     $('#Profil .profile_posts .post').each(function() {
-      console.log($(this));
       var coll;
       if($(this).nextAll('.post').length > 0) {
         coll = $(this).add($(this).nextUntil('.post'));
