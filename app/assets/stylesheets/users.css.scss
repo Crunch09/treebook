@@ -583,3 +583,18 @@ textarea[name="post_text"] {
   background-color: rgba(0,0,0,0.6);
   overflow: hidden;
 }
+
+.photo_comment:not(:last-child) {
+  border-bottom: 1px solid #CCC;
+}
+.photo_comment {
+  margin-top: 5px;
+}
+.photo_comment img {
+  width: 32px;
+  float: left;
+  margin-right: 8px;
+}
+.photo_comment p {
+  font-size: 0.9em;
+}

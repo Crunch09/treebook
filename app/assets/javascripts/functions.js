@@ -331,15 +331,34 @@ var showProfile = function(user_id) {
                         var editable = gon.user_id == u.id ? " contenteditable" : "";
                         var link = currentArray[currentIndex];
                         var description = $(link).parents('.thumb').data('description') == "" ? "Keine Beschreibung vorhanden." : $(link).parents('.thumb').data('description');
-                        return '<span id="fancybox-title-inside"><b'+editable+'>'+title+'</b><br /><span'+editable+'>'+description+'</span><div class="fancybox-comments"><h3>Kommentare</h3><span class=".loading"><img src="assets/loading_big.gif" /></span></div></span>';
+                        return '<span id="fancybox-title-inside"><b'+editable+'>'+title+'</b><br /><span'+editable+'>'+description+'</span><div class="fancybox-comments"><h3>Kommentare</h3><span class="loading"><img src="assets/loading_big.gif" /></span></div></span>';
                       },
-                      'onComplete': function() {
-                        /*
-                        var photo_id = 
+                      'onComplete': function(currentArray, currentIndex) {
+                        var photo_id = $(currentArray[currentIndex]).parents('.thumb').data('id');
                         $.ajax({
-                          url: 'photo_comments/'+
+                          url: 'photo_comments/'+photo_id+'.json',
+                          dataType: 'json',
+                          complete: function() {
+                            $('.fancybox-comments .loading').remove();
+                          },
+                          success: function(cmts) {
+                            console.log(cmts);
+                            if(cmts.length > 0) {
+                              for(var i = 0; i < cmts.length; i++) {
+                                if(cmts[i].treebook_id > 0) {
+                                  var user = checkUserCache(cmts[i].treebook_id);
+                                  var date = new Date(cmts[i].datecreate*1000);
+                                  $('.fancybox-comments').append('<div class="photo_comment"><img src="'+user.image+'" /><b>'+user.firstname+' '+user.name+'</b><br /><small>'+date.toGMTString()+'</small><p>'+cmts[i]._content+'</p></div>');
+                                } else {
+                                  continue;
+                                }
+                              }
+                            } else {
+                              $('.fancybox-comments').append('<div class="no_photo_comments"><h4>Noch keine Kommentare vorhanden.</h4></div>');
+                            }
+                            $.fancybox.resize();
+                          }
                         });
-                        */
                         /*
                         $('#fancybox-title-inside > b[contenteditable]').data('title', $('#fancybox-title-inside > b[contenteditable]').text());
                         $('#fancybox-title-inside > b[contenteditable]').bind('focus', function() {
