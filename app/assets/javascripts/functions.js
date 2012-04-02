@@ -239,17 +239,21 @@ var showProfile = function(user_id) {
       /* Fotos einfügen */
       window.setTimeout(function() {
         var imgUrl = u.id == gon.user_id ? 'images.json' : 'images/'+u.id+'.json';
+        // Fotos laden
         $.ajax({
           url: imgUrl,
           dataType: 'json',
           complete: function() {
+            // Lade-Icon im Profil ausblenden
             $('.profile_photos .photos_loading').remove();
           },
           error: function(e) {
+            // User hat noch keine Bilder
             $('.profile_photos').append('<br />'+e.responseText.replace("Dieser User", u.firstname));
           },
           success: function(imgs) {
             if(imgs.url) {
+              // User muss noch seinen flickr-Account mit treebook verknüpfen
               $.ajax({
                 url: 'images',
                 success: function(f) {
@@ -264,6 +268,7 @@ var showProfile = function(user_id) {
               });
             } else {
               if(imgs.photosets) {
+                // Es sind Alben vorhanden, die angezeigt werden können
                 for(var i = 0; i < imgs.photosets.length; i++) {
                   var set = imgs.photosets[i];
                   $('.profile_photos').append('<div class="profile_photoset"><span class="title">'+set.title+'</span></div>');
@@ -331,10 +336,18 @@ var showProfile = function(user_id) {
                         var editable = gon.user_id == u.id ? " contenteditable" : "";
                         var link = currentArray[currentIndex];
                         var description = $(link).parents('.thumb').data('description') == "" ? "Keine Beschreibung vorhanden." : $(link).parents('.thumb').data('description');
-                        return '<span id="fancybox-title-inside"><b'+editable+'>'+title+'</b><br /><span'+editable+'>'+description+'</span><div class="fancybox-comments"><h3>Kommentare</h3><span class="loading"><img src="assets/loading_big.gif" /></span></div></span>';
+                        return '<span id="fancybox-title-inside"><b'+editable+'>'+title+'</b><br /><span'+editable+'>'+description+'</span></span>';
                       },
                       'onComplete': function(currentArray, currentIndex) {
                         var photo_id = $(currentArray[currentIndex]).parents('.thumb').data('id');
+                        
+                        var cBox = $('<div class="fancybox-comments"><h3>Kommentare</h3><span class="loading"><img src="assets/loading_big.gif" /></span></div>');
+                        cBox.appendTo('body');
+                        cBox.css({
+                          'width': $('#fancybox-wrap').position().left-20,
+                          'height': $(window).height()-parseInt(cBox.css('paddingTop'))-parseInt(cBox.css('paddingBottom'))
+                        }).fadeIn('fast');
+                        
                         $.ajax({
                           url: 'photo_comments/'+photo_id+'.json',
                           dataType: 'json',
@@ -342,13 +355,11 @@ var showProfile = function(user_id) {
                             $('.fancybox-comments .loading').remove();
                           },
                           success: function(cmts) {
-                            console.log(cmts);
                             if(cmts.length > 0) {
                               for(var i = 0; i < cmts.length; i++) {
                                 if(cmts[i].treebook_id > 0) {
                                   var user = checkUserCache(cmts[i].treebook_id);
-                                  var date = new Date(cmts[i].datecreate*1000);
-                                  $('.fancybox-comments').append('<div class="photo_comment"><img src="'+user.image+'" /><b>'+user.firstname+' '+user.name+'</b><br /><small>'+date.toGMTString()+'</small><p>'+cmts[i]._content+'</p></div>');
+                                  $('.fancybox-comments').append('<div class="photo_comment"><img src="'+user.image+'" /><b>'+user.firstname+' '+user.name+'</b><br /><small>'+cmts[i].time_ago+'</small><p>'+cmts[i]._content+'</p></div>');
                                 } else {
                                   continue;
                                 }
@@ -356,7 +367,9 @@ var showProfile = function(user_id) {
                             } else {
                               $('.fancybox-comments').append('<div class="no_photo_comments"><h4>Noch keine Kommentare vorhanden.</h4></div>');
                             }
-                            $.fancybox.resize();
+                            $('body').css({
+                              'overflow': 'hidden'
+                            });
                           }
                         });
                         /*
@@ -373,6 +386,12 @@ var showProfile = function(user_id) {
                           });
                         });
                         */
+                      },
+                      'onCleanup': function() {
+                        $('.fancybox-comments').fadeOut('fast', function() { $(this).remove(); });
+                        $('body').css({
+                          'overflow': 'auto'
+                        });
                       }
                     });
                     g.prepend('<button name="back_to_photosets"><i class="icon-arrow-left"></i> Zurück</button>');
