@@ -315,7 +315,8 @@ var showProfile = function(user_id) {
                         'background': 'url("'+set.fotos[i].url+'")'
                       }).data({
                         'description': set.fotos[i].description,
-                        'title': set.fotos[i].title
+                        'title': set.fotos[i].title,
+                        'id': set.fotos[i].id
                       }).find('.title').text(title);
                       g.find('.thumb:last').click(function(e) {
                         var link = $(this).find('a');
@@ -330,9 +331,16 @@ var showProfile = function(user_id) {
                         var editable = gon.user_id == u.id ? " contenteditable" : "";
                         var link = currentArray[currentIndex];
                         var description = $(link).parents('.thumb').data('description') == "" ? "Keine Beschreibung vorhanden." : $(link).parents('.thumb').data('description');
-                        return '<span id="fancybox-title-inside"><b'+editable+'>'+title+'</b><br /><span'+editable+'>'+description+'</span></span>';
+                        return '<span id="fancybox-title-inside"><b'+editable+'>'+title+'</b><br /><span'+editable+'>'+description+'</span><div class="fancybox-comments"><h3>Kommentare</h3><span class=".loading"><img src="assets/loading_big.gif" /></span></div></span>';
                       },
                       'onComplete': function() {
+                        /*
+                        var photo_id = 
+                        $.ajax({
+                          url: 'photo_comments/'+
+                        });
+                        */
+                        /*
                         $('#fancybox-title-inside > b[contenteditable]').data('title', $('#fancybox-title-inside > b[contenteditable]').text());
                         $('#fancybox-title-inside > b[contenteditable]').bind('focus', function() {
                           $(this).after('<input type="button" name="savePhotoTitle" value="Speichern" />');
@@ -345,6 +353,7 @@ var showProfile = function(user_id) {
                             $(this).remove();
                           });
                         });
+                        */
                       }
                     });
                     g.prepend('<button name="back_to_photosets"><i class="icon-arrow-left"></i> Zurück</button>');
