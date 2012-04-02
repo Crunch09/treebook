@@ -406,7 +406,7 @@ var showProfile = function(user_id) {
                                   success: function(response) {
                                     console.log(response);
                                     $('button[name="cancel_photo_comment"]').click();
-                                    $('.fancybox-comments textarea').after('<div class="photo_comment"><img src="'+gon.image+'" /><b>'+gon.firstname+' '+gon.name+'</b><br /><small>vor weniger als einer Minute</small><p>'+c+'</p></div>');
+                                    $('.fancybox-comments textarea').after('<div class="photo_comment"><img src="'+gon.gravatar+'" /><b>'+gon.firstname+' '+gon.name+'</b><br /><small>vor weniger als einer Minute</small><p>'+c+'</p></div>');
                                   }
                                 });
                               }
