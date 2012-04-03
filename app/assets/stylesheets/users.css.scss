@@ -416,6 +416,28 @@ textarea[name="post_text"] {
   margin-top: 10px;
 }
 
+/* Profil-Informationen */
+
+.profile_about {
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.profile_about label {
+  display: block;
+  font-weight: bold;
+}
+.profile_about input, .profile_about select, .profile_about textarea {
+  display: block;
+  font-size: 1em;
+}
+
+.profile_privacy {
+  float: right;
+}
+
+/* Fotos */
+
 .profile_image {
   position: relative;
   margin-top: -55px;
@@ -582,6 +604,32 @@ textarea[name="post_text"] {
   color: #FFF;
   background-color: rgba(0,0,0,0.6);
   overflow: hidden;
+}
+.profile_photos .gallery .thumbs .upload_photo {
+position: relative;
+  width: 100px;
+  height: 100px;
+  float: left;
+  margin: 5px;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid #999;
+  box-shadow: 0px 0px 5px #999;
+  line-height: 100px;
+  font-size: 50px;
+  text-align: center;
+  
+  transition: 0.4s all;
+  -moz-transition: 0.4s all;
+  -webkit-transition: 0.4s all;
+  -o-transition: 0.4s all;
+}
+.profile_photos .gallery .thumbs .upload_photo:hover {
+  box-shadow: 0px 0px 8px #333;
+}
+
+.profile_photos .gallery .thumbs .upload_photo .upload_photo_form {
+  display: none;
 }
 
 .photo_comment:not(:last-child) {

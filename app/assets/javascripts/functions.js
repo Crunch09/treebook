@@ -236,6 +236,41 @@ var showProfile = function(user_id) {
         comments.insertAfter($('#post_'+p.id));
       }
       
+      /* Profil-Informationen einfügen */
+      if(u.id == gon.user_id) {
+        $('.profile_about').append('<div class="profile_privacy"><label for="privacy_setting">Privatsphären-Einstellung</label></div>');
+        $('.profile_privacy').append('<select name="privacy_setting"><option value="0">für alle sichtbar</option><option value="1">nur für Kontake sichtbar</option></select>');
+        switch(u.privacy_setting) {
+          case 1:
+            $('select[name="privacy_setting"] option[value="1"]').attr("selected", "selected");
+            break;
+          default:
+            $('select[name="privacy_setting"] option[value="0"]').attr("selected", "selected");
+            break;
+        }
+        $('select[name="privacy_setting"]').bind('change', function() {
+          //TODO PRIVACY-FLAG UPDATEN
+          /*
+          $.ajax({
+            url: 'users',
+            type: 'PUT',
+            data: {
+              'user[privacy_setting]': $('select[name="privacy_setting"]').val()
+            },
+            dataType: 'json',
+            success: function(r) {
+              console.log(r);
+            },
+            error: function(e) {
+              makeToast(e);
+            }
+          });
+          */
+        });
+      }
+      
+      
+      
       /* Fotos einfügen */
       window.setTimeout(function() {
         var imgUrl = u.id == gon.user_id ? 'images.json' : 'images/'+u.id+'.json';
@@ -330,6 +365,40 @@ var showProfile = function(user_id) {
                         return false;
                       });
                     }
+                    // Foto hinzufügen
+                    g.find('.thumbs').append('<div class="upload_photo" title="Fotos diesem Album hinzufügen"><i class="icon-plus"></i></div>');
+                    g.find('.thumbs .upload_photo').click(function() {
+                      $(this).append(
+                        '<div class="upload_photo_form">'+
+                        '  <label for="photo_file">Datei</label>'+
+                        '  <input type="file" name="photos" accept="image/*" multiple="multiple" />'+
+                        '</div>'
+                      );
+                      // Change-Listener auf File-Input setzen
+                      $(this).find('input[name="photos"]').bind('change', function(){
+                        var form = $(this).parents('.upload_photo_form');
+                        console.log(this.files);
+                        form.find('.selected_file').remove();
+                        for(var i = 0; i < this.files.length; i++) {
+                          var f = this.files[i];
+                          form.append('<div class="selected_file"><b>'+f.fileName+' ('+(Math.round(f.fileSize/1024/1024*100)/100)+' MB)</b><br /><input type="text" name="title['+f.fileName+']" value="Bild-Titel" /><br /><textarea name="descr['+f.fileName+']">Bild-Beschreibung</textarea></div>')
+                        }
+                      });
+                      $(this).find('.upload_photo_form').dialog({
+                        modal: true,
+                        width: 400,
+                        buttons: {
+                          "Hochladen": function() {
+                            return;
+                          }
+                        },
+                        close: function() {
+                          $(this).find('.selected_file').remove();
+                          $(this).find('input[type="file"]').val("");
+                        }
+                      });
+                    });
+                    // Fancybox initialisieren
                     g.find('a[rel="photo_group"]').fancybox({
                       'cyclic': true,
                       'titlePosition' 	: 'inside',
