@@ -51,6 +51,25 @@ class UsersController < ApplicationController
     end
   end
 
+  # Public: Aktualisiert den zur Zeit angemeldeten User
+  #
+  # user - Array mit den neuen Werten
+  #
+  # Beispiel:
+  #
+  #  PUT /users
+  #
+  # Gibt HTPP no-Content oder eine Fehlermeldung zurück
+  def update
+    respond_to do |format|
+      if current_user.update_attributes(params[:user])
+        format.json { head :no_content }
+      else
+        format.json { render json: current_user.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   # Public: Stellt Infos zu allen Flickr-Photosets eines Users bereitet
   #
   # id - Id des Users, standardmäßig der eingeloggte User

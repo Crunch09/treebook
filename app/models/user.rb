@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :firstname, :name,
                   :birthday, :trees, :posts, :owned_trees, :access_token, :access_secret,
-                  :flickr_id
+                  :flickr_id, :privacy_setting
 
   attr_accessor :posts_by_user, :gravatar_size
 

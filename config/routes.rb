@@ -2,7 +2,7 @@ Treebook::Application.routes.draw do
   #devise_for :users do
   #  get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
   #end
-
+  match "users/" => "users#update", :via => :put, :as => :update_user
   devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }
 
   resources :trees, :except => [:index]
