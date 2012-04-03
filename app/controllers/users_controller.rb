@@ -294,5 +294,11 @@ class UsersController < ApplicationController
     end
     
   end
+  
+  def upload_form
+    respond_to do |format|
+      format.html
+    end
+  end
 
 end

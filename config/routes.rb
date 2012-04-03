@@ -22,6 +22,7 @@ Treebook::Application.routes.draw do
   match "flickrcallback" => "users#flickrcallback", :via => :get, :as => :flickrcallback
   match "vote/" => "votes#create", :via => :post
   match "search/:keyword" => "users#search", :via => :get
+  match "upload_form/" => "users#upload_form", :via => :get
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
 

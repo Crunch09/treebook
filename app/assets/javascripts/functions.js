@@ -367,35 +367,37 @@ var showProfile = function(user_id) {
                       // Foto hinzufügen
                       g.find('.thumbs').append('<div class="upload_photo" title="Fotos diesem Album hinzufügen"><i class="icon-plus"></i></div>');
                       g.find('.thumbs .upload_photo').click(function() {
-                        $(this).append(
-                          '<div class="upload_photo_form">'+
-                          '  <form enctype="multipart/form-data" action="upload" method="POST">'+
-                          '    <label for="photo_file">Datei</label>'+
-                          '    <input type="file" name="photo" accept="image/*" />'+
-                          '  </form>'+
-                          '</div>'
-                        );
-                        // Change-Listener auf File-Input setzen
-                        $(this).find('input[name="photo"]').bind('change', function(){
-                          var form = $(this).parents('.upload_photo_form').find('form');
-                          console.log(this.files);
-                          form.find('.selected_file').remove();
-                          for(var i = 0; i < this.files.length; i++) {
-                            var f = this.files[i];
-                            form.append('<div class="selected_file"><b>'+f.name+' ('+(Math.round(f.size/1024/1024*100)/100)+' MB)</b><br /><input type="text" name="title" value="Bild-Titel" /><br /><textarea name="description">Bild-Beschreibung</textarea></div>')
-                          }
-                        });
-                        $(this).find('.upload_photo_form').dialog({
-                          modal: true,
-                          width: 400,
-                          buttons: {
-                            "Hochladen": function() {
-                              $(this).find('form').submit();
-                            }
-                          },
-                          close: function() {
-                            $(this).find('.selected_file').remove();
-                            $(this).find('input[type="file"]').val("");
+                        $.ajax({
+                          url: 'upload_form',
+                          success: function(form) {
+                            $(this).append(
+                              '<div class="upload_photo_form">'+
+                              $(form).find('form').html()+
+                              '</div>'
+                            );
+                            // Change-Listener auf File-Input setzen
+                            $(this).find('input[name="photo"]').bind('change', function(){
+                              var form = $(this).parents('.upload_photo_form').find('form');
+                              console.log(this.files);
+                              form.find('.selected_file').remove();
+                              for(var i = 0; i < this.files.length; i++) {
+                                var f = this.files[i];
+                                form.append('<div class="selected_file"><b>'+f.name+' ('+(Math.round(f.size/1024/1024*100)/100)+' MB)</b><br /><input type="text" name="title" value="Bild-Titel" /><br /><textarea name="description">Bild-Beschreibung</textarea></div>')
+                              }
+                            });
+                            $(this).find('.upload_photo_form').dialog({
+                              modal: true,
+                              width: 400,
+                              buttons: {
+                                "Hochladen": function() {
+                                  $(this).find('form').submit();
+                                }
+                              },
+                              close: function() {
+                                $(this).find('.selected_file').remove();
+                                $(this).find('input[type="file"]').val("");
+                              }
+                            });
                           }
                         });
                       });
