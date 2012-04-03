@@ -125,7 +125,7 @@ class UsersController < ApplicationController
     if current_user.got_flickr_connection?
       flickr.access_token = current_user.access_token
       flickr.access_secret = current_user.access_secret
-      @response = flickr.upload_photo params[:photo], :title => params[:title], :description => params[:description]
+      @response = flickr.upload_photo params[:photo].tempfile.path, :title => 'Test', :description => 'Blub'
     else
       @response = "Du hast leider noch keine Flickr-Verbindung hergestellt"
     end

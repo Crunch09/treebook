@@ -15,7 +15,7 @@ Treebook::Application.routes.draw do
   match "trees/" => "trees#index", :via => :get, :as => :trees
   match "images" => "users#images", :via => :get, :as => :images
   match "images/:id" => "users#images", :via => :get
-  match "upload/" => "users#upload_photo", :via => :post
+  match "upload/" => "users#upload_photo", :via => :post, :as => :upload_photo
   match "comment/" => "users#comment", :via => :post
   match "edit_photo/" => "users#edit_photo", :via => :post
   match "photo_comments/:id" => "users#photo_comments", :via => :get
