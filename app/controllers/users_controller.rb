@@ -7,6 +7,11 @@ class UsersController < ApplicationController
   FlickRaw.api_key= "42026bbf6f026bb43201488328dd61b0"
   FlickRaw.shared_secret= "043bd220b6b52509"
 
+  PRIVACY = {
+        everyone: 0,
+        restricted: 1
+  }
+
   # Public: Wird als Startseite benutzt
   #
   # Beispiele:
@@ -78,26 +83,31 @@ class UsersController < ApplicationController
   # 
   #  GET /images.json
   #
-  # Gibt Photosets und darin enthalene Bilder eines Users zurück bzw.
+  # Gibt Photosets und darin enthaltene Bilder eines Users zurück bzw.
   # einen Link um eine Flickr-Verbindung zu erstellen
   def images
     flickr = FlickRaw::Flickr.new
 
     u = params[:id].nil? ? current_user : User.find(params[:id])
-    #pruefen, ob dieser User eine flickr-Connection besitzt
-    if u.got_flickr_connection?
-      @album = u.get_photos
+    # pruefen ob der aktuelle User eine Berechtigung hat, diese Bilder zu sehen
+    if u.privacy_setting == PRIVACY[:restricted] && u != current_user && (u.owned_tree_ids & current_user.tree_ids).count == 0
+      @error_msg = "Dieser User hat seine Bilder nur fuer seine Trees freigegeben"
     else
-      #pruefen, ob dieser User der angemeldete User ist
-      if u.id == current_user.id
-        token = flickr.get_request_token(:oauth_callback => 'http://localhost:3000/flickrcallback')
-        session[:token] = token
-        # You'll need to store the token somewhere for when the user is returned to the callback method
-        # I stick mine in memcache with their session key as the cache key
-        @auth_url = Hash.new
-        @auth_url[:url] = flickr.get_authorize_url(token['oauth_token'], :perms => 'write')
+      #pruefen, ob dieser User eine flickr-Connection besitzt
+      if u.got_flickr_connection?
+        @album = u.get_photos
       else
-        @error_msg = "Dieser User hat leider noch keine Bilder hier."
+        #pruefen, ob dieser User der angemeldete User ist
+        if u.id == current_user.id
+          token = flickr.get_request_token(:oauth_callback => 'http://localhost:3000/flickrcallback')
+          session[:token] = token
+          # You'll need to store the token somewhere for when the user is returned to the callback method
+          # I stick mine in memcache with their session key as the cache key
+          @auth_url = Hash.new
+          @auth_url[:url] = flickr.get_authorize_url(token['oauth_token'], :perms => 'write')
+        else
+          @error_msg = "Dieser User hat leider noch keine Bilder hier."
+        end
       end
     end
     
@@ -125,7 +135,7 @@ class UsersController < ApplicationController
     if current_user.got_flickr_connection?
       flickr.access_token = current_user.access_token
       flickr.access_secret = current_user.access_secret
-      @response = flickr.upload_photo params[:photo].tempfile.path, :title => 'Test', :description => 'Blub'
+      @response = flickr.upload_photo params[:photo].tempfile.path, :title => params[:title], :description => params[:description]
     else
       @response = "Du hast leider noch keine Flickr-Verbindung hergestellt"
     end
@@ -295,6 +305,14 @@ class UsersController < ApplicationController
     
   end
   
+  # Public: Formular für den Upload von Bildern
+  #
+  # Beispiele:
+  #
+  #  GET /upload_form
+  #
+  #
+  # Ǵibt das Formular zurück, welches im Frontend verwendet wird
   def upload_form
     respond_to do |format|
       format.html
