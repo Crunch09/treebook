@@ -213,6 +213,32 @@ class UsersController < ApplicationController
     end
   end
 
+  # Public: Ein Foto zu einem Photoset hinzufügen
+  #
+  # photoset_id - Id des Photosets
+  # photo_id - Id des Photos
+  #
+  # Gibt eine leere Antwort oder einen Fehler bei Fehlschlag zurück
+  def add_photo_to_photoset
+    flickr = FlickRaw::Flickr.new
+
+    flickr.access_token = current_user.access_token
+    flickr.access_secret = current_user.access_secret
+
+    if params[:photoset_id].nil? || params[:photo_id].nil?
+      respond_to do |format|
+        format.json { render json: "Bitte gib ein Photoset und ein Foto an", status: :unprocessable_entity}
+      end
+      return
+    else
+      flickr.photosets.addPhoto(:photoset_id => params[:photoset_id],
+                                :photo_id => params[:photo_id])
+      respond_to do |format|
+        format.json { head :no_content }
+      end
+    end
+  end
+
   # Public: Titel und Beschreibung eines Fotos aktualisieren
   #
   # title - Neuer Titel des Fotos
