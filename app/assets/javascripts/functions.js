@@ -453,6 +453,9 @@ var showProfile = function(user_id) {
                                         link.trigger('click');
                                         return false;
                                       });
+                                    },
+                                    complete: function() {
+                                      hideLoading();
                                     }
                                   });
                                 },
@@ -470,7 +473,6 @@ var showProfile = function(user_id) {
                                 showLoading();
                                 $(this).find('form').submit();
                                 $(this).dialog("close");
-                                hideLoading();
                               }
                             },
                             close: function() {
