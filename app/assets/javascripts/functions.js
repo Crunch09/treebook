@@ -11,6 +11,43 @@ var makeToast = function(str) {
 }
 
 /**
+ * Zeigt einen modalen Ladebildschirm
+ */
+var showLoading = function() {
+  $('body').append('<div id="modal_loading"><div><img src="assets/loading_big.gif" /></div></div>');
+  $('#modal_loading').css({
+    'position': 'fixed',
+    'top': 0,
+    'left': 0,
+    'width': $(window).width(),
+    'height': $(window).height(),
+    'backgroundColor': 'rgba(0,0,0,0.6)',
+    'zIndex': '100000',
+    'textAlign': 'center'
+  });
+  $('#modal_loading > div').css({
+    'position': 'relative',
+    'width': '32px',
+    'height': '32px',
+    'padding': '4px',
+    'borderRadius': '4px',
+    'background': '#FFF',
+    'top': $(window).height()/2-20,
+    'left': $(window).width()/2-20,
+    'boxShadow': '0px 0px 16px #000'
+  });
+}
+
+/**
+ * Blendet den modalen Ladebildschirm wieder aus
+ */
+var hideLoading = function() {
+  $('#modal_loading').fadeOut('fast', function() {
+    $(this).remove();
+  });
+}
+
+/**
  * Zeigt den durch str verknüpften Inhalt auf der Seite an.
  */
 var show = function(str) {
@@ -385,16 +422,55 @@ var showProfile = function(user_id) {
                           $('.upload_photo_form form').attr("target", "hiddenUploadFrame");
                           $('.upload_photo_form').append('<iframe name="hiddenUploadFrame" width="1px" height="1px" style="border: 0px; visibility: hidden;"></iframe>');
                           $('.upload_photo_form iframe[name="hiddenUploadFrame"]').load(function() {
-                            var photoId = parseInt($(this).contents().text());
-                            var photoSetId = $('.upload_photo:visible').data('photoSetId');
-                            //TODO : AJAX an PhotoSet-Route
+                            if($(this).contents().text() != "") {
+                              var photoId = parseInt($(this).contents().text());
+                              var photoSetId = $('.upload_photo:visible').data('photoSetId');
+                              //TODO : AJAX an PhotoSet-Route
+                              $.ajax({
+                                url: 'photosets/add',
+                                type: 'POST',
+                                data: {
+                                  'photoset_id': photoSetId,
+                                  'photo_id': photoId
+                                },
+                                success: function(r) {
+                                  $.ajax({
+                                    url: 'photo/'+photoId+'.json',
+                                    success: function(img) {
+                                      console.log(img);
+                                      g.find('.thumbs').append('<div class="thumb"><a rel="photo_group" href="'+img.url+'" title="'+img.title+'"><img alt="'+img.title+'" src="'+img.url+'" /></a><span class="title"></span></div>');
+                                      var title = img.title.length > 12 ? img.title.substring(0,12)+"..." : img.title;
+                                      g.find('.thumb:last').css({
+                                        'background': 'url("'+img.url+'")'
+                                      }).data({
+                                        'description': img.description,
+                                        'title': img.title,
+                                        'id': img.id
+                                      }).find('.title').text(title);
+                                      g.find('.thumb:last').click(function(e) {
+                                        var link = $(this).find('a');
+                                        if(e.target === link[0]) return false;
+                                        link.trigger('click');
+                                        return false;
+                                      });
+                                    }
+                                  });
+                                },
+                                error: function(e) {
+                                  console.log(e.responseText);
+                                }
+                              });
+                            }
                           });
                           $('.upload_photo_form').dialog({
                             modal: true,
                             width: 400,
                             buttons: {
                               "Hochladen": function() {
+                                showLoading();
                                 $(this).find('form').submit();
+                                $(this).dialog("close");
+                                hideLoading();
                               }
                             },
                             close: function() {
