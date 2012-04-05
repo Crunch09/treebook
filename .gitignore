@@ -16,5 +16,10 @@
 
 .rake_tasks*
 
+/doc/*.aux
+/doc/*.log
+/doc/*.toc
+/doc/*.out
+/doc/*.pdf
 # Ignore Komodo-Project-File
 /treebook.komodoproject
