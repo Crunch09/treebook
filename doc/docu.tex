@@ -167,12 +167,47 @@ Sofern der Autor des Posts der aktuelle Nutzer ist, wird in der oberen rechten E
 \caption{Post mit Kontext-Menü}%
 \end{figure}
 Unterhalb des Posts werden die Kommentare eingerückt angezeigt. Diese sind im Wesentlichen genauso aufgebaut, wie ein Post. Allerdings können Kommentare nicht ebenfalls kommentiert werden, daher entfällt die Anzahl der Kommentare und der Link zum Kommentieren.
-Standardmäßig werden die bis zu letzten 3 Kommentare zu einem Post angezeigt. Wurde ein Post mehr als dreimal kommentiert, so erscheint zwischen Post und den letzten 3 Kommentaren ein Link "Zeige alle x vorherigen Kommentare".
+Standardmäßig werden die bis zu letzten 3 Kommentare zu einem Post angezeigt. Wurde ein Post mehr als dreimal kommentiert, so erscheint zwischen Post und den letzten 3 Kommentaren ein Link "Zeige alle x vorherigen Kommentare", der nachdem er geklickt wurde alle vorherigen Kommentare anzeigt.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{Pictures/screen_post_and_comments.png}%
 \caption{Post mit mehr als 3 Kommentaren}%
 \end{figure}
+Auch ein Kommentar kann bearbeitet und gelöscht werden, wenn der Nutzer diesen verfasst hat. Dies geschieht analog zur Bearbeitung eines Posts.
+
+\subsection{Die Kopfzeile}
+In der Kopfzeile wird zu jeder Zeit der Treebook-Schriftzug angezeigt, der den Link zur Startseite enthält. Am rechten Rand sieht der Nutzer nochmals seinen vollen Namen, hinter dem sich ein Link zu seinem Profil und zum Ausloggen verbirgt.
+Nach dem Ausloggen landet der Nutzer wieder auf der Startseite mit dem Treebook-Logo.
+
+\section{Das Profil}
+Das Profil eines jeden Nutzers gliedert sich in 3 Bereiche auf:
+\begin{list}{$\bullet$}{}
+\item Den Kopfbereich, der das Profilbild und den vollen Namen des Nutzers anzeigt
+\item Die Profil-Navigation, mit der man zwischen den Beiträgen, den persönlichen Informationen und den Fotos des Nutzers hin- und herschalten kann
+\item Die Inhaltsanzeige, die je nach ausgewähltem Pofil-Navigationselement, den entsprechenden nhalt anzeigt
+\end{list}
+
+Das Profilbild wird über \textbf{Gravatar}\footnote{\href{http://gravatar.com}{http://gravatar.com}} verwaltet. Betrachtet der Anwender sein eigenes Profil, so erscheint beim Überfahren des Profilsbilds mit der Maus ein kleiner Button zum Bearbeiten des Profilbildes. Dieses verlinkt nach Gravatar, wo der Anwender sein Profilbild ändern kann.
+
+Unter \textbf{Beiträge} sind alle für den Anwender zugänglichen Posts des Nutzers aufgelistet. Posts, die der Anwender nicht sehen soll, wird er auch hier nicht sehen.
+
+Ein Klick auf \textbf{Über mich} zeigt alle persönlichen Profilinformationen des Nutzers, sofern der Anwender sie sehen darf. Besucht der Anwender seine eigene "Über Mich"-Seite, so kann er einerseits seine Privatsphären-Einstellung, andererseits seine persönlichen Profilinformationen bearbeiten.
+Die Privatsphären-Einstellung legt fest, welche Treebook-Nutzer seine persönlichen Informationen und seine Fotos sehen dürfen.
+
+Klickt der Anwender auf \textbf{Fotos}, wird er eine der folgenden Inhalte sehen:
+\begin{list}{$\bullet$}{}
+\item Die Fotos des Nutzers, sofern der Anwender sie sehen darf
+\item Einen Hinweis, dass der Nutzer noch keine Fotos erstellt hat
+\end{list}
+oder, sofern der Anwender ein eigenes Profil aufruft:
+\begin{list}{$\bullet$}{}
+\item Seine Fotos
+\item Einen Hinweis, dass der Anwender jetzt seinen Treebook-Account mit seinem flickr-Konto verknüpfen kann
+\end{list}
+Wenn Fotos vorhanden sind, werden zunächst nur die Alben des Nutzers als \textbf{Thumbnails} angezeigt. Beim Überfahren mit der Maus erscheinen die bis zu 4 ersten Fotos dieses Albums in einer Miniatur-Ansicht.
+Nach Klick auf ein Album werden die enthaltenen Fotos als Thumbnails dargestellt. Nach einem Klick auf ein Foto wird dieses in der Großansicht geöffnet.
+In der Großansicht werden außerdem die Kommentare zu diesem Foto sowie ein Formular zum Kommentieren angezeigt.
+Gehört das Foto dem Anwender, so kann er dessen Titel und Beschreibung bearbeiten.
 \chapter{Fazit}
 
 \chapter{Literatur}

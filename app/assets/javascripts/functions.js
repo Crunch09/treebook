@@ -324,7 +324,7 @@ var showProfile = function(user_id) {
           },
           error: function(e) {
             // User hat noch keine Bilder
-            $('.profile_photos').append('<br />'+e.responseText.replace("Dieser User", u.firstname));
+            $('.profile_photos').html('<br />'+e.responseText.replace("Dieser User", u.firstname));
           },
           success: function(imgs) {
             if(imgs.url) {
@@ -338,7 +338,7 @@ var showProfile = function(user_id) {
                   }
                 },
                 error: function(e) {
-                  $('.profile_photos').append('<br />'+e.responseText.replace("Dieser User", u.firstname));
+                  $('.profile_photos').html('<br />'+e.responseText.replace("Dieser User", u.firstname));
                 }
               });
             } else {
