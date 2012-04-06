@@ -20,8 +20,10 @@
 \begin{document}
 \begin{titlepage}
 \begin{center}
-\LARGE{Technische Hochschule Mittelhessen}
-\linebreak
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=8cm]{Pictures/THM_Logo.png}%
+\end{figure}
 \large{Fachbereich MNI - Mathematik, Naturwissenschaften \& Informatik}
 \linebreak 
 \linebreak
@@ -55,11 +57,15 @@
 \normalsize{Ein soziales Netzwerk mit Anbindung an Facebook und flickr}
 \linebreak
 \linebreak
-\linebreak
-\linebreak
-\linebreak
-\linebreak
 \normalsize{Wintersemester 2011/2012}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=6cm]{Pictures/treebook_treelogo.png}%
+\end{figure}
+\linebreak
+\linebreak
+\linebreak
+\linebreak
 \end{center}
 \end{titlepage}
 \setcounter{page}{1}
@@ -154,11 +160,18 @@ Ein Post beinhaltet im Allgemeinen folgende Inhalte:
 \includegraphics[width=\ScaleIfNeeded]{Pictures/screen_post.png}%
 \caption{Post}%
 \end{figure}
-Sofern der Autor des Posts der aktuelle Nutzer ist, wird in der oberen rechten Ecke des Posts ein kleiner Button mit einem nach unten weisendem Pfeil angezeigt. Bei Klick auf diesen Button öffnet sich ein kleines Kontext-Menü zum \textbf{bearbeiten} und \textbf{löschen} des Posts.
+Sofern der Autor des Posts der aktuelle Nutzer ist, wird in der oberen rechten Ecke des Posts ein kleiner Button mit einem nach unten weisendem Pfeil angezeigt. Bei Klick auf diesen Button öffnet sich ein kleines Kontext-Menü zum \textbf{bearbeiten} und \textbf{löschen} des Posts. Bei erneutem Klick auf den Button wird das Kontext-Menü wieder ausgeblendet.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{Pictures/screen_post_menu.png}%
 \caption{Post mit Kontext-Menü}%
+\end{figure}
+Unterhalb des Posts werden die Kommentare eingerückt angezeigt. Diese sind im Wesentlichen genauso aufgebaut, wie ein Post. Allerdings können Kommentare nicht ebenfalls kommentiert werden, daher entfällt die Anzahl der Kommentare und der Link zum Kommentieren.
+Standardmäßig werden die bis zu letzten 3 Kommentare zu einem Post angezeigt. Wurde ein Post mehr als dreimal kommentiert, so erscheint zwischen Post und den letzten 3 Kommentaren ein Link "Zeige alle x vorherigen Kommentare".
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{Pictures/screen_post_and_comments.png}%
+\caption{Post mit mehr als 3 Kommentaren}%
 \end{figure}
 \chapter{Fazit}
 
