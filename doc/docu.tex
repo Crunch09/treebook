@@ -3,6 +3,16 @@
 \usepackage{ucs}
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{graphicx}
+\makeatletter
+\def\ScaleIfNeeded{%
+\ifdim\Gin@nat@width>\linewidth
+\linewidth
+\else
+\Gin@nat@width
+\fi
+}
+\makeatother
 \usepackage[bookmarksnumbered=true,bookmarksopen=true]{hyperref}
 \author{Christian Brandt & Florian Thomas}
 \title{Entwicklung webbasierter Software}
@@ -56,6 +66,11 @@
 \subsubsection{Eidesstattliche Erklärung}
 
 \tableofcontents
+\renewcommand{\chaptername}{}
+\renewcommand{\thechapter}{}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\thefigure}{\arabic{figure}}
+
 \chapter{Einleitung}
 Im Rahmen der Veranstaltung "Entwicklung webbasierter Software", geleitet von Herrn MSc. Martin Karry, soll zum Bestehen eine webbasierte Software entwickelt werden.
 \chapter{Einführung}
@@ -71,6 +86,40 @@ Dem Benutzer steht ein eigenes Profil zur Verfügung in dem er Informationen üb
 \chapter{Backend}
 
 \chapter{Frontend}
+\section{Allgemeiner Aufbau}
+Die Anwendung wird generell in mehreren Schritten geladen. Serverseitig wird zunächst das HTML-Grundgerüst zur Verfügung gestellt, in das nach und nach die gewünschten Inhalte geladen werden.
+Dies ermöglichen verschiedene JavaScript-Funktionen, welche neue Informationen per "Asynchronous JavaScript and XML" (kurz AJAX) vom Server abrufen.
+Wann und welche Informationen genau vom Server bereitgestellt werden, wird in den folgenden Abschnitten erläutert.
+
+\section{Der Anwendungsstart}
+Im Allgemeinen wird beim ersten Besuch der Treebook-Seite die Startseite mit dem Treebook-Logo angezeigt.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{Pictures/screen_startup.png}%
+\caption{Startseite}%
+\end{figure}
+Von hier aus hat der Anwender die Möglichkeit sich im System anzumelden oder zu registrieren.
+Die Anmeldung erfolgt wahlweise über eine dem System bekannte E-Mail-Adresse und dem dazugehörigen Passwort oder über die Facebook-OAuth-API ("Via Facebook anmelden").
+Ist der Nutzer dem System noch nicht bekannt, kann er sich dennoch direkt via Facebook anmelden. In diesem Fall wird für ihn ein neues Treebook-Nutzerkonto mit seinen bei Facebook hinterlegten Daten angelegt.
+
+\section{Nach dem Login}
+\subsection{Der Stream}
+Nachdem sich der Anwender angemeldet hat, sieht er zunächst den sogenannten \textbf{Stream} vor sich. Links davon befindet sich die allgemeine \textbf{Navigation} mit seinen erstellten Trees. Rechts befindet sich ein Suchfeld.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{Pictures/screen_stream.png}%
+\caption{Stream}%
+\end{figure}
+Im Stream werden alle \textbf{Posts} angezeigt, die der Anwender selbst, oder Kontakte in seinen Trees erfasst haben. Diese sind rückwärts sortiert nach Erstellungsdatum, sodass der Anwender am Seitenanfang immer die neuesten Posts sieht und, je weiter er nach unten scrollt, die Posts immer älter werden.
+Unter jedem Post werden (sofern vorhanden) die letzten 3 \textbf{Kommentare} zu diesem Post angezeigt. Sind mehr als 3 Kommentare verfügbar, sieht der Anwender einen Link "Alle vorherigen Kommentare anzeigen", welcher nach einem Klick die übrigen Kommentare zum Post anzeigt.
+\subsection{Die Navigation}
+Die Navigation teilt sich in 4 Unterbereiche auf:
+\begin{list}{$\bullet$}
+\item Das Profilbild und der Vorname des derzeit eingeloggten Nutzers
+\item Allgemeine Links zum Stream und zu den Fotos des eingeloggten Nutzers
+\item Die vom Nutzer erstellten Trees und ein Link zum Erstellen eines neuen Trees
+\item Ein Link zu den Credits
+\end{list}
 
 \chapter{Fazit}
 

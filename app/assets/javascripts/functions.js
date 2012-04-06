@@ -14,7 +14,7 @@ var makeToast = function(str) {
  * Zeigt einen modalen Ladebildschirm
  */
 var showLoading = function() {
-  $('body').append('<div id="modal_loading"><div><img src="assets/loading_big.gif" /></div></div>');
+  $('body').append('<div id="modal_loading"><div><img src="assets/loading_big.gif" /> Bitte warte einen Augenblick. Gleich geht es weiter!</div></div>');
   $('#modal_loading').css({
     'position': 'fixed',
     'top': 0,
@@ -27,14 +27,19 @@ var showLoading = function() {
   });
   $('#modal_loading > div').css({
     'position': 'relative',
-    'width': '32px',
     'height': '32px',
+    'width': '500px',
     'padding': '4px',
     'borderRadius': '4px',
+    'verticalAlign': 'middle',
+    'lineHeight': '32px',
     'background': '#FFF',
     'top': $(window).height()/2-20,
-    'left': $(window).width()/2-20,
+    'left': ($(window).width()/2)-250,
     'boxShadow': '0px 0px 16px #000'
+  });
+  $('#modal_loading > div > img').css({
+    'verticalAlign': 'middle'
   });
 }
 

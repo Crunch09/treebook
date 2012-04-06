@@ -21,5 +21,6 @@
 /doc/*.toc
 /doc/*.out
 /doc/*.pdf
+/doc/*.synctex.gz
 # Ignore Komodo-Project-File
 /treebook.komodoproject
