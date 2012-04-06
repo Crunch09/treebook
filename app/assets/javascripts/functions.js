@@ -430,7 +430,6 @@ var showProfile = function(user_id) {
                             if($(this).contents().text() != "") {
                               var photoId = parseInt($(this).contents().text());
                               var photoSetId = $('.upload_photo:visible').data('photoSetId');
-                              //TODO : AJAX an PhotoSet-Route
                               $.ajax({
                                 url: 'photosets/add',
                                 type: 'POST',
@@ -443,7 +442,7 @@ var showProfile = function(user_id) {
                                     url: 'photo/'+photoId+'.json',
                                     success: function(img) {
                                       console.log(img);
-                                      g.find('.thumbs').append('<div class="thumb"><a rel="photo_group" href="'+img.url+'" title="'+img.title+'"><img alt="'+img.title+'" src="'+img.url+'" /></a><span class="title"></span></div>');
+                                      g.find('.thumbs .upload_photo').before('<div class="thumb"><a rel="photo_group" href="'+img.url+'" title="'+img.title+'"><img alt="'+img.title+'" src="'+img.url+'" /></a><span class="title"></span></div>');
                                       var title = img.title.length > 12 ? img.title.substring(0,12)+"..." : img.title;
                                       g.find('.thumb:last').css({
                                         'background': 'url("'+img.url+'")'
@@ -458,9 +457,11 @@ var showProfile = function(user_id) {
                                         link.trigger('click');
                                         return false;
                                       });
+                                      initFancyBox(g.find('a[rel="photo_group"]'), u);
                                     },
                                     complete: function() {
                                       hideLoading();
+                                      $('.upload_photo_form').dialog("close");
                                     }
                                   });
                                 },
@@ -477,7 +478,6 @@ var showProfile = function(user_id) {
                               "Hochladen": function() {
                                 showLoading();
                                 $(this).find('form').submit();
-                                $(this).dialog("close");
                               }
                             },
                             close: function() {
@@ -487,153 +487,9 @@ var showProfile = function(user_id) {
                         });
                       });
                     }
-                    // Fancybox initialisieren
-                    g.find('a[rel="photo_group"]').fancybox({
-                      'cyclic': true,
-                      'titlePosition' 	: 'inside',
-                      'titleFormat'		: function(title, currentArray, currentIndex, currentOpts) {
-                        var editBtn = gon.user_id == u.id ? '<button name="edit_photo" title="Details bearbeiten"><i class="icon-edit"></i></button>' : "";
-                        var link = currentArray[currentIndex];
-                        var description = $(link).parents('.thumb').data('description') == "" ? "Keine Beschreibung vorhanden." : $(link).parents('.thumb').data('description');
-                        return '<span id="fancybox-title-inside"><input type="hidden" name="photo_id" value="'+$(currentArray[currentIndex]).parents('.thumb').data('id')+'" />'+editBtn+'<b name="title">'+title+'</b><br /><span name="description">'+description+'</span></span>';
-                      },
-                      'onComplete': function(currentArray, currentIndex) {
-                        var photo_id = $(currentArray[currentIndex]).parents('.thumb').data('id');
-                        
-                        // Bild Titel und Beschreibung bearbeiten
-                        $('#fancybox-title-inside button').button().css({
-                          'float': 'right'
-                        }).click(function() {
-                          var title = $('#fancybox-title-inside b').text();
-                          var descr = $('#fancybox-title-inside span').text();
-                          $('#fancybox-title-inside b[name="title"]').replaceWith('<input type="text" value="'+title+'" name="title" />');
-                          $('#fancybox-title-inside span[name="description"]').replaceWith('<textarea style="width: 75%;" rows="4" name="description">'+descr+'</textarea>');
-                          $(this).hide();
-                          $(this).after('<button name="save_photo_details"><i class="icon-ok"></i></button>');
-                          $(this).next('button[name="save_photo_details"]').button().css({
-                            'float': 'right'
-                          }).click(function() {
-                            var photoTitle = $('#fancybox-title-inside input[name="title"]').val();
-                            var photoDescr = $('#fancybox-title-inside textarea[name="description"]').val();
-                            
-                            if(photoTitle == "") {
-                              photoTitle = "Ohne Titel";
-                            }
-                            if(photoDescr == "") {
-                              photoDescr = "Keine Beschreibung vorhanden.";
-                            }
-                            $.ajax({
-                              url: 'edit_photo.json',
-                              type: 'POST',
-                              data: {
-                                'photo_id': $('#fancybox-title-inside input[name="photo_id"]').val(),
-                                'title': photoTitle,
-                                'description': photoDescr
-                              },
-                              dataType: 'json',
-                              success: function(r) {
-                                $('button[name="save_photo_details"]').remove();
-                                $('button[name="edit_photo"]').show();
-                                $('#fancybox-title-inside input[name="title"]').replaceWith('<b name="title">'+photoTitle+'</b>');
-                                $('#fancybox-title-inside textarea[name="description"]').replaceWith('<span name="description">'+photoDescr+'</span>');
-                                var shortTitle = photoTitle.length > 12 ? photoTitle.substring(0,12)+"..." : photoTitle;
-                                $(currentArray[currentIndex]).parents('.thumb').data({
-                                  'title': photoTitle,
-                                  'description': photoDescr
-                                }).find('.title').text(shortTitle);
-                              }
-                            });
-                          });
-                          $.fancybox.resize();
-                        });
-                        
-                        var cBox = $('<div class="fancybox-comments"><h3>Kommentare</h3><input type="hidden" name="photo_id" value="'+photo_id+'" /><textarea name="photo_comment"></textarea><span class="loading"><img src="assets/loading_big.gif" /></span></div>');
-                        cBox.appendTo('body');
-                        makeTextareaGrowable(cBox.find('textarea'));
-                        setInputDefault(cBox.find('textarea'), "Schreibe einen Kommentar zu diesem Bild.");
-                        
-                        cBox.find('textarea').bind('focus', function() {
-                          if($(this).nextAll('button[name="send_photo_comment"]').length == 0) {
-                            $(this).after('<button name="send_photo_comment"><i class="icon-ok"></i> Abschicken</button> <button name="cancel_photo_comment"><i class="icon-remove"></i> Abbrechen</button>');
-                            $(this).nextAll('button[name="send_photo_comment"]').click(function() {
-                              var c = $('textarea[name="photo_comment"]').val();
-                              if(c != "Schreibe einen Kommentar zu diesem Bild.") {
-                                $.ajax({
-                                  url: 'comment.json',
-                                  type: 'POST',
-                                  data: {
-                                    'photo_id': $('.fancybox-comments input[name="photo_id"]').val(),
-                                    'comment_text': c
-                                  },
-                                  dataType: 'json',
-                                  success: function(response) {
-                                    console.log(response);
-                                    $('button[name="cancel_photo_comment"]').click();
-                                    $('.fancybox-comments .no-comments').remove();
-                                    $('.fancybox-comments textarea').after('<div class="photo_comment"><img src="'+gon.gravatar+'" /><b>'+gon.firstname+' '+gon.lastname+'</b><br /><small>vor weniger als einer Minute</small><p>'+c+'</p></div>');
-                                  }
-                                });
-                              }
-                            });
-                            $(this).nextAll('button[name="cancel_photo_comment"]').click(function() {
-                              $(this).add($('button[name="send_photo_comment"]')).remove();
-                              $('textarea[name="photo_comment"]').val("").trigger('blur');
-                            });
-                            $(this).nextAll('button').button();
-                          }
-                        });
-                        
-                        cBox.css({
-                          'width': $('#fancybox-wrap').position().left-20,
-                          'height': $(window).height()-parseInt(cBox.css('paddingTop'))-parseInt(cBox.css('paddingBottom'))
-                        }).fadeIn('fast');
-                        
-                        $.ajax({
-                          url: 'photo_comments/'+photo_id+'.json',
-                          dataType: 'json',
-                          complete: function() {
-                            $('.fancybox-comments .loading').remove();
-                          },
-                          success: function(cmts) {
-                            if(cmts.length > 0) {
-                              for(var i = cmts.length-1; i >= 0; i--) {
-                                if(cmts[i].treebook_id > 0) {
-                                  var user = checkUserCache(cmts[i].treebook_id);
-                                  $('.fancybox-comments').append('<div class="photo_comment"><img src="'+user.image+'" /><b>'+user.firstname+' '+user.name+'</b><br /><small>'+cmts[i].time_ago+'</small><p>'+cmts[i]._content+'</p></div>');
-                                } else {
-                                  continue;
-                                }
-                              }
-                            } else {
-                              $('.fancybox-comments').append('<div class="no_photo_comments"><h4>Noch keine Kommentare vorhanden.</h4></div>');
-                            }
-                            $('body').css({
-                              'overflow': 'hidden'
-                            });
-                          }
-                        });
-                        /*
-                        $('#fancybox-title-inside > b[contenteditable]').data('title', $('#fancybox-title-inside > b[contenteditable]').text());
-                        $('#fancybox-title-inside > b[contenteditable]').bind('focus', function() {
-                          $(this).after('<input type="button" name="savePhotoTitle" value="Speichern" />');
-                          $(this).next('input[name="savePhotoTitle"]').click(function() {
-                            var ed = $(this).prev('b[contenteditable]');
-                            if(ed.text() != ed.data('title')) {
-                              makeToast("Der Titel wurde gespeichert.");
-                            }
-                            ed.trigger('focusout');
-                            $(this).remove();
-                          });
-                        });
-                        */
-                      },
-                      'onCleanup': function() {
-                        $('.fancybox-comments').fadeOut('fast', function() { $(this).remove(); });
-                        $('body').css({
-                          'overflow': 'auto'
-                        });
-                      }
-                    });
+                    
+                    initFancyBox(g.find('a[rel="photo_group"]'), u);
+                    
                     g.prepend('<button name="back_to_photosets"><i class="icon-arrow-left"></i> Zurück</button>');
                     g.find('button[name="back_to_photosets"]').button().click(function() {
                       $('.profile_photos .gallery').fadeOut(function() {
@@ -661,6 +517,156 @@ var showProfile = function(user_id) {
       } else {
         $('.profile_menu li:contains("Beiträge")').click();
       }
+    }
+  });
+}
+
+var initFancyBox = function(coll, u) {
+  // Fancybox initialisieren
+  coll.fancybox({
+    'cyclic': true,
+    'titlePosition': 'inside',
+    'titleFormat': function(title, currentArray, currentIndex, currentOpts) {
+      var editBtn = gon.user_id == u.id ? '<button name="edit_photo" title="Details bearbeiten"><i class="icon-edit"></i></button>' : "";
+      var link = currentArray[currentIndex];
+      var description = $(link).parents('.thumb').data('description') == "" ? "Keine Beschreibung vorhanden." : $(link).parents('.thumb').data('description');
+      return '<span id="fancybox-title-inside"><input type="hidden" name="photo_id" value="'+$(currentArray[currentIndex]).parents('.thumb').data('id')+'" />'+editBtn+'<b name="title">'+title+'</b><br /><span name="description">'+description+'</span></span>';
+    },
+    'onComplete': function(currentArray, currentIndex) {
+      var photo_id = $(currentArray[currentIndex]).parents('.thumb').data('id');
+      
+      // Bild Titel und Beschreibung bearbeiten
+      $('#fancybox-title-inside button').button().css({
+        'float': 'right'
+      }).click(function() {
+        var title = $('#fancybox-title-inside b').text();
+        var descr = $('#fancybox-title-inside span').text();
+        $('#fancybox-title-inside b[name="title"]').replaceWith('<input type="text" value="'+title+'" name="title" />');
+        $('#fancybox-title-inside span[name="description"]').replaceWith('<textarea style="width: 75%;" rows="4" name="description">'+descr+'</textarea>');
+        $(this).hide();
+        $(this).after('<button name="save_photo_details"><i class="icon-ok"></i></button>');
+        $(this).next('button[name="save_photo_details"]').button().css({
+          'float': 'right'
+        }).click(function() {
+          var photoTitle = $('#fancybox-title-inside input[name="title"]').val();
+          var photoDescr = $('#fancybox-title-inside textarea[name="description"]').val();
+          
+          if(photoTitle == "") {
+            photoTitle = "Ohne Titel";
+          }
+          if(photoDescr == "") {
+            photoDescr = "Keine Beschreibung vorhanden.";
+          }
+          $.ajax({
+            url: 'edit_photo.json',
+            type: 'POST',
+            data: {
+              'photo_id': $('#fancybox-title-inside input[name="photo_id"]').val(),
+              'title': photoTitle,
+              'description': photoDescr
+            },
+            dataType: 'json',
+            success: function(r) {
+              $('button[name="save_photo_details"]').remove();
+              $('button[name="edit_photo"]').show();
+              $('#fancybox-title-inside input[name="title"]').replaceWith('<b name="title">'+photoTitle+'</b>');
+              $('#fancybox-title-inside textarea[name="description"]').replaceWith('<span name="description">'+photoDescr+'</span>');
+              var shortTitle = photoTitle.length > 12 ? photoTitle.substring(0,12)+"..." : photoTitle;
+              $(currentArray[currentIndex]).parents('.thumb').data({
+                'title': photoTitle,
+                'description': photoDescr
+              }).find('.title').text(shortTitle);
+            }
+          });
+        });
+        $.fancybox.resize();
+      });
+      
+      var cBox = $('<div class="fancybox-comments"><h3>Kommentare</h3><input type="hidden" name="photo_id" value="'+photo_id+'" /><textarea name="photo_comment"></textarea><span class="loading"><img src="assets/loading_big.gif" /></span></div>');
+      cBox.appendTo('body');
+      makeTextareaGrowable(cBox.find('textarea'));
+      setInputDefault(cBox.find('textarea'), "Schreibe einen Kommentar zu diesem Bild.");
+      
+      cBox.find('textarea').bind('focus', function() {
+        if($(this).nextAll('button[name="send_photo_comment"]').length == 0) {
+          $(this).after('<button name="send_photo_comment"><i class="icon-ok"></i> Abschicken</button> <button name="cancel_photo_comment"><i class="icon-remove"></i> Abbrechen</button>');
+          $(this).nextAll('button[name="send_photo_comment"]').click(function() {
+            var c = $('textarea[name="photo_comment"]').val();
+            if(c != "Schreibe einen Kommentar zu diesem Bild.") {
+              $.ajax({
+                url: 'comment.json',
+                type: 'POST',
+                data: {
+                  'photo_id': $('.fancybox-comments input[name="photo_id"]').val(),
+                  'comment_text': c
+                },
+                dataType: 'json',
+                success: function(response) {
+                  console.log(response);
+                  $('button[name="cancel_photo_comment"]').click();
+                  $('.fancybox-comments .no-comments').remove();
+                  $('.fancybox-comments textarea').after('<div class="photo_comment"><img src="'+gon.gravatar+'" /><b>'+gon.firstname+' '+gon.lastname+'</b><br /><small>vor weniger als einer Minute</small><p>'+c+'</p></div>');
+                }
+              });
+            }
+          });
+          $(this).nextAll('button[name="cancel_photo_comment"]').click(function() {
+            $(this).add($('button[name="send_photo_comment"]')).remove();
+            $('textarea[name="photo_comment"]').val("").trigger('blur');
+          });
+          $(this).nextAll('button').button();
+        }
+      });
+      
+      cBox.css({
+        'width': $('#fancybox-wrap').position().left-20,
+        'height': $(window).height()-parseInt(cBox.css('paddingTop'))-parseInt(cBox.css('paddingBottom'))
+      }).fadeIn('fast');
+      
+      $.ajax({
+        url: 'photo_comments/'+photo_id+'.json',
+        dataType: 'json',
+        complete: function() {
+          $('.fancybox-comments .loading').remove();
+        },
+        success: function(cmts) {
+          if(cmts.length > 0) {
+            for(var i = cmts.length-1; i >= 0; i--) {
+              if(cmts[i].treebook_id > 0) {
+                var user = checkUserCache(cmts[i].treebook_id);
+                $('.fancybox-comments').append('<div class="photo_comment"><img src="'+user.image+'" /><b>'+user.firstname+' '+user.name+'</b><br /><small>'+cmts[i].time_ago+'</small><p>'+cmts[i]._content+'</p></div>');
+              } else {
+                continue;
+              }
+            }
+          } else {
+            $('.fancybox-comments').append('<div class="no_photo_comments"><h4>Noch keine Kommentare vorhanden.</h4></div>');
+          }
+          $('body').css({
+            'overflow': 'hidden'
+          });
+        }
+      });
+      /*
+      $('#fancybox-title-inside > b[contenteditable]').data('title', $('#fancybox-title-inside > b[contenteditable]').text());
+      $('#fancybox-title-inside > b[contenteditable]').bind('focus', function() {
+        $(this).after('<input type="button" name="savePhotoTitle" value="Speichern" />');
+        $(this).next('input[name="savePhotoTitle"]').click(function() {
+          var ed = $(this).prev('b[contenteditable]');
+          if(ed.text() != ed.data('title')) {
+            makeToast("Der Titel wurde gespeichert.");
+          }
+          ed.trigger('focusout');
+          $(this).remove();
+        });
+      });
+      */
+    },
+    'onCleanup': function() {
+      $('.fancybox-comments').fadeOut('fast', function() { $(this).remove(); });
+      $('body').css({
+        'overflow': 'auto'
+      });
     }
   });
 }
