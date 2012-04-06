@@ -145,6 +145,34 @@ class UsersController < ApplicationController
     end
   end
 
+  # Public: Ein Foto laden
+  #
+  # id - Id des Fotos
+  #
+  # Beispiele:
+  #
+  #  GET photo/1.json
+  #
+  # Gibt Fotoinfos oder eine Fehlermeldung zurück
+  def get_photo
+    flickr = FlickRaw::Flickr.new
+
+    if current_user.got_flickr_connection?
+      flickr.access_token = current_user.access_token
+      flickr.access_secret = current_user.access_secret
+      @photo = Hash.new
+      @photo = flickr.photos.getInfo :photo_id => params[:id]
+      @photo.to_hash['url'] = "http://farm#{@photo.farm}.staticflickr.com/#{@photo.server}/#{@photo.id}_#{@photo.secret}.jpg"
+    else
+      @photo = "Du hast leider noch keine Flickr-Verbindung hergestellt"
+    end
+
+    respond_to do |format|
+      format.json { render json: @photo }
+    end
+  end
+
+
   # Public: Kommentare zu einem Foto laden
   #
   # id - Id des Fotos
