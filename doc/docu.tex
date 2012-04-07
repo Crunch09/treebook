@@ -43,7 +43,7 @@
 \linebreak
 \large{Prüfer}
 \linebreak
-\large{MSc. Martin Karry}
+\large{Martin Karry, MSc.}
 \linebreak
 \linebreak
 \large{Prüflinge}
@@ -130,7 +130,28 @@ aus, um Beispieldaten (Benutzer, Trees und Posts) zu laden.
 in Ihrer Konsole ein um den Server zu starten und öffnen Sie anschließend die URL \textbf{http://localhost:3000} in Ihrem Browser.
 \end{enumerate}
 \chapter{Backend}
-
+\section{Allgemeines}
+Das Grundgerüst des Backends von Treebook besteht aus \textbf{Ruby on Rails}\footnote{\href{http://rubyonrails.org/}{http://rubyonrails.org/}}
+, dem mitgelieferten Webserver \textbf{WEBrick}\footnote{\href{http://en.wikipedia.org/wiki/WEBrick}{http://en.wikipedia.org/wiki/WEBrick}}, 
+dem Nachrichtenserver \textbf{Faye}\footnote{\href{http://faye.jcoglan.com/}{http://faye.jcoglan.com/}}, sowie einer \textbf{SQLite3}\footnote{\href{http://www.sqlite.org/}{http://www.sqlite.org/}} gestützten Datenbank.
+\textbf{TODO: Datenbankmodell und Erläuterungen}
+\section{Gems}
+Als Gems (deutsch: Edelsteine) werden in Ruby Erweiterungen bezeichnet, die der Entwickler zu seiner Software hinzufügen kann. Folgende Gems werden in Treebook verwendet:
+\subsection{Devise}
+Devise wird zur Benutzerauthentifizierung verwendet. Es hilft dabei, Benutzern den Zugriff auf Funktionen des Controllers zu erlauben bzw. zu verbieten. Desweiteren ermöglicht es den Zugriff auf die Daten des momentan eingeloggten Anwenders.
+\subsection{Omniauth-Facebook}
+Erweiterung von Devise um per \textbf{OAuth}\footnote{\href{http://oauth.net/}{http://oauth.net/}} einen Login mit Facebook zu ermöglichen. 
+Dafür wurde zunächst eine Treebook-App auf Facebook erstellt, der der Anwender bei erstmaligem Klick auf "Via Facebook anmelden" Zugriff auf 
+die grundlegenden Daten seines Facebook-Accounts gewähren muss. In Treebook wurde im \textbf{OmniauthCallbacksController} eine Funktion 
+definiert, die die von Facebook übermittelten Daten übergeben bekommt und anhand dieser entscheidet, ob ein neuer Benutzer angelegt werden muss oder ein bestehender Benutzer eingeloggt wird.
+\subsection{Omniauth-Flickr}
+Funktionsweise wie oben, allerdings wird hier nicht der Login per Flickr ermöglicht, sondern nur der Zugriff auf die Fotos des Treebook-Nutzers. Dazu wird der Benutzer bei der erstmaligen Verbindung gebeten, der Trebook-App die nötigen Rechte einzuräumen:
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{Pictures/screen_flickr_auth.png}%
+\caption{Flickr Authentifizierung}%
+\end{figure}
+Die \textbf{flickrcallback}-Action im \textbf{UsersController} nimmt den Callback von Flickr entgegegen und speichert das übergebene Token in der Datenbank.
 \chapter{Frontend}
 \section{Allgemeiner Aufbau}
 Die Anwendung wird generell in mehreren Schritten geladen. Serverseitig wird zunächst das HTML-Grundgerüst zur Verfügung gestellt, in das nach und nach die gewünschten Inhalte geladen werden.

@@ -329,7 +329,7 @@ class UsersController < ApplicationController
       current_user.save
 
     flash[:notice] = "Deine Fotos sind jetzt mit Treebook verbunden!"
-    redirect_to images_path
+    redirect_to root_path
   end
 
   # Public: Sucht alle User, die auf das Suchwort passen
