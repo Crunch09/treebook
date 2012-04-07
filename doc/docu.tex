@@ -4,6 +4,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{graphicx}
+\usepackage{listings}
 \makeatletter
 \def\ScaleIfNeeded{%
 \ifdim\Gin@nat@width>\linewidth
@@ -80,15 +81,54 @@
 \chapter{Einleitung}
 Im Rahmen der Veranstaltung "Entwicklung webbasierter Software", geleitet von Herrn MSc. Martin Karry, soll zum Bestehen eine webbasierte Software entwickelt werden.
 \chapter{Einführung}
-Die hier beschriebene Software ist ein soziales Netzwerk, vergleichbar mit Facebook\footnote{\href{http://facebook.com/}{http://facebook.com/}} oder Google+\footnote{\href{http://plus.google.com/}{http://plus.google.com/}}. Der Name "Treebook" leitet sich aus der Struktur der Freundschaften innerhalb dieser Software her. Dieses System ist angelehnt an das Circle-System von Google+\footnote{\href{http://www.youtube.com/watch?v=BeMZP-oyOII}{http://www.youtube.com/watch?v=BeMZP-oyOII}}: Der Benutzer (Baum) besitzt mehrere "Trees" (Äste) in denen wiederum mehrere Benutzer enthalten sein können.
+Die hier beschriebene Software ist ein soziales Netzwerk, vergleichbar mit Facebook\footnote{\href{http://facebook.com/}{http://facebook.com/}
+} oder Google+\footnote{\href{http://plus.google.com/}{http://plus.google.com/}}. Der Name "Treebook" leitet sich aus der Struktur der 
+Freundschaften innerhalb dieser Software her. Dieses System ist angelehnt an das Circle-System von Google+\footnote{\href{http://www.youtube.
+com/watch?v=BeMZP-oyOII}{http://www.youtube.com/watch?v=BeMZP-oyOII}}: Der Benutzer (Baum) besitzt mehrere "Trees" (Äste) in denen wiederum 
+mehrere Benutzer enthalten sein können.
 
-Treebook benutzt mehrere Application programming interfaces (nachfolgend kurz API) um die Funktionsmöglichkeiten der Software zu erweitern. Dem Benutzer ist es so mit Hilfe der API von Facebook möglich, sich mit seinen Facebook-Zugangsdaten bei Treebook anzumelden. Die API des Bilderdienstes Flickr\footnote{\href{http://flickr.com}{http://flickr.com}} wird verwendet um dem Anwender zu ermöglichen innerhalb von Treebook mit seinen auf Flickr bereitgestellten Fotos zu interagieren (Fotos ansehen, kommentieren, hochladen).
+Treebook benutzt mehrere Application programming interfaces (nachfolgend kurz API) um die Funktionsmöglichkeiten der Software zu erweitern. 
+Dem Benutzer ist es so mit Hilfe der API von Facebook möglich, sich mit seinen Facebook-Zugangsdaten bei Treebook anzumelden. Die API des 
+Bilderdienstes Flickr\footnote{\href{http://flickr.com}{http://flickr.com}} wird verwendet um dem Anwender zu ermöglichen innerhalb von 
+Treebook mit seinen auf Flickr bereitgestellten Fotos zu interagieren (Fotos ansehen, kommentieren, hochladen).
 
-Der Anwender hat mehrere für ein soziales Netzwerk typische Aktionen zur Auswahl. Er kann Nachrichten (sogenannte "Posts") schreiben, die er mit von ihm ausgewählten "Trees" teilt. Leser einer Nachricht können diese kommentieren, mögen und im Gegensatz zu den bekannten sozialen Netzwerken auch Ablehnung zeigen.
+Der Anwender hat mehrere für ein soziales Netzwerk typische Aktionen zur Auswahl. Er kann Nachrichten (sogenannte "Posts") schreiben, die er 
+mit von ihm ausgewählten "Trees" teilt. Leser einer Nachricht können diese kommentieren, mögen und im Gegensatz zu den bekannten sozialen 
+Netzwerken auch Ablehnung zeigen.
 
-Dem Benutzer steht ein eigenes Profil zur Verfügung in dem er Informationen über sich für die anderen Benutzer veröffentlichen kann. Diese Informationen sowie eventuelle Fotos können über die Privatsphäreneinstellung entweder mit allen angemeldeten Benutzern geteilt werden oder nur mit den eigenen Trees.
+Dem Benutzer steht ein eigenes Profil zur Verfügung in dem er Informationen über sich für die anderen Benutzer veröffentlichen kann. Diese 
+Informationen sowie eventuelle Fotos können über die Privatsphäreneinstellung entweder mit allen angemeldeten Benutzern geteilt werden oder 
+nur mit den eigenen Trees.
 \chapter{Analyse}
 
+\chapter{Installation}
+Stellen Sie zunächst sicher, dass eine Internetverbindung besteht.
+\section{Linux}
+\begin{enumerate}
+\item Laden Sie die aktuelle Ruby-Version (Stand 6.4.2012) von der offiziellen Ruby-Website herunter\footnote{\href{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}} entpacken und installieren es wie jedes andere Programm unter Linux.
+\item Führen Sie folgenden Befehl in der Konsole aus (eventuell mit Root-Rechten) \lstset{language=bash}
+\begin{lstlisting}
+# gem install bundler
+\end{lstlisting}
+\item Kopieren Sie den Ordner \textbf{treebook.tar.gz} von der mitgelieferten DVD an einen beliebigen Ort innerhalb Ihres Home-Verzeichnisses und führen Sie anschließend folgende Befehle in der Konsole aus:
+\begin{lstlisting}
+# cd /pfad/zum/treebook/verzeichnis
+# tar -zxvf treebook.tar.gz
+# cd treebook
+# bundle install
+# rake db:migrate
+\end{lstlisting}
+\item \textbf{Optional:} Führen Sie
+\begin{lstlisting}
+# rake db:seeds
+\end{lstlisting}
+aus, um Beispieldaten (Benutzer, Trees und Posts) zu laden.
+\item Geben Sie
+\begin{lstlisting}
+# foreman start
+\end{lstlisting}
+in Ihrer Konsole ein um den Server zu starten und öffnen Sie anschließend die URL \textbf{http://localhost:3000} in Ihrem Browser.
+\end{enumerate}
 \chapter{Backend}
 
 \chapter{Frontend}
