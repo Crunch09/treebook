@@ -106,7 +106,8 @@ Stellen Sie zunächst sicher, dass eine Internetverbindung besteht.
 \section{Linux}
 \begin{enumerate}
 \item Laden Sie die aktuelle Ruby-Version (Stand 6.4.2012) von der offiziellen Ruby-Website herunter\footnote{\href{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}} entpacken und installieren es wie jedes andere Programm unter Linux.
-\item Führen Sie folgenden Befehl in der Konsole aus (eventuell mit Root-Rechten) \lstset{language=bash}
+\item Führen Sie folgenden Befehl in der Konsole aus (eventuell mit Root-Rechten)
+\lstset{language=bash}
 \begin{lstlisting}
 # gem install bundler
 \end{lstlisting}
@@ -152,6 +153,22 @@ Funktionsweise wie oben, allerdings wird hier nicht der Login per Flickr ermögl
 \caption{Flickr Authentifizierung}%
 \end{figure}
 Die \textbf{flickrcallback}-Action im \textbf{UsersController} nimmt den Callback von Flickr entgegegen und speichert das übergebene Token in der Datenbank.
+\subsection{Flickraw}
+Das Flickraw-Gem\footnote{\href{https://github.com/hanklords/flickraw}{https://github.com/hanklords/flickraw}} ist eine Funktionsbibliothek, 
+die den Zugriff auf die Flickr-API erleichtert. Initialisiert wird es mit dem \textbf{API-Key} und \textbf{Shared-Secret} der Trebook-App auf Flickr.
+\lstset{language=Ruby}
+\begin{lstlisting}
+FlickRaw.api_key = "XYZ"
+FlickRaw.shared_secret = "020b6b5209"
+\end{lstlisting}
+In der Users-Tabelle der Datenbank sind drei Attribute für die Flickr-Authentifizierung des Benutzers wichtig: \textbf{flickr\_id} , 
+\textbf{access\_token} und \textbf{access\_secret} . Eine Funktion im User-Model ist deshalb speziell dafür gedacht zu überprüfen, ob der Benutzer eine Flickr-Verbindung eingerichtet hat
+\begin{lstlisting}
+def got_flickr_connection?
+  !self.access_token.nil? && !self.access_secret.nil?
+end
+\end{lstlisting}
+
 \chapter{Frontend}
 \section{Allgemeiner Aufbau}
 Die Anwendung wird generell in mehreren Schritten geladen. Serverseitig wird zunächst das HTML-Grundgerüst zur Verfügung gestellt, in das nach und nach die gewünschten Inhalte geladen werden.
