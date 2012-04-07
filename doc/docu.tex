@@ -315,6 +315,23 @@ Mit jQuery-UI lässt sich ein einheitliches Aussehen auf HTML-Seiten erreichen, 
 
 \subsection{AJAX}
 Dank der in jQuery integrierten Unterstützung für AJAX-Abfragen, kann die Treebook-Anwendung auf dieser Technologie aufbauend die Kommunikation mit dem Rails-Server durchführen.
+Überwiegend findet der Datenabruf im \textbf{JSON}\footnote{JavaScript Object Notation}-Format statt. Die jQuery-interne ajax-Methode lässt sich durch den \textit{dataType}-Parameter leicht steuern, sodass der Inhalt der abgerufenen Seite automatisch interpretiert wird. Im Falle von JSON ist der Rückgabewert kein String, sondern bereits ein fertiges JavaScript-Objekt.
+
+Ein Beispiel für eine GET-Anfrage um den Post mit der ID 1 abzurufen:
+\begin{footnotesize}
+\begin{verbatim}
+$.ajax({
+  url: 'posts/1.json',
+  type: 'GET',
+  dataType: 'json',
+  success: function(postObject) {
+    // postObject beinhaltet die JSON-Antwort
+    console.log(postObject);
+  }
+});
+\end{verbatim}
+\end{footnotesize}
+
 \chapter{Fazit}
 
 \chapter{Literatur}
