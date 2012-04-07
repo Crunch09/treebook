@@ -240,7 +240,7 @@ Auch ein Kommentar kann bearbeitet und gelöscht werden, wenn der Nutzer diesen 
 In der Kopfzeile wird zu jeder Zeit der Treebook-Schriftzug angezeigt, der den Link zur Startseite enthält. Am rechten Rand sieht der Nutzer nochmals seinen vollen Namen, hinter dem sich ein Link zu seinem Profil und zum Ausloggen verbirgt.
 Nach dem Ausloggen landet der Nutzer wieder auf der Startseite mit dem Treebook-Logo.
 
-\section{Das Profil}
+\subsection{Das Profil}
 Das Profil eines jeden Nutzers gliedert sich in 3 Bereiche auf:
 \begin{list}{$\bullet$}{}
 \item Den Kopfbereich, der das Profilbild und den vollen Namen des Nutzers anzeigt
@@ -255,7 +255,7 @@ Unter \textbf{Beiträge} sind alle für den Anwender zugänglichen Posts des Nut
 Ein Klick auf \textbf{Über mich} zeigt alle persönlichen Profilinformationen des Nutzers, sofern der Anwender sie sehen darf. Besucht der Anwender seine eigene "Über Mich"-Seite, so kann er einerseits seine Privatsphären-Einstellung, andererseits seine persönlichen Profilinformationen bearbeiten.
 Die Privatsphären-Einstellung legt fest, welche Treebook-Nutzer seine persönlichen Informationen und seine Fotos sehen dürfen.
 
-Klickt der Anwender auf \textbf{Fotos}, wird er eine der folgenden Inhalte sehen:
+Klickt der Anwender auf \textbf{Fotos}, wird er einen der folgenden Inhalte sehen:
 \begin{list}{$\bullet$}{}
 \item Die Fotos des Nutzers, sofern der Anwender sie sehen darf
 \item Einen Hinweis, dass der Nutzer noch keine Fotos erstellt hat
@@ -269,6 +269,20 @@ Wenn Fotos vorhanden sind, werden zunächst nur die Alben des Nutzers als \textb
 Nach Klick auf ein Album werden die enthaltenen Fotos als Thumbnails dargestellt. Zusätzlich wird, wenn das Fotoalbum den Anwender gehört, ein "Plus"-Icon angezeigt, hinter dem sich ein Foto-Upload-Dialog verbirgt.
 Nach einem Klick auf ein Foto wird dieses in der Großansicht geöffnet.
 In der Großansicht werden außerdem die Kommentare zu diesem Foto sowie ein Formular zum Kommentieren angezeigt. Gehört das Foto dem Anwender, so kann er dessen Titel und Beschreibung bearbeiten.
+\section{Verwendete Techniken}
+\subsection{jQuery}
+Der meiste für Treebook entwickelte JavaScript-Code basiert auf der JavaScript-Bibliothek \textbf{jQuery}\footnote{\href{http://jquery.com}{http://jquery.com}}. Mit jQuery hat es der JavaScript-Entwickler äußerst bequem, da er sich nicht mehr um Browser-Weichen\footnote{Browser-Weichen sind in JavaScript ünliche Code-Verzweigungen, die die verfügbaren Informationen des Browsers auswerten, um möglichst viele Browser-Eigenheiten bei der Ausführung des Codes abzudecken. Dadurch soll erreich werden, dass dieselbe JavaScript-Anwendung in möglichst vielen Browsern funktioniert.} kümmern muss und die Code-Menge um ein Vielfaches schrumpft. Damit bleibt JavaScript-Code überschaubarer und leichter wartbar.
+
+Desweiteren verfügt jQuery über eine auf CSS3 basierende Selector-Engine, die es dem Entwickler ermöglicht schnell an gewünschte DOM-Elemente\footnote{Document Object Model bezeichnet den baumartigen Aufbau einer auf XML basierenden Struktur.} zu gelangen und diese zu manipulieren.
+
+jQuery stellt viele Funktionen bereit, die DOM-Tree-Manipulationen erheblich vereinfachen. Mehr dazu ist in der offiziellen jQuery-API\footnote{\href{http://api.jquery.com}{http://api.jquery.com}} nachzulesen.
+
+\subsection{jQuery-UI}
+\textbf{jQuery-UI}\footnote{\href{http://jqueryui.com}{http://jqueryui.com}} ist eine Erweiterung für jQuery, die eine erweitere Effekt-Auswahl, sowie eine beliebig anpassbare und steuerbare Oberflächen-Gestaltung von einigen HTML-Elementen bietet.
+Mit jQuery-UI lässt sich ein einheitliches Aussehen auf HTML-Seiten erreichen, ohne dafür viel Aufwand betreiben zu müssen. jQuery-UI legt Wert auf Benutzerfreundlichkeit, die Einhaltung von Webstandards, Barrierefreiheit und flexibles Styling.
+
+\subsection{AJAX}
+Dank der in jQuery integrierten Unterstützung für AJAX-Abfragen, kann die Treebook-Anwendung auf dieser Technologie aufbauend die Kommunikation mit dem Rails-Server durchführen.
 \chapter{Fazit}
 
 \chapter{Literatur}
