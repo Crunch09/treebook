@@ -135,10 +135,39 @@ aus, um Beispieldaten (Benutzer, Trees und Posts) zu laden.
 in Ihrer Konsole ein um den Server zu starten und öffnen Sie anschließend die URL \textbf{http://localhost:3000} in Ihrem Browser.
 \end{enumerate}
 \chapter{Backend}
+\lstset{language=Ruby}
 \section{Allgemeines}
 Das Grundgerüst des Backends von Treebook besteht aus \textbf{Ruby on Rails}\footnote{\href{http://rubyonrails.org/}{http://rubyonrails.org/}}
 , dem mitgelieferten Webserver \textbf{WEBrick}\footnote{\href{http://en.wikipedia.org/wiki/WEBrick}{http://en.wikipedia.org/wiki/WEBrick}}, 
 dem Nachrichtenserver \textbf{Faye}\footnote{\href{http://faye.jcoglan.com/}{http://faye.jcoglan.com/}}, sowie einer \textbf{SQLite3}\footnote{\href{http://www.sqlite.org/}{http://www.sqlite.org/}} gestützten Datenbank.
+\subsection{Actions}
+Die in den einzelnen Controllern definierten Methoden werden als \textbf{Actions} bezeichnet, da Sie nicht dazu verwendet werden, von anderem Code aufgerufen zu werden, sondern durch HTTP-Requests im Frontend (GET, POST, PUT oder DELETE). Dabei wird in den Actions jeweil ein JSON-Objekt zurückgegeben, welches im Frontend weiter verarbeitet werden kann.
+Beispiel \textbf{show}-Action im \textbf{TreesController}
+\begin{lstlisting}
+# Gibt den Tree zurueck, oder falls
+# dieser nicht dem aktuellen User gehoert, eine Fehlermeldung
+def show
+  @tree = Tree.find(params[:id])
+
+  respond_to do |format|
+    if @tree.user == current_user
+      format.json { render json: @tree.to_json(:include => { :user => 
+      	{:only => [:firstname, :name, :id, :email]}, :users => 
+      	{:only => [:firstname, :name, :id, :email], :methods => :image}}) }
+    else
+      format.json { render json: "Du kannst leider nicht auf diesen Tree zugreifen", 
+      	status: :unprocessable_entity }
+    end
+  end
+end
+\end{lstlisting}
+\subsection{Routing}
+In der Datei \textbf{/config/routes.rb} werden die Routen definiert, die als HTTP-Request abgesetzt werden müssen, um auf eine bestimmte Action zuzugreifen.
+Beispiel:
+\begin{lstlisting}
+match "comment/" => "users#comment", :via => :post
+\end{lstlisting}
+\textbf{Bedeutet:} Ein HTTP POST-Request auf "http://localhost:3000/comment/" wird auf die Action \textbf{comment} im \textbf{UsersController} gemapt.
 \textbf{TODO: Datenbankmodell und Erläuterungen}
 \section{Gems}
 Als Gems (deutsch: Edelsteine) werden in Ruby Erweiterungen bezeichnet, die der Entwickler zu seiner Software hinzufügen kann. Folgende Gems werden in Treebook verwendet:
@@ -160,19 +189,46 @@ Die \textbf{flickrcallback}-Action im \textbf{UsersController} nimmt den Callbac
 \subsection{Flickraw}
 Das Flickraw-Gem\footnote{\href{https://github.com/hanklords/flickraw}{https://github.com/hanklords/flickraw}} ist eine Funktionsbibliothek, 
 die den Zugriff auf die Flickr-API erleichtert. Initialisiert wird es mit dem \textbf{API-Key} und \textbf{Shared-Secret} der Trebook-App auf Flickr.
-\lstset{language=Ruby}
 \begin{lstlisting}
 FlickRaw.api_key = "XYZ"
 FlickRaw.shared_secret = "020b6b5209"
 \end{lstlisting}
 In der Users-Tabelle der Datenbank sind drei Attribute für die Flickr-Authentifizierung des Benutzers wichtig: \textbf{flickr\_id} , 
-\textbf{access\_token} und \textbf{access\_secret} . Eine Funktion im User-Model ist deshalb speziell dafür gedacht zu überprüfen, ob der Benutzer eine Flickr-Verbindung eingerichtet hat
+\textbf{access\_token} und \textbf{access\_secret}. Die letzten beiden werden speziell für Request mit Schreibrechten benötigt. Eine Funktion im User-Model ist deshalb speziell dafür gedacht zu überprüfen, ob der Benutzer eine Flickr-Verbindung eingerichtet hat
 \begin{lstlisting}
 def got_flickr_connection?
   !self.access_token.nil? && !self.access_secret.nil?
 end
 \end{lstlisting}
+Hier als Beispiel die \textbf{upload\_photo} Action, welche die von \textbf{Devise} bereitgestellte Variable \textbf{current\_user} benutzt,
+um auf den aktuell eingeloggten Nutzer zuzugreifen und Parameter aus dem Frontend empfängt. Näheres dazu im Abschnitt \textbf{Routing}.
+\begin{lstlisting}
+def upload_photo
+  flickr = FlickRaw::Flickr.new
 
+  if current_user.got_flickr_connection?
+    flickr.access_token = current_user.access_token
+    flickr.access_secret = current_user.access_secret
+    @response = flickr.upload_photo params[:photo].tempfile.path, 
+    				:title => params[:title], 
+    				:description => params[:description]
+  else
+    @response = "Du hast leider noch keine Flickr-Verbindung hergestellt"
+  end
+
+  respond_to do |format|
+    format.json { render json: @response }
+  end
+end
+\end{lstlisting}
+\subsection{Faye}
+Faye ist ein \textbf("publish-subscribe" Nachrichtensystem), welches außerdem einen extra Server für diesen Zweck bereitstellt. So können alle Nutzer, die die benötigten Rechte besitzen in Echtzeit informiert werden, wenn ein neuer Post verfasst wurde.
+\subsection{Gon}
+Gon hilft dabei, die Kommunikation zwischen Backend und Frontend zu vereinfachen. So wird im Backend eine Variable \textbf{gon.user\_id} mit der Id des aktuell angemeldeten Benutzers belegt.
+\begin{lstlisting}
+gon.user_id = current_user.id
+\end{lstlisting}
+Diese Variable steht im Frontend zur Verfügung und kann im Javascript-Code ausgelesen werden.
 \chapter{Frontend}
 \section{Allgemeiner Aufbau}
 Die Anwendung wird generell in mehreren Schritten geladen. Serverseitig wird zunächst das HTML-Grundgerüst zur Verfügung gestellt, in das nach und nach die gewünschten Inhalte geladen werden.
