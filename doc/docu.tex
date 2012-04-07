@@ -3,8 +3,12 @@
 \usepackage{ucs}
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{texments}
+\usepackage{color}
+\usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{tikz}
 \makeatletter
 \def\ScaleIfNeeded{%
 \ifdim\Gin@nat@width>\linewidth
@@ -272,6 +276,17 @@ In der Großansicht werden außerdem die Kommentare zu diesem Foto sowie ein For
 \section{Verwendete Techniken}
 \subsection{jQuery}
 Der meiste für Treebook entwickelte JavaScript-Code basiert auf der JavaScript-Bibliothek \textbf{jQuery}\footnote{\href{http://jquery.com}{http://jquery.com}}. Mit jQuery hat es der JavaScript-Entwickler äußerst bequem, da er sich nicht mehr um Browser-Weichen\footnote{Browser-Weichen sind in JavaScript ünliche Code-Verzweigungen, die die verfügbaren Informationen des Browsers auswerten, um möglichst viele Browser-Eigenheiten bei der Ausführung des Codes abzudecken. Dadurch soll erreich werden, dass dieselbe JavaScript-Anwendung in möglichst vielen Browsern funktioniert.} kümmern muss und die Code-Menge um ein Vielfaches schrumpft. Damit bleibt JavaScript-Code überschaubarer und leichter wartbar.
+
+Ein Beispiel:
+
+\begin{footnotesize}
+\begin{verbatim}
+$(function() {
+  $('#message').fadeIn(); // blendet das HTML-Element mit der ID "message" ein,
+                          // nachdem die Seite fertig geladen ist
+});
+\end{verbatim}
+\end{footnotesize}
 
 Desweiteren verfügt jQuery über eine auf CSS3 basierende Selector-Engine, die es dem Entwickler ermöglicht schnell an gewünschte DOM-Elemente\footnote{Document Object Model bezeichnet den baumartigen Aufbau einer auf XML basierenden Struktur.} zu gelangen und diese zu manipulieren.
 
