@@ -141,7 +141,7 @@ Das Grundgerüst des Backends von Treebook besteht aus \textbf{Ruby on Rails}\fo
 , dem mitgelieferten Webserver \textbf{WEBrick}\footnote{\href{http://en.wikipedia.org/wiki/WEBrick}{http://en.wikipedia.org/wiki/WEBrick}}, 
 dem Nachrichtenserver \textbf{Faye}\footnote{\href{http://faye.jcoglan.com/}{http://faye.jcoglan.com/}}, sowie einer \textbf{SQLite3}\footnote{\href{http://www.sqlite.org/}{http://www.sqlite.org/}} gestützten Datenbank.
 \subsection{Actions}
-Die in den einzelnen Controllern definierten Methoden werden als \textbf{Actions} bezeichnet, da Sie nicht dazu verwendet werden, von anderem Code aufgerufen zu werden, sondern durch HTTP-Requests im Frontend (GET, POST, PUT oder DELETE). Dabei wird in den Actions jeweil ein JSON-Objekt zurückgegeben, welches im Frontend weiter verarbeitet werden kann.
+Die in den einzelnen Controllern definierten Methoden werden als \textbf{Actions} bezeichnet, da Sie nicht dazu verwendet werden, von anderem Code aufgerufen zu werden, sondern durch HTTP-Requests im Frontend (GET, POST, PUT oder DELETE). Dabei wird in den Actions jeweils ein JSON-Objekt zurückgegeben, welches im Frontend weiter verarbeitet werden kann.
 Beispiel \textbf{show}-Action im \textbf{TreesController}
 \begin{lstlisting}
 # Gibt den Tree zurueck, oder falls
