@@ -1,7 +1,3 @@
-/**
- * Steuert das automatische Aktualisieren der Zeiten der Posts (vor X Minuten etc.)
- */
-var autoRefreshRate = 10000;
 
 /**
  * Erzeugt einen Faye-Client für die Push-Benachrichtigung bei neuen Posts und Kommentaren

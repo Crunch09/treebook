@@ -1,4 +1,9 @@
 /**
+ * Steuert das automatische Aktualisieren der Zeiten der Posts (vor X Minuten etc.)
+ */
+var autoRefreshRate = 10000;
+
+/**
  * Aktualisiert das Datum aller Posts und Kommentare im Intervall autoRefreshRate
  */
 var refreshPostTimeAgo = function() {
