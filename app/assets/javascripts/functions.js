@@ -114,10 +114,53 @@ var show = function(str) {
             $('body').append('<div id="tree_users_list"></div>');
             for(var i = 0; i < tree.users.length; i++) {
               var u = tree.users[i];
-              $('#tree_users_list').append('<div class="user" name="'+u.id+'"><img src="'+u.image+'" /> '+u.firstname+' '+u.name+'</div>');
-              $('#tree_users_list .user:last').click(function() {
-                showProfile($(this).attr("name"));
-                $('#tree_users_list').dialog("close");
+              $('#tree_users_list').append('<div class="user" name="'+u.id+'"><span class="remove" style="float: right; z-index: 1000;" title="Aus \''+tree.title+'\' entfernen"><i class="icon-remove"></i></span><img src="'+u.image+'" /> '+u.firstname+' '+u.name+'</div>');
+              $('#tree_users_list .user:last').data({
+                'tree': tree,
+                'user': u
+              }).click(function(e) {
+                switch(e.target.className) {
+                  case "user":
+                    showProfile($(this).attr("name"));
+                    $('#tree_users_list').dialog("close");
+                    break;
+                }
+              });
+              
+              $('#tree_users_list .user:last .remove').data({
+                'tree': tree,
+                'user': u
+              }).click(function() {
+                var item = $(this).parents('.user');
+                var rm_user = $(this).data('user');
+                var t = $(this).data('tree');
+                var conf = confirm("Möchten Sie "+rm_user.firstname+" "+rm_user.name+" wirklich aus diesem Tree entfernen?");
+                if(conf) {
+                  var user_ids = new Array();
+                  for(var i = 0; i < $(this).parents('#tree_users_list').find('.user').length; i++) {
+                    var u = $(this).parents('#tree_users_list').find('.user:eq('+i+')').data('user');
+                    if(u.id != rm_user.id) {
+                      user_ids.push(u.id);
+                    }
+                  }
+                  $.ajax({
+                    url: 'trees/'+t.id+'.json',
+                    type: 'PUT',
+                    dataType: 'json',
+                    data: {
+                      'tree[user_ids]': user_ids
+                    },
+                    success: function(r) {
+                      item.slideUp(400, function() {
+                        $(this).remove();
+                        $('#actions span:first').text(user_ids.length+' '+(user_ids.length == 1 ? "Person" : "Personen"));
+                      });
+                    },
+                    error: function(e) {
+                      console.log(e);
+                    }
+                  });
+                }
               });
             }
             $('#tree_users_list').dialog({
@@ -200,9 +243,9 @@ var showProfile = function(user_id) {
                         "<div class='profile_image'><img src='"+u.image+"' width='64' /></div>"+
                         "<div class='profile_menu'>"+
                         "<ul>"+
-                        "<li><i class='icon-list'></i> Beiträge</li>"+
-                        "<li><i class='icon-user'></i> Über mich</li>"+
-                        "<li><i class='icon-picture'></i> Fotos</li>"+
+                        "<li><a href='#u:"+u.id+"'><i class='icon-list'></i> Beiträge</a></li>"+
+                        "<li><a href='#u:"+u.id+"_1'><i class='icon-user'></i> Über mich</a></li>"+
+                        "<li><a href='#u:"+u.id+"_2'><i class='icon-picture'></i> Fotos</a></li>"+
                         "<span style='clear: left;'></span>"+
                         "</ul>"+
                         "</div>"+

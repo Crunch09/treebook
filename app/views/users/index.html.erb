@@ -6,7 +6,7 @@
   <% end %>
     <div id="user_menu_layer">
       <ul>
-        <li><a onclick="showProfile(<%= "#{current_user.id}" %>)"><i class="icon-user"></i> Mein Profil</a></li>
+        <li><a href="#u:<%= "#{current_user.id}" %>" onclick="showProfile(<%= "#{current_user.id}" %>)"><i class="icon-user"></i> Mein Profil</a></li>
         <li><%= link_to raw('<i class="icon-signout"></i> Ausloggen'), destroy_user_session_path, :method => 'delete' %></li>
       </ul>
     </div>
@@ -31,15 +31,15 @@
     </span>
     <ul>
       <li><a href="#" name="Startseite" onclick="show('Startseite')"><i class="icon-home"></i> Stream</a></li>
-      <li><a href="#" name="Fotos" onclick="showProfile(<%= "#{current_user.id}" %>, 'Fotos')"><i class="icon-picture"></i> Fotos</a></li>
+      <li><a href="#u:<%= "#{current_user.id}" %>_2" name="Fotos" onclick="showProfile(<%= "#{current_user.id}" %>, 'Fotos')"><i class="icon-picture"></i> Fotos</a></li>
       <br />
       <li><b>Meine Trees</b></li>
       <% my_trees = current_user.owned_trees %>
       <% my_trees.each do |t| %>
-      <%=raw  "<li><a href=\"#\" name=\"tree_#{t.id}_#{t.title}\" onclick=\"show('tree:#{t.id}')\">#{image_tag("tree_icon.png")} #{t.title}</a></li>" %>
+      <%=raw  "<li><a href=\"#t:#{t.id}\" name=\"tree_#{t.id}_#{t.title}\" onclick=\"show('tree:#{t.id}')\">#{image_tag("tree_icon.png")} #{t.title}</a></li>" %>
       <% end %>
       <li><a href="#" name="addTree" onclick="addTree()"><i class="icon-plus"></i> neuer Tree</a></li>
-      <li><a href="#" name="Credits" onclick="show('Credits')" class="shy"><i class="icon-info-sign"></i> Credits</a></li>
+      <li><a href="#Credits" name="Credits" onclick="show('Credits')" class="shy"><i class="icon-info-sign"></i> Credits</a></li>
     </ul>
   </div>
   <div id="content">
@@ -59,6 +59,8 @@
     <div id="Credits">
       <h3>Credits</h3>
       <ul>
+        <li><a href="http://jquery.com" target="_blank">jQuery</a></li></li>
+        <li><a href="http://jqueryui.com" target="_blank">jQuery-UI</a></li>
         <li>Icon-Set: <a href="http://fortawesome.github.com/Font-Awesome" target="_blank">Font Awesome</a></li>
         <li><a href="http://fancybox.net" target="_blank">fancybox</a></li>
       </ul>

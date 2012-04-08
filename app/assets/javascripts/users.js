@@ -229,6 +229,9 @@ $(function() {
                               },
                               success: function(response) {
                                 makeToast(user.text()+" ist jetzt in "+tree.title);
+                                if(window.location.hash == "#t:"+tree.id) {
+                                    $('#actions span:first').text(userids.length+" "+(userids.length == 1 ? "Person" : "Personen"));
+                                }
                               },
                               error: function(e) {
                                 console.log(e);
@@ -258,9 +261,41 @@ $(function() {
     });
     
     /**
-     * Startseite aktivieren (Main-Stream)
+     * Anker prüfen
      */
     show('Startseite');
+    if(window.location.hash != "") {
+        switch(window.location.hash) {
+            case "#Credits":
+                show('Credits');
+                break;
+            default:
+                if(window.location.hash.indexOf(":") > 0) {
+                    var p = window.location.hash.split(":");
+                    switch(p[0]) {
+                        case "#u":
+                            if(p[1].indexOf("_") == 0) {
+                                showProfile(p[1]);
+                            } else {
+                                var e = p[1].split("_");
+                                switch(e[1]) {
+                                    case "1":
+                                        showProfile(e[0], "Über mich");
+                                        break;
+                                    case "2":
+                                        showProfile(e[0], "Fotos");
+                                        break;
+                                }
+                            }
+                            break;
+                        case "#t":
+                            show('tree:'+p[1]);
+                            break;
+                    }
+                }
+                break;
+        }
+    }
     
     /**
      * Status-Update initialisieren
