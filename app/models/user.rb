@@ -21,10 +21,10 @@ class User < ActiveRecord::Base
 
 
   def image
-    default_url = "http://localhost:3000/assets/derp.png"
+    default_url = "http://localhost:3000/assets/derp.png" #Default-Bild
     gravatar_id = Digest::MD5.hexdigest(self.email.downcase)
     img = "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{self.gravatar_size}&d=#{CGI.escape(default_url)}"
-    img
+    img #die letzte Anweisung im Code einer Methode wird zurückgegeben
   end
 
   def got_flickr_connection?

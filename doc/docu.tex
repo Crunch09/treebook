@@ -88,7 +88,7 @@ Im Rahmen der Veranstaltung "Entwicklung webbasierter Software", geleitet von He
 Die hier beschriebene Software ist ein soziales Netzwerk, vergleichbar mit Facebook\footnote{\href{http://facebook.com/}{http://facebook.com/}
 } oder Google+\footnote{\href{http://plus.google.com/}{http://plus.google.com/}}. Der Name "Treebook" leitet sich aus der Struktur der 
 Freundschaften innerhalb dieser Software her. Dieses System ist angelehnt an das Circle-System von Google+\footnote{\href{http://www.youtube.
-com/watch?v=BeMZP-oyOII}{http://www.youtube.com/watch?v=BeMZP-oyOII}}: Der Benutzer (Baum) besitzt mehrere "Trees" (Äste) in denen wiederum 
+com/watch?v=BeMZP-oyOII}{http://www.youtube.com/watch?v=BeMZP-oyOII}}: Der Benutzer besitzt mehrere "Trees" in denen wiederum 
 mehrere Benutzer enthalten sein können.
 
 Treebook benutzt mehrere Application programming interfaces (nachfolgend kurz API) um die Funktionsmöglichkeiten der Software zu erweitern. 
@@ -222,13 +222,27 @@ def upload_photo
 end
 \end{lstlisting}
 \subsection{Faye}
-Faye ist ein \textbf("publish-subscribe" Nachrichtensystem), welches außerdem einen extra Server für diesen Zweck bereitstellt. So können alle Nutzer, die die benötigten Rechte besitzen in Echtzeit informiert werden, wenn ein neuer Post verfasst wurde.
+Faye ist ein \textbf("publish-subscribe" Nachrichtensystem), welches außerdem einen extra Server für diesen Zweck bereitstellt. So können alle Nutzer, die die benötigten Rechte besitzen in Echtzeit informiert werden, wenn ein neuer Post verfasst wurde. Dazu muss im Backend nur eine von Faye bereitgestellte JavaScript-Datei zusaetzlich geladen werden. Der Code, der im Frontend implementiert werden muss, wird spaeter in dieser Dokumentation noch genauer erlaeutert.
 \subsection{Gon}
 Gon hilft dabei, die Kommunikation zwischen Backend und Frontend zu vereinfachen. So wird im Backend eine Variable \textbf{gon.user\_id} mit der Id des aktuell angemeldeten Benutzers belegt.
 \begin{lstlisting}
 gon.user_id = current_user.id
 \end{lstlisting}
 Diese Variable steht im Frontend zur Verfügung und kann im Javascript-Code ausgelesen werden.
+\subsection{Foreman}
+Foreman ermöglicht es mehrere Server mit einem Befehl zu starten(in Treebook sind das WEBrick und Faye). Die zu startenden Server werden in \textbf{/Procfile} definiert.
+\section{Sonstiges}
+\subsection{Gravatar}
+Gravatar\footnote{\href{http://gravatar.com}{http://gravatar.com}} ist ein Dienst, der es ermöglicht zu einer Email-Adresse ein Avatar zu hinterlegen. Treebook nutzt diesen Dienst für die Darstellung der Nutzer-Avatare. Der Vorteil dieser Lösung liegt für den Anwender darin, dass er seinen gewünschten Avatar an einer zentralen Stelle verwalten kann und nicht direkt in Treebook hochladen muss. Gravatar stellt eine API bereit, die es ermöglicht aus der Email-Adresse des Treebook-Nutzers die Gravatar Bild-URL zu berechnen, sowie einene Fallback-Avatar anzugeben.
+\begin{lstlisting}
+def image
+  default_url = "http://localhost:3000/assets/derp.png" # Default-Bild
+  gravatar_id = Digest::MD5.hexdigest(self.email.downcase)
+  img = "http://gravatar.com/avatar/#{gravatar_id}.png?s=40" +
+        "&d=#{CGI.escape(default_url)}"
+  img # die letzte Anweisung im Code einer Methode wird zurueckgegeben
+end
+\end{lstlisting}
 \chapter{Frontend}
 \section{Allgemeiner Aufbau}
 Die Anwendung wird generell in mehreren Schritten geladen. Serverseitig wird zunächst das HTML-Grundgerüst zur Verfügung gestellt, in das nach und nach die gewünschten Inhalte geladen werden.
