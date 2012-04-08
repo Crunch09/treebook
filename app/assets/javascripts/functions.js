@@ -114,7 +114,7 @@ var show = function(str) {
             $('body').append('<div id="tree_users_list"></div>');
             for(var i = 0; i < tree.users.length; i++) {
               var u = tree.users[i];
-              $('#tree_users_list').append('<div class="user" name="'+u.id+'"><span class="remove" style="float: right; z-index: 1000;" title="Aus \''+tree.title+'\' entfernen"><i class="icon-remove"></i></span><img src="'+u.image+'" /> '+u.firstname+' '+u.name+'</div>');
+              $('#tree_users_list').append('<div class="user" name="'+u.id+'"><span class="remove" style="float: right; z-index: 1000;" title="Aus \''+tree.title+'\' entfernen"><i class="icon-remove"></i></span><img src="'+u.image+'" width="32" /> '+u.firstname+' '+u.name+'</div>');
               $('#tree_users_list .user:last').data({
                 'tree': tree,
                 'user': u

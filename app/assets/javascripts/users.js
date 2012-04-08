@@ -228,6 +228,7 @@ $(function() {
                                 'tree[user_ids]': userids
                               },
                               success: function(response) {
+                                window.location.reload();
                                 makeToast(user.text()+" ist jetzt in "+tree.title);
                                 if(window.location.hash == "#t:"+tree.id) {
                                     $('#actions span:first').text(userids.length+" "+(userids.length == 1 ? "Person" : "Personen"));
