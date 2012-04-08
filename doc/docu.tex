@@ -109,12 +109,18 @@ nur mit den eigenen Trees.
 Stellen Sie zunächst sicher, dass eine Internetverbindung besteht.
 \section{Linux}
 \begin{enumerate}
-\item Laden Sie die aktuelle Ruby-Version (Stand 6.4.2012) von der offiziellen Ruby-Website herunter\footnote{\href{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}} entpacken und installieren es wie jedes andere Programm unter Linux.
-\item Führen Sie folgenden Befehl in der Konsole aus (eventuell mit Root-Rechten)
+\item Laden Sie die aktuelle Ruby-Version (Stand 6.4.2012) von der offiziellen Ruby-Website herunter\footnote{\href{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}} entpacken und installieren es wie jedes andere Programm unter Linux (evtl. werden dazu Root-Rechte benötigt).
 \lstset{language=bash}
+\begin{lstlisting}
+# ./configure
+# make
+# make install
+\end{lstlisting}
+\item Führen Sie folgenden Befehl in der Konsole aus (eventuell mit Root-Rechten)
 \begin{lstlisting}
 # gem install bundler
 \end{lstlisting}
+\item Sie benötigen eine JavaScript Runtime auf dem Zielsystem. Falls noch keine vorhanden ist, wird Node.js\footnote{\href{http://nodejs.org/}{http://nodejs.org/}} empfohlen.
 \item Kopieren Sie den Ordner \textbf{treebook.tar.gz} von der mitgelieferten DVD an einen beliebigen Ort innerhalb Ihres Home-Verzeichnisses und führen Sie anschließend folgende Befehle in der Konsole aus:
 \begin{lstlisting}
 # cd /pfad/zum/treebook/verzeichnis
