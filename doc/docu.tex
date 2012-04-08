@@ -350,16 +350,15 @@ In der Großansicht werden außerdem die Kommentare zu diesem Foto sowie ein For
 \subsection{jQuery}
 Der meiste für Treebook entwickelte JavaScript-Code basiert auf der JavaScript-Bibliothek \textbf{jQuery}\footnote{\href{http://jquery.com}{http://jquery.com}}. Mit jQuery hat es der JavaScript-Entwickler äußerst bequem, da er sich nicht mehr um Browser-Weichen\footnote{Browser-Weichen sind in JavaScript ünliche Code-Verzweigungen, die die verfügbaren Informationen des Browsers auswerten, um möglichst viele Browser-Eigenheiten bei der Ausführung des Codes abzudecken. Dadurch soll erreich werden, dass dieselbe JavaScript-Anwendung in möglichst vielen Browsern funktioniert.} kümmern muss und die Code-Menge um ein Vielfaches schrumpft. Damit bleibt JavaScript-Code überschaubarer und leichter wartbar.
 
-Ein Beispiel:
+Ein Beispiel:\footnote{In den Code-Beispielen wird der Zugriff auf die jQuery-Bibliothek mit der Variablen \textit{jQuery} gekennzeichnet. Im Produktiveinsatz wird meistens \textit{\$} verwendet, um den Code noch schlanker zu halten.}
 
-\begin{footnotesize}
-\begin{verbatim}
-$(function() {
-  $('#message').fadeIn(); // blendet das HTML-Element mit der ID "message" ein,
-                          // nachdem die Seite fertig geladen ist
+\begin{lstlisting}
+jQuery(function() {
+  // HTML-Element mit ID "message" ausblenden
+  // nachdem die Seite fertig geladen ist
+  jQuery('#message').fadeIn();
 });
-\end{verbatim}
-\end{footnotesize}
+\end{lstlisting}
 
 Desweiteren verfügt jQuery über eine auf CSS3 basierende Selector-Engine, die es dem Entwickler ermöglicht schnell an gewünschte DOM-Elemente\footnote{Document Object Model bezeichnet den baumartigen Aufbau einer auf XML basierenden Struktur.} zu gelangen und diese zu manipulieren.
 
@@ -374,9 +373,8 @@ Dank der in jQuery integrierten Unterstützung für AJAX-Abfragen, kann die Tree
 Überwiegend findet der Datenabruf im \textbf{JSON}\footnote{JavaScript Object Notation}-Format statt. Die jQuery-interne ajax-Methode lässt sich durch den \textit{dataType}-Parameter leicht steuern, sodass der Inhalt der abgerufenen Seite automatisch interpretiert wird. Im Falle von JSON ist der Rückgabewert kein String, sondern bereits ein fertiges JavaScript-Objekt.
 
 Ein Beispiel für eine GET-Anfrage um den Post mit der ID 1 abzurufen:
-\begin{footnotesize}
-\begin{verbatim}
-$.ajax({
+\begin{lstlisting}
+jQuery.ajax({
   url: 'posts/1.json',
   type: 'GET',
   dataType: 'json',
@@ -385,8 +383,36 @@ $.ajax({
     console.log(postObject);
   }
 });
-\end{verbatim}
-\end{footnotesize}
+\end{lstlisting}
+
+Der Vorteil von AJAX liegt vorallem darin, dass die Menge an übertragenen Daten gering gehalten wird, da nicht die komplette Seite mit jedem Aufruf eines Links neu ausgeliefert wird, sondern lediglich die Informationen, die gerade benötigt werden.
+Bei Treebok sind dies in den meisten Fällen JSON-Objekte, die dann direkt verwertet werden können.
+
+\subsection{Faye}
+Die Erweiterung von Treebook durch \textbf{Faye} ermöglicht es, dass alle Benutzer immer automatisch die neuesten Posts und Kommentare sehen.
+Jeder Benutzer hat seinen eigenen \textbf{Channel} (deutsch: Kanal). Wenn der Benutzer einen neuen Post oder Kommentar abschickt, wird die neue ID des Posts bzw. Kommentars über seinen Channel übertragen.
+Zeitgleich hat jeder Benutzer einen registrierten Listener auf alle Channels seiner verknüpften Kontakte. Sobald eine Nachricht auf einen der Channels registriert wird, prüft das System, ob der neue Post bzw. Kommentar für den aktuellen Nutzer relevant ist. Ist dies der Fall, so wird der Post bzw. Kommentar direkt angezeigt.
+
+Um den Lesefluss nicht zu beeinträchtigen, werden neue Posts und Kommentare nur direkt angezeigt, wenn sie sich unterhalb der aktuellen Ansicht des Nutzers befinden.
+Neuere Posts werden zwar an den Anfang des Streams gehängt, jedoch nicht direkt angezeigt, da sonst möglicherweise die Seite permanent nach unten "hüpfen" würde.
+Stattdessen wird einfach ein Link am Anfang des Streams eingeblendet, der den Nutzer darüber informiert, wieviele neue Posts gerade registriert worden sind. Erst nach einem Klick auf diesen Link werden alle neuen Posts und Kommentare eingeblendet.
+
+\subsection{Font Awesome}
+Zur Ergänzung der Benutzerführung verwendet Treebook das Icon-Set von \textbf{Font Awesome}\footnote{\href{http://fortawesome.github.com/Font-Awesome/}{http://fortawesome.github.com/Font-Awesome/}}.
+Die Icons von Font Awesome lassen sich sehr einfach in HTML-Seiten einbinden und sind voll skalierbar, da sie als Vektorgrafiken hinterlegt sind.
+Der Einbau eines solchen Icons kann an jeder beliebigen Stelle im HTML-Dokument erfolgen.
+\begin{figure}[htbp]
+\centering
+\begin{lstlisting}
+<li>
+  <a href="#" name="addTree" onclick="addTree()">
+    <i class="icon-plus"></i> neuer Tree
+  </a>
+</li>
+\end{lstlisting}
+\caption{Einbindung eines Font Awesome-Icons}%
+\end{figure}
+Dies fällt kürzer aus, als die Einbindung über ein \textit{img}-Tag und ist bequemer zu handhaben, da sich die Icons an der Schriftgröße orientieren und somit optimal ausgerichtet sind. \textit{img}-Tags müssen in der Regel per CSS noch extra ausgerichtet werden.
 
 \chapter{Fazit}
 
