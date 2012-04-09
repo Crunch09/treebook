@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120324170429) do
+ActiveRecord::Schema.define(:version => 20120409101644) do
 
   create_table "authentications", :force => true do |t|
     t.integer "user_id"
@@ -72,6 +72,13 @@ ActiveRecord::Schema.define(:version => 20120324170429) do
     t.string   "access_token"
     t.string   "access_secret"
     t.string   "flickr_id"
+    t.string   "likes"
+    t.text     "movies"
+    t.text     "food"
+    t.text     "music"
+    t.text     "books"
+    t.string   "twitter"
+    t.string   "github"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

@@ -15,7 +15,8 @@ class User < ActiveRecord::Base
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :firstname, :name,
                   :birthday, :trees, :posts, :owned_trees, :access_token, :access_secret,
-                  :flickr_id, :privacy_setting
+                  :flickr_id, :privacy_setting, :likes, :movies, :food, :music, :books,
+                  :twitter, :github
 
   attr_accessor :posts_by_user, :gravatar_size
 
@@ -25,6 +26,13 @@ class User < ActiveRecord::Base
     gravatar_id = Digest::MD5.hexdigest(self.email.downcase)
     img = "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{self.gravatar_size}&d=#{CGI.escape(default_url)}"
     img #die letzte Anweisung im Code einer Methode wird zurückgegeben
+  end
+
+  def about_me
+    h = Hash.new
+    h[:likes] = self.likes
+    h[:movies] = self.movies
+    return h
   end
 
   def got_flickr_connection?

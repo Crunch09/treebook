@@ -51,8 +51,13 @@ class UsersController < ApplicationController
     current_user.save
     User.current = current_user
     respond_to do |format|
+      if @user.privacy_setting == PRIVACY[:restricted] && @user != current_user && (@user.owned_tree_ids & current_user.tree_ids).count == 0
         format.json {render json: @user.as_json(:methods => [:image, :shared_posts],
-                          :except => [:access_secret, :access_token] )}
+                          :except => [:access_secret, :access_token, :likes, :movies, :food, :music, :books, :twitter, :github] )}
+      else
+        format.json {render json: @user.as_json(:methods => [:image, :shared_posts, :about_me],
+                          :except => [:access_secret, :access_token, :likes, :movies, :food, :music, :books, :twitter, :github] )}
+      end
     end
   end
 
