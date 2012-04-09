@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  receiver: 
+  message: MyString
+  recognized: false
+
+two:
+  receiver: 
+  message: MyString
+  recognized: false

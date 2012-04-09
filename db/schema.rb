@@ -11,13 +11,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120409101644) do
+ActiveRecord::Schema.define(:version => 20120409113040) do
 
   create_table "authentications", :force => true do |t|
     t.integer "user_id"
     t.string  "provider"
     t.string  "uid"
   end
+
+  create_table "notifications", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "message"
+    t.boolean  "recognized"
+    t.integer  "typ"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "notifications", ["user_id"], :name => "index_notifications_on_user_id"
 
   create_table "posts", :force => true do |t|
     t.integer  "user_id"

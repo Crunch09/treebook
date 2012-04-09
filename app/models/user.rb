@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   has_many :authentications
   has_many :posts
   has_many :owned_trees, :class_name => "Tree"
+  has_many :notifications
   has_and_belongs_to_many :trees
 
 
