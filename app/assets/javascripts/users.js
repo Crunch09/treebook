@@ -120,6 +120,8 @@ $(function() {
         offset: '0 -1'
       });
       
+      if($('#notification_menu_layer:visible').length > 0)
+        $('#top_notifications').click();
       $(this).css({
         'borderLeft': '1px solid #666',
         'borderRight': '1px solid #666',
@@ -136,6 +138,49 @@ $(function() {
         'background': 'transparent'
       });
     });
+    
+    /* Benachrichtigungen initialisieren */
+    $('#top_notifications').toggle(function() {
+      $('#notification_menu_layer').slideDown(200).position({
+        of: $('#top_notifications'),
+        my: 'right top',
+        at: 'right bottom',
+        offset: '0 -1'
+      });
+      
+      $.ajax({
+        url: 'notifications/update.json',
+        dataType: 'json',
+        type: 'PUT',
+        success: function() {
+            $('#top_notifications > span').text("0");
+            $('#top_notifications > i').replaceWith('<i class="icon-inbox"></i>');
+        }
+      });
+      
+      if($('#user_menu_layer:visible').length > 0)
+        $('#user_menu > b').click();
+      $(this).css({
+        'borderLeft': '1px solid #666',
+        'borderRight': '1px solid #666',
+        'textShadow': '#000 0px 0px 6px',
+        'backgroundColor': '#FFF',
+        'backgroundImage': $('#top_bar').css('backgroundImage')
+      });
+    }, function() {
+      $('#notification_menu_layer').slideUp(200, function() {
+        $('#notification_menu_layer ul > li').remove();
+        $('#notification_menu_layer ul').append('<li>Keine Benachrichtigungen vorhanden.</li>');
+      });
+      $(this).css({
+        'borderLeft': '1px solid transparent',
+        'borderRight': '1px solid transparent',
+        'textShadow': 'none',
+        'background': 'transparent'
+      });
+    });
+    client.publish('/notifications/'+gon.user_id, {});
+    
     
     /**
      * Rechte Spalte (Suche) initialisieren

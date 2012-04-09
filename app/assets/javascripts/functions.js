@@ -806,20 +806,6 @@ var initFancyBox = function(coll, u) {
           });
         }
       });
-      /*
-      $('#fancybox-title-inside > b[contenteditable]').data('title', $('#fancybox-title-inside > b[contenteditable]').text());
-      $('#fancybox-title-inside > b[contenteditable]').bind('focus', function() {
-        $(this).after('<input type="button" name="savePhotoTitle" value="Speichern" />');
-        $(this).next('input[name="savePhotoTitle"]').click(function() {
-          var ed = $(this).prev('b[contenteditable]');
-          if(ed.text() != ed.data('title')) {
-            makeToast("Der Titel wurde gespeichert.");
-          }
-          ed.trigger('focusout');
-          $(this).remove();
-        });
-      });
-      */
     },
     'onCleanup': function() {
       $('.fancybox-comments').fadeOut('fast', function() { $(this).remove(); });
@@ -831,7 +817,14 @@ var initFancyBox = function(coll, u) {
 }
 
 var showNotifications = function(arr) {
-  console.log(arr);
+  if(arr.length > 0) {
+    $('#top_notifications > span').text(arr.length);
+    $('#top_notifications > i').replaceWith('<i class="icon-envelope"></i>');
+    $('#notification_menu_layer ul > li').remove();
+    for(var i in arr) {
+      $('#notification_menu_layer ul').append('<li><a>'+arr[i].message+'</a></li>');
+    }
+  }
 }
 
 var setInputDefault = function(input, str) {

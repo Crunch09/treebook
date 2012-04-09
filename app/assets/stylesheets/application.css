@@ -102,6 +102,15 @@ div#spacer {
   height: 40px;
 }
 
+div#top_notifications {
+  cursor: pointer;
+  float: right;
+  z-index: 3;
+  line-height: 40px;
+  font-weight: bold;
+  padding: 0px 10px;
+}
+
 
 div#login_layer a{
   color: #000000;
@@ -174,7 +183,7 @@ div#user_menu {
 }
 
 
-div#user_menu_layer {
+div#user_menu_layer, div#notification_menu_layer {
   display: none;
   
   position: absolute;
@@ -192,29 +201,29 @@ div#user_menu_layer {
   box-shadow: 0px 0px 10px #000;
 }
 
-div#user_menu_layer a {
+div#user_menu_layer a, div#notification_menu_layer a {
   color: #000;
 }
 
-div#user_menu_layer ul {
+div#user_menu_layer ul, div#notification_menu_layer ul {
   list-style-type: none;
   margin: 0px;
   padding: 0px;
 }
 
-div#user_menu_layer ul > li {
+div#user_menu_layer ul > li, div#notification_menu_layer ul > li {
   margin: 0px;
   padding: 0px;
 }
 
-div#user_menu_layer ul > li > a {
+div#user_menu_layer ul > li > a, div#notification_menu_layer ul > li > a {
   display: block;
   margin: 0px;
   padding: 5px;
   cursor: pointer;
 }
 
-div#user_menu_layer ul > li > a:hover {
+div#user_menu_layer ul > li > a:hover, , div#notification_menu_layer ul > li > a:hover {
   background-color: #EEE;
   text-shadow: none !important;
 }
