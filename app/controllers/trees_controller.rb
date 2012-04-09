@@ -56,7 +56,10 @@ class TreesController < ApplicationController
     @tree = Tree.find(params[:id])
 
     respond_to do |format|
+      id = params[:tree][:user_ids].last
+      user = User.find id
       if @tree.update_attributes(params[:tree])
+        Notification.create(:user => user, :message => "#{current_user.firstname} #{current_user.name} hat dich in einen Tree hinzugefuegt", :recognized => false, :typ => 2)
         format.json { head :no_content }
       else
         format.json { render json: @tree.errors, status: :unprocessable_entity }

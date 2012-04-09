@@ -25,6 +25,8 @@ Treebook::Application.routes.draw do
   match "vote/" => "votes#create", :via => :post
   match "search/:keyword" => "users#search", :via => :get
   match "upload_form/" => "users#upload_form", :via => :get
+  match "notifications/" => "notifications#index", :via => :get
+  match "notifications/update" => "notifications#update", :via => :put
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
 

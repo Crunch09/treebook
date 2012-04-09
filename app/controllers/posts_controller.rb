@@ -63,6 +63,12 @@ class PostsController < ApplicationController
     @post.text = ERB::Util.h(@post.text)
     respond_to do |format|
       if @post.save
+        unless @post.post_id.nil?
+          p = Post.find @post.post_id
+          unless p.user.id == current_user.id
+            Notification.create(:user => p.user, :message => "#{current_user.firstname} #{current_user.name} hat deinen Post kommentiert", :recognized => false, :typ => 0)
+          end
+        end
         format.json { render json: @post.as_json, status: :created, location: @post }
       else
         format.json { render json: @post.errors, status: :unprocessable_entity }
