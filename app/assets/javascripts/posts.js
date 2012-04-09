@@ -16,6 +16,11 @@ var refreshPostTimeAgo = function() {
           dataType: 'json',
           success: function(p) {
             post.find('.post_date').html(p.time_ago);
+          },
+          error: function(e) {
+            if(e.status == 404) {
+                post.removeAttr("id");
+            }
           }
         });
       }
