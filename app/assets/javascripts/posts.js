@@ -250,7 +250,10 @@ var addComment = function(p, i, where) {
               success: function(response) {
                 makeToast("Dein Beitrag wurde gelöscht.");
                 $('#post_'+id).slideUp(400, function() {
+                  var p = $(this).prevAll('.post:first');
+                  console.log(p);
                   $(this).remove();
+                  updateCommentsAmount(p.attr("id").split("_")[1], parseInt(p.find('.post_comment').text())-1);
                 });
               }
             });
@@ -340,6 +343,7 @@ var sendComment = function(id) {
             addComment(p, response, 'after');
             updateCommentsAmount(id, p.comments.length);
             client.publish('/posts/'+gon.user_id, { post_id: p.id, response_id: response.id });
+            client.publish('/notifications/'+p.user_id, { type: 'comment', post_id: p.id, user_id: gon.user_id });
           }
         });
       });
@@ -351,7 +355,7 @@ var sendComment = function(id) {
  * Aktualisiert die angezeigte Anzahl der Kommentare für den Post mit der ID id
  */
 var updateCommentsAmount = function(id, amnt) {
-  $('#post_'+id+' .post_comment').html(amnt+' Kommentar'+(amnt != 1 ? 'e' : ''));
+  $('#post_'+id+' .post_comment').html('<i class="icon-comments"></i> '+amnt);
 }
 
 /**

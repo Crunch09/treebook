@@ -228,7 +228,7 @@ $(function() {
                                 'tree[user_ids]': userids
                               },
                               success: function(response) {
-                                window.location.reload();
+                                registerChannel(userid);
                                 makeToast(user.text()+" ist jetzt in "+tree.title);
                                 if(window.location.hash == "#t:"+tree.id) {
                                     $('#actions span:first').text(userids.length+" "+(userids.length == 1 ? "Person" : "Personen"));
@@ -456,76 +456,90 @@ $(function() {
         for(var i = 0; i < trees.length; i++) {
           for(var j = 0; j < trees[i].users.length; j++) {
             // für jeden User einen Listener auf seinen Channel erstellen
-            receiver[trees[i].users[j].id] = client.subscribe('/posts/'+trees[i].users[j].id, function(message) {
-              // Wenn der entsprechende User einen Post oder einen Kommentar abschickt, so wird hier die Info darüber ankommen
-              if(message.post_id != undefined && message.response_id != undefined) {
-                /**
-                 * Hier handelt es sich um einen neuen Kommentar
-                 *
-                 * Prüfen, ob ich den dazugehörigen Post und den Kommentar lesen darf
-                 */
-                $.ajax({
-                  url: 'posts/'+message.response_id+'.json',
-                  dataType: 'json',
-                  success: function(response) {
-                    // Ja, den Post darf ich lesen
-                    $.ajax({
-                      url: 'posts/'+message.post_id+'.json',
-                      dataType: 'json',
-                      success: function(post) {
-                        /**
-                         * Ja, den Kommentar darf ich lesen, also zeige ich ihn an
-                         */
-                        addComment(post, response, 'after');
-                        if($(window).scrollTop() > $('#post_'+message.response_id).offset().top) {
-                          /**
-                           * Falls ich gerade irgendwo weiter unten lese, wird nur ganz oben eine Benachrichtigung angezeigt.
-                           * Dies verhindert ein ungewolltes "herunterschieben" der Seite während dem Lesen.
-                           */
-                          $('#post_'+message.response_id).hide();
-                          showNewPostsAvailable();
-                        }
-                        // Anzahl der Kommentare im betreffenden Post aktualisieren
-                        updateCommentsAmount(message.post_id, post.comments.length);
-                      }
-                    });
-                  }
-                });
-              }
-              if(message.post_id != undefined && message.response_id == undefined) {
-                /**
-                 * Hier handelt es sich um einen neuen Post
-                 *
-                 * Prüfen, ob ich den Post lesen darf
-                 */
-                $.ajax({
-                  url: 'posts/'+message.post_id+'.json',
-                  dataType: 'json',
-                  success: function(post) {
-                    /**
-                     * Ja, den Post darf ich lesen, also zeige ich ihn an
-                     */
-                    addPost(post);
-                    if($(window).scrollTop() > $('#post_'+message.post_id).offset().top) {
-                      /**
-                       * Wieder die Prüfung, ob ich irgendwo weiter unten lese
-                       */
-                      $('#post_'+message.post_id).hide();
-                      showNewPostsAvailable();
-                    }
-                  }
-                });
-              }
-            });
+            registerChannel(trees[i].users[j].id);
           }
         }
       }
     });
     
+    // Notification-Channel einrichten
+    client.subscribe('/notifications/'+gon.user_id, function(message) {
+        $.ajax({
+            url: 'notifications.json',
+            dataType: 'json',
+            success: function(noti) {
+                showNotifications(noti);
+            }
+        });
+    });
     // Post-Datum-Aktualisierung starten
     refreshPostTimeAgo();
   }
 });
+
+var registerChannel = function(uid) {
+    receiver[uid] = client.subscribe('/posts/'+uid, function(message) {
+        // Wenn der entsprechende User einen Post oder einen Kommentar abschickt, so wird hier die Info darüber ankommen
+        if(message.post_id != undefined && message.response_id != undefined) {
+            /**
+             * Hier handelt es sich um einen neuen Kommentar
+             *
+             * Prüfen, ob ich den dazugehörigen Post und den Kommentar lesen darf
+             */
+            $.ajax({
+                url: 'posts/'+message.response_id+'.json',
+                dataType: 'json',
+                success: function(response) {
+                    // Ja, den Post darf ich lesen
+                    $.ajax({
+                        url: 'posts/'+message.post_id+'.json',
+                        dataType: 'json',
+                        success: function(post) {
+                            /**
+                             * Ja, den Kommentar darf ich lesen, also zeige ich ihn an
+                             */
+                            addComment(post, response, 'after');
+                            if($(window).scrollTop() > $('#post_'+message.response_id).offset().top) {
+                                /**
+                                 * Falls ich gerade irgendwo weiter unten lese, wird nur ganz oben eine Benachrichtigung angezeigt.
+                                 * Dies verhindert ein ungewolltes "herunterschieben" der Seite während dem Lesen.
+                                 */
+                                $('#post_'+message.response_id).hide();
+                                showNewPostsAvailable();
+                            }
+                            // Anzahl der Kommentare im betreffenden Post aktualisieren
+                            updateCommentsAmount(message.post_id, post.comments.length);
+                        }
+                    });
+                }
+            });
+        }
+        if(message.post_id != undefined && message.response_id == undefined) {
+            /**
+             * Hier handelt es sich um einen neuen Post
+             *
+             * Prüfen, ob ich den Post lesen darf
+             */
+            $.ajax({
+                url: 'posts/'+message.post_id+'.json',
+                dataType: 'json',
+                success: function(post) {
+                    /**
+                     * Ja, den Post darf ich lesen, also zeige ich ihn an
+                     */
+                    addPost(post);
+                    if($(window).scrollTop() > $('#post_'+message.post_id).offset().top) {
+                        /**
+                         * Wieder die Prüfung, ob ich irgendwo weiter unten lese
+                         */
+                        $('#post_'+message.post_id).hide();
+                        showNewPostsAvailable();
+                    }
+                }
+            });
+        }
+    });
+}
 
 /**
  * Dient als Cache, damit die grundlegenden User-Infos nicht für jeden neuen Post/Kommentar neu geladen werden

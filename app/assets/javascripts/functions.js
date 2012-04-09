@@ -153,6 +153,7 @@ var show = function(str) {
                     success: function(r) {
                       item.slideUp(400, function() {
                         $(this).remove();
+                        receiver[rm_user.id].cancel();
                         $('#actions span:first').text(user_ids.length+' '+(user_ids.length == 1 ? "Person" : "Personen"));
                       });
                     },
@@ -827,6 +828,10 @@ var initFancyBox = function(coll, u) {
       });
     }
   });
+}
+
+var showNotifications = function(arr) {
+  console.log(arr);
 }
 
 var setInputDefault = function(input, str) {
