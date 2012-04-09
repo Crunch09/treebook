@@ -32,6 +32,11 @@ class User < ActiveRecord::Base
     h = Hash.new
     h[:likes] = self.likes
     h[:movies] = self.movies
+    h[:food] = self.food
+    h[:music] = self.music
+    h[:books] = self.books
+    h[:twitter] = self.twitter
+    h[:github] = self.github
     return h
   end
 
