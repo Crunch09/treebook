@@ -170,7 +170,7 @@ $(function() {
     }, function() {
       $('#notification_menu_layer').slideUp(200, function() {
         $('#notification_menu_layer ul > li').remove();
-        $('#notification_menu_layer ul').append('<li>Keine Benachrichtigungen vorhanden.</li>');
+        $('#notification_menu_layer ul').append('<li><a>Keine Benachrichtigungen vorhanden.</a></li>');
       });
       $(this).css({
         'borderLeft': '1px solid transparent',
