@@ -8,7 +8,7 @@ class NotificationsController < ApplicationController
 	#
 	# Gibt alle Notifications des aktuellen Users zurück
 	def index
-		@notifications = User.find(:all, :conditions => [:user => current_user, :recognized => false])
+		@notifications = Notification.where(:user_id => current_user.id, :recognized => false)
 		respond_to do |format|
 			format.json { render json: @notifications }
 		end
@@ -22,7 +22,7 @@ class NotificationsController < ApplicationController
 	#
 	# Gibt nichts zurück
 	def update
-		@notifications = User.find(:all, :conditions => [:user => current_user, :recognized => false])
+		@notifications = Notification.where(:user_id => current_user.id, :recognized => false)
 		@notifications.each do |n|
 			n.update_attributes(:recognized => true)
 		end
