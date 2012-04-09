@@ -321,10 +321,10 @@ var showProfile = function(user_id) {
         comments.insertAfter($('#post_'+p.id));
       }
       
-      /* Profil-Informationen einfügen */
       if(u.id == gon.user_id) {
-        $('.profile_about').append('<div class="profile_privacy"><label for="privacy_setting">Privatsphäre</label></div>');
-        $('.profile_privacy').append('<select name="privacy_setting"><option value="0">für alle registrierten Nutzer sichtbar</option><option value="1">nur für Kontake sichtbar</option></select>');
+        /* Privatsphären-Einstellung einfügen */
+        $('.profile_about').append('<div class="profile_actions"><label for="privacy_setting">Privatsphäre</label></div>');
+        $('.profile_actions').append('<select name="privacy_setting"><option value="0">für alle registrierten Nutzer sichtbar</option><option value="1">nur für Kontake sichtbar</option></select>');
         switch(u.privacy_setting) {
           case 1:
             $('select[name="privacy_setting"] option[value="1"]').attr("selected", "selected");
@@ -334,7 +334,6 @@ var showProfile = function(user_id) {
             break;
         }
         $('select[name="privacy_setting"]').bind('change', function() {
-          //TODO PRIVACY-FLAG UPDATEN
           $.ajax({
             url: 'users',
             type: 'PUT',
@@ -349,6 +348,122 @@ var showProfile = function(user_id) {
               makeToast("Ein Fehler ist aufgetreten. Bitte versuche es später erneut.");
             }
           });
+        });
+      }
+      
+      /* Profil-Informationen einfügen */
+      $('.profile_about').append('<div class="profile_info"></div>');
+      if(u.about_me) {
+        var c = 0;
+        for(var i in u.about_me) {
+          if(u.about_me[i] != null && u.about_me[i].trim() != "") {
+            c++;
+            var label = "";
+            switch(i) {
+              case "books":
+                label = "Bücher";
+                break;
+              case "food":
+                label = "Essen";
+                break;
+              case "github":
+                label = "Github";
+                break;
+              case "likes":
+                label = "Ich mag";
+                break;
+              case "movies":
+                label = "Filme";
+                break;
+              case "music":
+                label = "Musik";
+                break;
+              case "twitter":
+                label = "Twitter";
+                break;
+            }
+            $('.profile_info').append('<label for="'+i+'">'+label+'</label><span name="'+i+'">'+u.about_me[i]+'</span>');
+          }
+        }
+        if(c == 0) {
+          $('.profile_info').append('<br /><span class="profile_message">'+u.firstname+' hat noch keine Informationen über sich eingegeben.</span>');
+        }
+      } else {
+        $('.profile_info').append('<br /><span class="profile_message">'+u.firstname+' hat noch keine Informationen über sich eingegeben oder teilt diese nur mit seinen Kontakten.</span>');
+      }
+      
+      if(u.id == gon.user_id) {
+        $('.profile_actions').append('<label for="profile_edit">Profil-Informationen</label><button name="profile_edit"><i class="icon-edit"></i> bearbeiten</button>');
+        $('.profile_actions button').button().click(function() {
+          $('.profile_info .profile_message').hide();
+          $(this).hide();
+          $(this).after('<button name="profile_save"><i class="icon-ok"></i> speichern</button>');
+          $('.profile_actions button[name="profile_save"]').button().click(function() {
+            showLoading();
+            $.ajax({
+              url: 'users.json',
+              type: 'PUT',
+              dataType: 'json',
+              data: {
+                'user[books]': $('.profile_info span[name="books"] textarea').val(),
+                'user[food]': $('.profile_info span[name="food"] textarea').val(),
+                'user[github]': $('.profile_info span[name="github"] textarea').val(),
+                'user[likes]': $('.profile_info span[name="likes"] textarea').val(),
+                'user[movies]': $('.profile_info span[name="movies"] textarea').val(),
+                'user[music]': $('.profile_info span[name="music"] textarea').val(),
+                'user[twitter]': $('.profile_info span[name="twitter"] textarea').val()
+              },
+              success: function(r) {
+                $('.profile_actions button[name="profile_save"]').remove();
+                $('.profile_actions button').show();
+                for(var i in u.about_me) {
+                  if($('.profile_info span[name="'+i+'"] textarea').val().trim() != "") {
+                    $('.profile_info span[name="'+i+'"]').text($('.profile_info span[name="'+i+'"] textarea').val());
+                  } else {
+                    $('.profile_info span[name="'+i+'"], label[for="'+i+'"]').remove();
+                  }
+                }
+                if($('.profile_info span[name]:not(:empty)').length == 0) {
+                  $('.profile_info .profile_message').show();
+                }
+                hideLoading();
+              },
+              error: function(e) {
+                console.log(e.responseText);
+              }
+            });
+          });
+          for(var i in u.about_me) {
+            if($('span[name="'+i+'"]').length > 0) {
+              $('span[name="'+i+'"]').wrapInner('<textarea></textarea>');
+            } else {
+              var label = "";
+              switch(i) {
+                case "books":
+                  label = "Bücher";
+                  break;
+                case "food":
+                  label = "Essen";
+                  break;
+                case "github":
+                  label = "Github";
+                  break;
+                case "likes":
+                  label = "Ich mag";
+                  break;
+                case "movies":
+                  label = "Filme";
+                  break;
+                case "music":
+                  label = "Musik";
+                  break;
+                case "twitter":
+                  label = "Twitter";
+                  break;
+              }
+              $('.profile_info').append('<label for="'+i+'">'+label+'</label><span name="'+i+'"><textarea>'+(u.about_me[i] == null ? "" : u.about_me[i])+'</textarea></span>');
+            }
+          }
         });
       }
       

@@ -1,3 +1,127 @@
 // Place all the styles related to the Posts controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+#Startseite textarea[name="status_update"] {
+  color: #999999;
+}
+
+#Startseite input[name="treetag"] {
+  display: none;
+}
+#Startseite .status_trees {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+}
+#Startseite .status_trees li {
+  margin-right: 4px;
+  padding: 4px;
+  border: 1px solid #EEE;
+  border-radius: 4px;
+  box-shadow: 0px 0px 4px #AAA;
+  float: left;
+}
+#Startseite input[name="send_post"] {
+  float: right;
+}
+
+.post {
+  position: relative;
+  padding: 5px;
+  margin-top: -1px;
+  border-top: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+}
+.comment {
+  position: relative;
+  padding: 5px;
+  margin-left: 20px;
+  margin-top: -1px;
+  border-left: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+}
+.post:last-child {
+  border-bottom: 0px;
+}
+.post_user {
+  font-weight: bold;
+  cursor: pointer;
+}
+.post_user .post_avatar img {
+  vertical-align: top;
+  float: left;
+  margin-right: 8px;
+}
+.post_date {
+  font-size: x-small;
+}
+.post_text {
+  word-wrap: break-word;
+}
+.post_toggle {
+  display: block;
+  width: 120px;
+  cursor: pointer;
+  color: #060;
+}
+.post_like, .post_dislike {
+  cursor: pointer;
+}
+.post_comment {
+  cursor: default;
+}
+
+.post_admin {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.post_admin_actions {
+  display: none;
+  position: absolute;
+  background: #FFF;
+  z-index: 5;
+  border: 1px solid #999;
+  box-shadow: 0px 0px 4px #999;
+}
+.post_admin_actions ul {
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+}
+.post_admin_actions ul li {
+  margin: 0px;
+  padding: 5px;
+  cursor: pointer;
+}
+.post_admin_actions ul li:hover {
+  background: #EEE;
+}
+textarea[name="post_text"] {
+  width: 100%;
+}
+
+.do_comment {
+  cursor: pointer;
+}
+.do_comment:hover {
+  color: #999;
+}
+.showAllComments {
+  cursor: pointer;
+}
+#showNewPosts {
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #999;
+  background-color: #EEE;
+  box-shadow: 0px 0px 4px #999;
+  cursor: pointer;
+}
+#showNewPosts:hover {
+  text-decoration: underline;
+}

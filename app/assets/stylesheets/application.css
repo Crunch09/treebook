@@ -64,3 +64,282 @@ textarea:focus {
     border: 1px solid #009900;
     box-shadow: 0px 0px 4px #008800;
 }
+
+div#top_bar {
+  position: fixed;
+  height: 40px;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  
+  background-color: #007700;
+  background-image: linear-gradient(bottom, rgba(0,0,0,0.2) 30%, rgba(255,255,255,0.2) 70%);
+  background-image: -o-linear-gradient(bottom, rgba(0,0,0,0.2) 30%, rgba(255,255,255,0.2) 70%);
+  background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0.2) 30%, rgba(255,255,255,0.2) 70%);
+  background-image: -webkit-linear-gradient(bottom, rgba(0,0,0,0.2) 30%, rgba(255,255,255,0.2) 70%);
+  background-image: -ms-linear-gradient(bottom, rgba(0,0,0,0.2) 30%, rgba(255,255,255,0.2) 70%);
+  
+  color: #FFF;
+}
+
+div#top_bar a {
+  color: #FFF;
+}
+div#top_bar a:hover {
+  text-shadow: #000 0px 0px 6px !important;
+}
+
+div#logo {
+  margin-left: 10px;
+  height: 40px;
+  width: 260px;
+}
+
+div#spacer {
+  float: right;
+  width: 20px;
+  height: 40px;
+}
+
+
+div#login_layer a{
+  color: #000000;
+}
+
+div#login_layer, div#signup_layer {
+  float: right;
+  line-height: 40px;
+  margin-right: 20px;
+}
+
+div#login_layer > b, div#signup_layer > b, div#user_menu > b {
+  display: block;
+  padding: 0px 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  z-index: 3;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+
+div#login_layer > b:hover, div#signup_layer > b:hover, div#user_menu > b:hover {
+  text-shadow: #000 0px 0px 6px !important;
+}
+
+div#login_layer > div, div#signup_layer > div {
+  display: none;
+  
+  position: absolute;
+  width: 250px;
+  top: 39px;
+  right: 0;
+  z-index: 1;
+  padding: 10px;
+  
+  color: #000;
+  line-height: 150%;
+  background-color: #FFF;
+  border: 1px solid #666;
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: 0px 0px 10px #000;
+}
+
+div#login_layer > input, div#signup_layer > input {
+  width: 100%;
+}
+
+div#logout {
+  float: right;
+  line-height: 40px;
+  font-weight: bold;
+  margin-right: 20px;
+  padding: 0px 10px;
+}
+
+div#tree_logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -150px 0px 0px -150px;
+}
+
+div#user_menu {
+  z-index: 3;
+  float: right;
+  margin-right: 20px;
+  line-height: 40px;
+  font-weight: bold;
+}
+
+
+div#user_menu_layer {
+  display: none;
+  
+  position: absolute;
+  width: 250px;
+  top: 39px;
+  right: 0;
+  z-index: 1;
+  padding: 10px 0px;
+  
+  color: #000;
+  line-height: 150%;
+  background-color: #FFF;
+  border: 1px solid #666;
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: 0px 0px 10px #000;
+}
+
+div#user_menu_layer a {
+  color: #000;
+}
+
+div#user_menu_layer ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+div#user_menu_layer ul > li {
+  margin: 0px;
+  padding: 0px;
+}
+
+div#user_menu_layer ul > li > a {
+  display: block;
+  margin: 0px;
+  padding: 5px;
+  cursor: pointer;
+}
+
+div#user_menu_layer ul > li > a:hover {
+  background-color: #EEE;
+  text-shadow: none !important;
+}
+
+div#main {
+  position: absolute;
+  top: 39px;
+  left: 50%;
+  margin-left: -530px;
+  z-index: 1;
+  width: 1060px;
+}
+
+div#navigation {
+  float: left;
+  width: 200px;
+  padding: 24px 10px;
+  margin: 0px;
+}
+
+div#navigation ul {
+  margin: 20px 0px;
+  padding: 0px;
+  list-style-type: none;
+}
+
+div#navigation ul a {
+  font-weight: bold;
+  display: block;
+  line-height: 25px;
+  padding: 5px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+div#navigation ul a img {
+  vertical-align: middle;
+}
+
+div#navigation ul a:hover {
+  background-color: #EEEEEE;
+}
+
+.active {
+  background-color: #DDDDDD;
+}
+
+.shy {
+  color: #999;
+}
+
+.avatar {
+  margin-right: 10px;
+  margin-top: 10px;
+  float: left;
+}
+
+.its_me {
+  line-height: 64px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+#sidebar {
+  float: right;
+  width: 200px;
+  padding: 24px 10px;
+  margin: 0px;
+}
+
+#content {
+  width: 600px;
+  margin: 0px 0px 0px 220px;
+  padding: 24px 10px;
+  border: 1px solid #DDDDDD;
+}
+
+#content > div {
+  display: none;
+}
+
+#actions {
+  display: none;
+  float: right;
+}
+#actions span {
+  padding: 4px;
+  margin-left: 10px;
+  border: 1px solid rgba(0,0,0,0);
+}
+#actions span:hover {
+  cursor: pointer;
+  border: 1px solid #999;
+  background: #EFEFEF;
+}
+#tree_users_list .user {
+  vertical-align: middle;
+}
+#tree_users_list .user:hover {
+  cursor: pointer;
+  background-color: #EFEFEF;
+}
+#tree_users_list .user img {
+  vertical-align: middle;
+}
+
+
+
+/** SUCHE **/
+
+.friendresult {
+  max-height: 400px;
+  margin-top: 10px;
+  /*overflow-y: auto;*/
+}
+.friendresult .user {
+  padding: 4px;
+  line-height: 25px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.friendresult .user:hover {
+  background: #F4F4F4;
+}
+.friendresult .user img {
+  vertical-align: middle;
+  margin-right: 4px;
+}
