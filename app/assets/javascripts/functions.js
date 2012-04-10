@@ -820,6 +820,7 @@ var showNotifications = function(arr) {
   if(arr.length > 0) {
     $('#top_notifications > span').text(arr.length);
     $('#top_notifications > i').replaceWith('<i class="icon-envelope"></i>');
+    $('#top_notifications').attr("title", arr.length+" neue Benachrichtigung"+(arr.length != 1 ? "en" : ""));
     $('#notification_menu_layer ul > li').remove();
     for(var i in arr) {
       $('#notification_menu_layer ul').append('<li><a>'+arr[i].message+'</a></li>');

@@ -155,6 +155,7 @@ $(function() {
         success: function() {
             $('#top_notifications > span').text("0");
             $('#top_notifications > i').replaceWith('<i class="icon-inbox"></i>');
+            $('#top_notifications').removeAttr("title");
         }
       });
       
