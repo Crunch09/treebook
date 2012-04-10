@@ -139,6 +139,10 @@ $(function() {
       });
     });
     
+    $('#user_menu_layer > ul > li > a').click(function() {
+       $('#user_menu > b').click(); 
+    });
+    
     /* Benachrichtigungen initialisieren */
     $('#top_notifications').toggle(function() {
       $('#notification_menu_layer').slideDown(200).position({
@@ -313,6 +317,9 @@ $(function() {
     show('Startseite');
     if(window.location.hash != "") {
         switch(window.location.hash) {
+            case "#Account":
+                show('Account');
+                break;
             case "#Credits":
                 show('Credits');
                 break;
@@ -520,6 +527,45 @@ $(function() {
     });
     // Post-Datum-Aktualisierung starten
     refreshPostTimeAgo();
+    
+    // Account-Management initialisieren
+    $('#Account button').button({ disabled: true }).click(function() {
+        $.ajax({
+            url: 'users.json',
+            type: 'PUT',
+            dataType: 'json',
+            data: {
+                'user[current_password]': $('#Account input[name="oldpass"]').val(),
+                'user[password]': $('#Account input[name="newpass"]').val(),
+                'user[password_confirmation]': $('#Account input[name="newpasscopy"]').val()
+            },
+            success: function(r) {
+                $('#Account input[name="oldpass"], #Account input[name="newpass"], #Account input[name="newpasscopy"]').val("");
+                makeToast("Dein Passwort wurde geändert.");
+            },
+            error: function(e) {
+                makeToast("Passwort konnte nicht geändert werden. Versuche es später erneut.");
+            }
+        });
+    });
+    $('#Account input[name="newpass"], #Account input[name="newpasscopy"]').bind('keyup', function() {
+        var np = $('#Account input[name="newpass"]');
+        var npc = $('#Account input[name="newpasscopy"]');
+        var but = $('#Account button');
+        if(np.val().length < 6) {
+            np.addClass('invalidInput');
+            but.button("disable");
+        } else {
+            np.removeClass('invalidInput');
+            if(np.val() != npc.val()) {
+                npc.addClass('invalidInput');
+                but.button("disable");
+            } else {
+                npc.removeClass('invalidInput');
+                but.button("enable");
+            }
+        }
+    });
   }
 });
 

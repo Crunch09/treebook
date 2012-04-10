@@ -65,6 +65,11 @@ textarea:focus {
     box-shadow: 0px 0px 4px #008800;
 }
 
+label {
+  display: block;
+  font-weight: bold;
+}
+
 div#top_bar {
   position: fixed;
   height: 40px;
@@ -351,4 +356,11 @@ div#navigation ul a:hover {
 .friendresult .user img {
   vertical-align: middle;
   margin-right: 4px;
+}
+
+
+/** Hilfs-Klassen **/
+
+.invalidInput {
+  border: 1px solid red !important;
 }

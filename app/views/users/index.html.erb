@@ -6,6 +6,7 @@
     <div id="user_menu_layer">
       <ul>
         <li><a href="#u:<%= "#{current_user.id}" %>" onclick="showProfile(<%= "#{current_user.id}" %>)"><i class="icon-user"></i> Mein Profil</a></li>
+        <li><a href="#Account" onclick="show('Account')"><i class="icon-cogs"></i> Account-Einstellungen</a></li>
         <li><%= link_to raw('<i class="icon-signout"></i> Ausloggen'), destroy_user_session_path, :method => 'delete' %></li>
       </ul>
     </div>
@@ -64,6 +65,18 @@
     </div>
     <div id="Profil">
     
+    </div>
+    <div id="Account">
+      <h3>Account-Einstellungen</h3>
+      <div>
+        <label for="oldpass">altes Passwort</label>
+        <input type="password" name="oldpass" required /><br />
+        <label for="newpass">neues Passwort (min. 6 Zeichen)</label>
+        <input type="password" name="newpass" required /><br />
+        <label for="newpasscopy">neues Passwort wiederholen</label>
+        <input type="password" name="newpasscopy" required /><br />
+        <button name="setnewpass"><i class="icon-ok"></i> Abschicken</button>
+      </div>
     </div>
     <div id="Credits">
       <h3>Credits</h3>
