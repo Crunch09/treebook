@@ -348,7 +348,9 @@ var sendComment = function(id) {
             addComment(p, response, 'after');
             updateCommentsAmount(id, p.comments.length);
             client.publish('/posts/'+gon.user_id, { post_id: p.id, response_id: response.id });
-            client.publish('/notifications/'+p.user_id, { type: 'comment', post_id: p.id, user_id: gon.user_id });
+	    if(p.user_id != gon.user_id) {
+	      client.publish('/notifications/'+p.user_id, { type: 'comment', post_id: p.id, user_id: gon.user_id });
+	    }
           }
         });
       });
