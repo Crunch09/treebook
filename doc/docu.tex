@@ -100,8 +100,8 @@ Der Anwender hat mehrere für ein soziales Netzwerk typische Aktionen zur Auswah
 mit von ihm ausgewählten "Trees" teilt. Leser einer Nachricht können diese kommentieren, mögen und im Gegensatz zu den bekannten sozialen 
 Netzwerken auch Ablehnung zeigen.
 
-Dem Benutzer steht ein eigenes Profil zur Verfügung in dem er Informationen über sich für die anderen Benutzer veröffentlichen kann. Diese 
-Informationen sowie eventuelle Fotos können über die Privatsphäreneinstellung entweder mit allen angemeldeten Benutzern geteilt werden oder 
+Dem Benutzer steht ein eigenes Profil zur Verfügung, in dem er Informationen über sich, für die anderen Benutzer, veröffentlichen kann. Diese 
+Informationen, sowie eventuelle Fotos können über die Privatsphäreneinstellung entweder mit allen angemeldeten Benutzern geteilt werden oder 
 nur mit den eigenen Trees.
 
 Eine Onlineversion von Treebook ist unter \textbf{http://treebook.florianthomas.net} verfügbar.
@@ -111,7 +111,7 @@ Software, die in diesem Markt bereits existiert beinhaltet etablierte Namen wie 
 Standardmäßig ist es der Nutzer gewohnt in einem sozialen Netzwerk eigene Posts verfassen zu können, die von den Freunden im Netzwerk gelesen und kommentiert werden können. Im Gegensatz zu Twitter gibt es in Treebook kein Zeichenlimit für einen Post, da diese Begrenzung in Twitter auf Grund der maximalen Länge einer SMS eingeführt wurde\footnote{\href{http://www.quora.com/Twitter-Inc-company/What-is-the-rationale-behind-Twitters-15-character-limit-for-usernames}{http://www.quora.com/Twitter-Inc-company/What-is-the-rationale-behind-Twitters-15-character-limit-for-usernames}}, es in Treebook aber ohnehin nicht möglich ist Posts per SMS abzusetzen.
 Um sich von anderen Marken abzusetzen ist es in der hier dokumentierten Software möglich neben einer Zustimmung("Liken" auf Facebook, +1 auf Google+) auch Ablehnung durch eine "Dislike"-Funktion zu äußern.
 
-Bei den Privatsphäre-Einstellungen distanziert sich Treebook ganz bewusst von einer schwer zugänglichen und verständlichen Struktur der Einstellungen wie etwa auf Facebook. Es gibt nur zwei mögliche Einstellungen, die der Nutzer vornehmen kann: "Für alle Nutzer auf Treebook sichtbar" oder "Nur für Nutzer in meinen Trees sichtbar". Diese Möglichkeiten beziehen sich auf Flickr-Fotos sowie auf den "Über mich" Bereich.
+Bei den Privatsphäre-Einstellungen distanziert sich Treebook ganz bewusst von einer schwer zugänglichen und unverständlichen Struktur der Einstellungen wie etwa auf Facebook. Es gibt nur zwei mögliche Einstellungen, die der Nutzer vornehmen kann: "Für alle Nutzer auf Treebook sichtbar" oder "Nur für Nutzer in meinen Trees sichtbar". Diese Möglichkeiten beziehen sich auf Flickr-Fotos sowie auf den "Über mich" Bereich.
 
 Die etablierten Freundschaftssysteme in den gängigen sozialen Netzwerken sind sehr verschieden:
 \begin{list}{$\bullet$}{}
@@ -121,9 +121,27 @@ Die etablierten Freundschaftssysteme in den gängigen sozialen Netzwerken sind s
 \end{list}
 Nach Evaluierung der diversen Möglichkeiten entschieden sich die Entwickler von Treebook das \textbf{Freundschaftssystem von Google+} zu adaptieren.
 
+Um möglichst viele Nutzer begeistern zu können sich bei Treebook anzumelden entschlossen ist ein Login per Facebook möglich ohne sich bei einem zusätzlichen Dienst registrieren zu müssen. Über 800 Millionen\footnote{\href{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}} möglichen Benutzern kann so der Einstieg erleichtert werden. Ein normales Registrierungsformular wird dennoch angeboten um niemanden auszuschließen.
 
+Bei der Auswahl eines geeigneten Foto-Hosters geht es zunächst um die Frage, ob man die Bilder selbst hosten möchte oder auf die API eines anderen Anbieters zugreifen. Die Treebook-Verantwortlichen entschieden sich für letzteres, da diese Möglichkeit angenehmer für Nutzer sowie Entwickler scheint. Die zwei Dienste, die hier in der engeren Auswahl waren, sind Flickr und Google Picasa\footnote{\href{http://picasa.google.com/}{http://picasa.google.com/}}. Ausgewählt wurde hier schließlich Flickr, da Picasa stark mit Google+ verwurzelt ist und die oAuth-Möglichkeiten bei Flickr besser sind.  
+\section{Ruby on Rails}
+Die Wahl der Programmiersprache für das Backend fiel auf \textbf{Ruby}\footnote{\href{http://www.ruby-lang.org/en/}{http://www.ruby-lang.org/en/}} mit dem dazugehörigen Web-Framework \textbf{Rails}\footnote{\href{http://rubyonrails.org/}{http://rubyonrails.org/}}. Diese Entscheidung hatte mehrere Gründe:
+\lstset{language=bash}
+\begin{list}{$\bullet$}{}
+\item Da im Frontend Daten dynamisch per AJAX nachgeladen werden sollten, ist es sinnvoll zwischen Frontend und Server per JSON zu kommunizieren. Variablen in JSON-Objekte umzuwandeln geht in Ruby on Rails sehr einfach:
+\begin{lstlisting}
+@user = User.first
+respond_to do |format|
+  format.json { render json: @user }
+end
+
+# Ergebnis etwa: [{"name":"Mustermann","firstname":"Max","id":1}]
+\end{lstlisting}
+\item Es gibt viele gute Erweiterungen, zum Beispiel für die Benutzerauthentifizierung oder "Wrapper" um fremde APIs zu nutzen
+\item Object-relation mapping (ORM)\footnote{\href{http://ar.rubyonrails.org/}{http://ar.rubyonrails.org/}} in Rails macht das Entwickeln schneller
+\end{list}
 \chapter{Installation}
-Stellen Sie zunächst sicher, dass eine Internetverbindung besteht.
+Stellen Sie zunächst sicher, dass eine Internetverbindung besteht und die Ports \textbf{3000} und \textbf{9292} nicht durch andere Anwendungen belegt sind.
 \section{Linux}
 \begin{enumerate}
 \item Laden Sie die aktuelle Ruby-Version (Stand 6.4.2012) von der offiziellen Ruby-Website herunter\footnote{\href{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}} entpacken und installieren es wie jedes andere Programm unter Linux (evtl. werden dazu Root-Rechte benötigt).
@@ -158,12 +176,40 @@ aus, um Beispieldaten (Benutzer, Trees und Posts) zu laden.
 \end{lstlisting}
 in Ihrer Konsole ein um den Server zu starten und öffnen Sie anschließend die URL \textbf{http://localhost:3000} in Ihrem Browser.
 \end{enumerate}
+\section{Windows}
+\begin{enumerate}
+\item Laden Sie sich zunächst die aktuelle Version des \textbf{Rails Installers}\footnote{\href{http://railsinstaller.org/}{http://railsinstaller.org/}} herunter und folgen Sie den Installationsanweisungen.
+\item Entpacken Sie den Ordner \textbf{treebook.tar.gz} von der mitgelieferten DVD in einen beliebigen Ort innerhalb Ihres Home-Verzeichnisses, öffnen sie anschließend eine Eingabeaufforderung im \textbf{Treebook}-Ordner und geben Sie folgende Befehle ein:
+\begin{lstlisting}
+# bundle install
+# rake db:migrate
+\end{lstlisting}
+\item \textbf{Optional:} Führen Sie
+\begin{lstlisting}
+# rake db:seed
+\end{lstlisting}
+aus, um Beispieldaten (Benutzer, Trees und Posts) zu laden.
+\item Geben Sie
+\begin{lstlisting}
+# foreman start
+\end{lstlisting}
+in Ihrer Konsole ein um den Server zu starten und öffnen Sie anschließend die URL \textbf{http://localhost:3000} in Ihrem Browser.
+\end{enumerate}
 \chapter{Backend}
 \lstset{language=Ruby}
 \section{Allgemeines}
 Das Grundgerüst des Backends von Treebook besteht aus \textbf{Ruby on Rails}\footnote{\href{http://rubyonrails.org/}{http://rubyonrails.org/}}
 , dem mitgelieferten Webserver \textbf{WEBrick}\footnote{\href{http://en.wikipedia.org/wiki/WEBrick}{http://en.wikipedia.org/wiki/WEBrick}}, 
 dem Nachrichtenserver \textbf{Faye}\footnote{\href{http://faye.jcoglan.com/}{http://faye.jcoglan.com/}}, sowie einer \textbf{SQLite3}\footnote{\href{http://www.sqlite.org/}{http://www.sqlite.org/}} gestützten Datenbank.
+
+\subsection{Datenbank}
+Das Schema der Datenbank von Treebook:
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\ScaleIfNeeded]{Pictures/db.png}%
+\caption{Datenbankschema}%
+\end{figure}
+
 \subsection{Actions}
 Die in den einzelnen Controllern definierten Methoden werden als \textbf{Actions} bezeichnet, da Sie nicht dazu verwendet werden, von anderem Code aufgerufen zu werden, sondern durch HTTP-Requests im Frontend (GET, POST, PUT oder DELETE). Dabei wird in den Actions jeweils ein JSON-Objekt zurückgegeben, welches im Frontend weiter verarbeitet werden kann.
 Beispiel \textbf{show}-Action im \textbf{TreesController}
@@ -192,7 +238,6 @@ Beispiel:
 match "comment/" => "users#comment", :via => :post
 \end{lstlisting}
 \textbf{Bedeutet:} Ein HTTP POST-Request auf "http://localhost:3000/comment/" wird auf die Action \textbf{comment} im \textbf{UsersController} gemapt.
-\textbf{TODO: Datenbankmodell und Erläuterungen}
 \section{Gems}
 Als Gems (deutsch: Edelsteine) werden in Ruby Erweiterungen bezeichnet, die der Entwickler zu seiner Software hinzufügen kann. Folgende Gems werden in Treebook verwendet:
 \subsection{Devise}
@@ -252,7 +297,7 @@ Gon hilft dabei, die Kommunikation zwischen Backend und Frontend zu vereinfachen
 \begin{lstlisting}
 gon.user_id = current_user.id
 \end{lstlisting}
-Diese Variable steht im Frontend zur Verfügung und kann im Javascript-Code ausgelesen werden.
+Diese Variable steht nun im Frontend zur Verfügung und kann im Javascript-Code ausgelesen werden.
 \subsection{Foreman}
 Foreman ermöglicht es mehrere Server mit einem Befehl zu starten(in Treebook sind das WEBrick und Faye). Die zu startenden Server werden in \textbf{/Procfile} definiert.
 \section{Sonstiges}
