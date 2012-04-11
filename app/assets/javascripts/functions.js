@@ -724,7 +724,12 @@ var appendPhotoset = function(set, u) {
 }
 
 var appendPhoto = function(g, img, u) {
-  g.find('.thumbs .upload_photo').before('<div class="thumb"><a rel="photo_group" href="'+img.url+'" title="'+img.title+'"><img alt="'+img.title+'" src="'+img.url+'" /></a><span class="title"></span></div>');
+  var newThumb = '<div class="thumb"><a rel="photo_group" href="'+img.url+'" title="'+img.title+'"><img alt="'+img.title+'" src="'+img.url+'" /></a><span class="title"></span></div>';
+  if(g.find('.thumbs .thumb').length > 0) {
+    g.find('.thumbs .thumb:last').after(newThumb);
+  } else {
+    g.find('.thumbs').append(newThumb);
+  }
   var title = img.title.length > 12 ? img.title.substring(0,12)+"..." : img.title;
   g.find('.thumb:last').css({
     'background': 'url("'+img.url+'")'
