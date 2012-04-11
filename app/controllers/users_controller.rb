@@ -143,7 +143,7 @@ class UsersController < ApplicationController
     if current_user.got_flickr_connection? && !params[:title].nil? && !params[:primary_photo_id].nil?
       flickr.access_token = current_user.access_token
       flickr.access_secret = current_user.access_secret
-      @response = flickr.photosets_create :title => params[:title], :primary_photo_id => params[:primary_photo_id]
+      @response = flickr.photosets.create :title => params[:title], :primary_photo_id => params[:primary_photo_id]
     else
       @response = "Es ist ein Fehler aufgetreten"
     end
