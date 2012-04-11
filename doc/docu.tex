@@ -140,6 +140,24 @@ end
 \item Es gibt viele gute Erweiterungen, zum Beispiel für die Benutzerauthentifizierung oder "Wrapper" um fremde APIs zu nutzen
 \item Object-relation mapping (ORM)\footnote{\href{http://ar.rubyonrails.org/}{http://ar.rubyonrails.org/}} in Rails macht das Entwickeln schneller
 \end{list}
+
+\section{jQuery}
+Der meiste für Treebook entwickelte JavaScript-Code basiert auf der JavaScript-Bibliothek \textbf{jQuery}\footnote{\href{http://jquery.com}{http://jquery.com}}. Mit jQuery hat es der JavaScript-Entwickler äußerst bequem, da er sich nicht mehr um Browser-Weichen\footnote{Browser-Weichen sind in JavaScript übliche Code-Verzweigungen, die die verfügbaren Informationen des Browsers auswerten, um möglichst viele Browser-Eigenheiten bei der Ausführung des Codes abzudecken. Dadurch soll erreich werden, dass dieselbe JavaScript-Anwendung in möglichst vielen Browsern funktioniert.} kümmern muss und die Code-Menge um ein Vielfaches schrumpft. Damit bleibt JavaScript-Code überschaubarer und leichter wartbar.
+
+Ein Beispiel:\footnote{In den Code-Beispielen wird der Zugriff auf die jQuery-Bibliothek mit der Variablen \textit{jQuery} gekennzeichnet. Im Produktiveinsatz wird meistens \textit{\$} verwendet, um den Code noch schlanker zu halten.}
+
+\begin{lstlisting}
+jQuery(function() {
+  // HTML-Element mit ID "message" einblenden
+  // nachdem die Seite fertig geladen ist
+  jQuery('#message').fadeIn();
+});
+\end{lstlisting}
+
+Desweiteren verfügt jQuery über eine auf CSS3 basierende Selector-Engine, die es dem Entwickler ermöglicht schnell an gewünschte DOM-Elemente\footnote{Document Object Model bezeichnet den baumartigen Aufbau einer auf XML basierenden Struktur.} zu gelangen und diese zu manipulieren.
+
+jQuery stellt viele Funktionen bereit, die DOM-Tree-Manipulationen erheblich vereinfachen. Mehr dazu ist in der offiziellen jQuery-API\footnote{\href{http://api.jquery.com}{http://api.jquery.com}} nachzulesen.
+
 \chapter{Installation}
 Stellen Sie zunächst sicher, dass eine Internetverbindung besteht und die Ports \textbf{3000} und \textbf{9292} nicht durch andere Anwendungen belegt sind.
 \section{Linux}
@@ -467,23 +485,6 @@ Nach Klick auf ein Album werden die enthaltenen Fotos als Thumbnails dargestellt
 Nach einem Klick auf ein Foto wird dieses in der Großansicht geöffnet.
 In der Großansicht werden außerdem die Kommentare zu diesem Foto sowie ein Formular zum Kommentieren angezeigt. Gehört das Foto dem Anwender, so kann er dessen Titel und Beschreibung bearbeiten.
 \section{Verwendete Techniken}
-\subsection{jQuery}
-Der meiste für Treebook entwickelte JavaScript-Code basiert auf der JavaScript-Bibliothek \textbf{jQuery}\footnote{\href{http://jquery.com}{http://jquery.com}}. Mit jQuery hat es der JavaScript-Entwickler äußerst bequem, da er sich nicht mehr um Browser-Weichen\footnote{Browser-Weichen sind in JavaScript ünliche Code-Verzweigungen, die die verfügbaren Informationen des Browsers auswerten, um möglichst viele Browser-Eigenheiten bei der Ausführung des Codes abzudecken. Dadurch soll erreich werden, dass dieselbe JavaScript-Anwendung in möglichst vielen Browsern funktioniert.} kümmern muss und die Code-Menge um ein Vielfaches schrumpft. Damit bleibt JavaScript-Code überschaubarer und leichter wartbar.
-
-Ein Beispiel:\footnote{In den Code-Beispielen wird der Zugriff auf die jQuery-Bibliothek mit der Variablen \textit{jQuery} gekennzeichnet. Im Produktiveinsatz wird meistens \textit{\$} verwendet, um den Code noch schlanker zu halten.}
-
-\begin{lstlisting}
-jQuery(function() {
-  // HTML-Element mit ID "message" einblenden
-  // nachdem die Seite fertig geladen ist
-  jQuery('#message').fadeIn();
-});
-\end{lstlisting}
-
-Desweiteren verfügt jQuery über eine auf CSS3 basierende Selector-Engine, die es dem Entwickler ermöglicht schnell an gewünschte DOM-Elemente\footnote{Document Object Model bezeichnet den baumartigen Aufbau einer auf XML basierenden Struktur.} zu gelangen und diese zu manipulieren.
-
-jQuery stellt viele Funktionen bereit, die DOM-Tree-Manipulationen erheblich vereinfachen. Mehr dazu ist in der offiziellen jQuery-API\footnote{\href{http://api.jquery.com}{http://api.jquery.com}} nachzulesen.
-
 \subsection{jQuery-UI}
 \textbf{jQuery-UI}\footnote{\href{http://jqueryui.com}{http://jqueryui.com}} ist eine Erweiterung für jQuery, die eine erweitere Effekt-Auswahl, sowie eine beliebig anpassbare und steuerbare Oberflächen-Gestaltung von einigen HTML-Elementen bietet.
 Mit jQuery-UI lässt sich ein einheitliches Aussehen auf HTML-Seiten erreichen, ohne dafür viel Aufwand betreiben zu müssen. jQuery-UI legt Wert auf Benutzerfreundlichkeit, die Einhaltung von Webstandards, Barrierefreiheit und flexibles Styling.
