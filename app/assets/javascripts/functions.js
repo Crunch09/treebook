@@ -504,162 +504,73 @@ var showProfile = function(user_id) {
               if(imgs.photosets) {
                 // Es sind Alben vorhanden, die angezeigt werden können
                 for(var i = 0; i < imgs.photosets.length; i++) {
-                  var set = imgs.photosets[i];
-                  $('.profile_photos').append('<div class="profile_photoset"><span class="title">'+set.title+'</span></div>');
-                  $('.profile_photos .profile_photoset:last').find('.title').data({
-                    'height': $('.profile_photos .profile_photoset:last').find('.title').height()
-                  });
-                  var primary = set.fotos[0].url;
-                  for(var j = 0; j < set.fotos.length; j++) {
-                    if(set.fotos[j].isprimary == 1) {
-                      primary = set.fotos[j].url;
-                      break;
-                    }
-                  }
-                  $('.profile_photos .profile_photoset:last').css({
-                    'background': 'url("'+primary+'")'
-                  }).data('set', set).hover(function() {
-                    var set = $(this).data('set');
-                    $(this).find('.title').append('<div class="thumbs"></div>');
-                    for(var j = 0; j < set.fotos.length; j++) {
-                      if(j < 4) {
-                        $(this).find('.thumbs').append('<div class="photo_thumb"></div>');
-                        $(this).find('.thumbs > .photo_thumb:last').css({
-                          'background': 'url("'+set.fotos[j].url+'")'
-                        });
-                      } else {
-                        break;
-                      }
-                    }
-                    $(this).find('.thumbs').append('<span style="clear: left;"></span>');
-                    $(this).find('.title').animate({
-                      'height': '150px'
-                    }, 400);
-                    $(this).find('.thumbs').slideDown(400);
-                  }, function() {
-                    $(this).find('.title').animate({
-                      'height': $(this).find('.title').data('height')
-                    }, 400);
-                    $(this).find('.thumbs').slideUp(400, function() {
-                      $(this).remove();
-                    });
-                  }).click(function() {
-                    var set = $(this).data('set');
-                    $('.profile_photoset').fadeOut();
-                    var g = $('.profile_photos .gallery');
-                    for(var i = 0; i < set.fotos.length; i++) {
-                      g.find('.thumbs').append('<div class="thumb"><a rel="photo_group" href="'+set.fotos[i].url+'" title="'+set.fotos[i].title+'"><img alt="'+set.fotos[i].title+'" src="'+set.fotos[i].url+'" /></a><span class="title"></span></div>');
-                      var title = set.fotos[i].title.length > 12 ? set.fotos[i].title.substring(0,12)+"..." : set.fotos[i].title;
-                      g.find('.thumb:last').css({
-                        'background': 'url("'+set.fotos[i].url+'")'
-                      }).data({
-                        'description': set.fotos[i].description,
-                        'title': set.fotos[i].title,
-                        'id': set.fotos[i].id
-                      }).find('.title').text(title);
-                      g.find('.thumb:last').click(function(e) {
-                        var link = $(this).find('a');
-                        if(e.target === link[0]) return false;
-                        link.trigger('click');
-                        return false;
+                  appendPhotoset(imgs.photosets[i], u);
+                }
+                if(u.id == gon.user_id) {
+                  $('.profile_photos').append('<div class="add_photoset" title="Neues Album erstellen"><i class="icon-plus"></i></div>');
+                  $('.profile_photos .add_photoset').click(function() {
+                    $(this).append('<div class="upload_photo_form"></div>');
+                    $('.upload_photo_form').load('upload_form form', function() {
+                      // Input Feld für Photoset-Namen einfügen
+                      $('.upload_photo_form').prepend('<label for="photoset_title">Album-Titel</label><input type="text" name="photoset_title" />');
+                      // Change-Listener auf File-Input setzen
+                      $('.upload_photo_form').find('input[name="photo"]').bind('change', function() {
+                        var form = $(this).parents('.upload_photo_form').find('form');
+                        console.log(this.files);
+                        form.find('.selected_file').remove();
+                        for(var i = 0; i < this.files.length; i++) {
+                          var f = this.files[i];
+                          form.append('<div class="selected_file"><b>'+f.name+' ('+(Math.round(f.size/1024/1024*100)/100)+' MB)</b><br /><input type="text" name="title" value="Bild-Titel" /><br /><textarea name="description">Bild-Beschreibung</textarea></div>')
+                        }
                       });
-                    }
-                    if(u.id == gon.user_id) {
-                      // Foto hinzufügen
-                      g.find('.thumbs').append('<div class="upload_photo" title="Fotos diesem Album hinzufügen"><i class="icon-plus"></i></div>');
-                      g.find('.thumbs .upload_photo').data({
-                        'photoSetId': set.id
-                      });
-                      g.find('.thumbs .upload_photo').click(function() {
-                        $(this).append('<div class="upload_photo_form"></div>');
-                        $('.upload_photo_form').load('upload_form form', function() {
-                          // Change-Listener auf File-Input setzen
-                          $('.upload_photo_form').find('input[name="photo"]').bind('change', function() {
-                            var form = $(this).parents('.upload_photo_form').find('form');
-                            console.log(this.files);
-                            form.find('.selected_file').remove();
-                            for(var i = 0; i < this.files.length; i++) {
-                              var f = this.files[i];
-                              form.append('<div class="selected_file"><b>'+f.name+' ('+(Math.round(f.size/1024/1024*100)/100)+' MB)</b><br /><input type="text" name="title" value="Bild-Titel" /><br /><textarea name="description">Bild-Beschreibung</textarea></div>')
-                            }
-                          });
-                          $('.upload_photo_form form').attr("target", "hiddenUploadFrame");
-                          $('.upload_photo_form').append('<iframe name="hiddenUploadFrame" width="1px" height="1px" style="border: 0px; visibility: hidden;"></iframe>');
-                          $('.upload_photo_form iframe[name="hiddenUploadFrame"]').load(function() {
-                            if($(this).contents().text() != "") {
-                              var photoId = parseInt($(this).contents().text());
-                              var photoSetId = $('.upload_photo:visible').data('photoSetId');
+                      $('.upload_photo_form form').attr("target", "hiddenUploadFrame");
+                      $('.upload_photo_form').append('<iframe name="hiddenUploadFrame" width="1px" height="1px" style="border: 0px; visibility: hidden;"></iframe>');
+                      $('.upload_photo_form iframe[name="hiddenUploadFrame"]').load(function() {
+                        if($(this).contents().text() != "") {
+                          var photoId = parseInt($(this).contents().text());
+                          $.ajax({
+                            url: 'photosets/create.json',
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {
+                              'title': $('.upload_photo_form input[name="photoset_title"]').val(),
+                              'primary_photo_id': photoId
+                            },
+                            success: function(r) {
                               $.ajax({
-                                url: 'photosets/add',
-                                type: 'POST',
-                                data: {
-                                  'photoset_id': photoSetId,
-                                  'photo_id': photoId
-                                },
-                                success: function(r) {
-                                  $.ajax({
-                                    url: 'photo/'+photoId+'.json',
-                                    success: function(img) {
-                                      console.log(img);
-                                      g.find('.thumbs .upload_photo').before('<div class="thumb"><a rel="photo_group" href="'+img.url+'" title="'+img.title+'"><img alt="'+img.title+'" src="'+img.url+'" /></a><span class="title"></span></div>');
-                                      var title = img.title.length > 12 ? img.title.substring(0,12)+"..." : img.title;
-                                      g.find('.thumb:last').css({
-                                        'background': 'url("'+img.url+'")'
-                                      }).data({
-                                        'description': img.description,
-                                        'title': img.title,
-                                        'id': img.id
-                                      }).find('.title').text(title);
-                                      g.find('.thumb:last').click(function(e) {
-                                        var link = $(this).find('a');
-                                        if(e.target === link[0]) return false;
-                                        link.trigger('click');
-                                        return false;
-                                      });
-                                      initFancyBox(g.find('a[rel="photo_group"]'), u);
-                                    },
-                                    complete: function() {
-                                      hideLoading();
-                                      $('.upload_photo_form').dialog("close");
-                                    }
-                                  });
-                                },
-                                error: function(e) {
-                                  console.log(e.responseText);
+                                url: 'photosets/'+r.id+'.json',
+                                dataType: 'json',
+                                success: function(photoset) {
+                                  appendPhotoset(photoset, u);
+                                  $('.profile_photos .profile_photoset:last').prependTo($('.profile_photos'));
+                                  $('.upload_photo_form').dialog("close");
                                 }
                               });
-                            }
-                          });
-                          $('.upload_photo_form').dialog({
-                            modal: true,
-                            width: 400,
-                            buttons: {
-                              "Hochladen": function() {
-                                showLoading();
-                                $(this).find('form').submit();
-                              }
                             },
-                            close: function() {
-                              $(this).empty();
+                            error: function(e) {
+                              makeToast("Es ist ein Fehler aufgetreten! Bitte versuche es später erneut!");
+                              console.log(e.responseText);
+                            },
+                            complete: function() {
+                              hideLoading();
                             }
                           });
-                        });
+                        }
                       });
-                    }
-                    
-                    initFancyBox(g.find('a[rel="photo_group"]'), u);
-                    
-                    g.prepend('<button name="back_to_photosets"><i class="icon-arrow-left"></i> Zurück</button>');
-                    g.find('button[name="back_to_photosets"]').button().click(function() {
-                      $('.profile_photos .gallery').fadeOut(function() {
-                        $('.profile_photoset').fadeIn();
-                        $(this).find('.thumbs, .pic, .description, .comments').empty();
-                      });
-                      $(this).fadeOut(function() {
-                        $(this).remove();
+                      $('.upload_photo_form').dialog({
+                        modal: true,
+                        width: 400,
+                        buttons: {
+                          "Erstellen und hochladen": function() {
+                            showLoading();
+                            $(this).find('form').submit();
+                          }
+                        },
+                        close: function() {
+                          $(this).empty();
+                        }
                       });
                     });
-                    g.delay(400).fadeIn();
                   });
                 }
               }
@@ -678,6 +589,157 @@ var showProfile = function(user_id) {
       }
     }
   });
+}
+
+var appendPhotoset = function(set, u) {
+  $('.profile_photos').append('<div class="profile_photoset"><span class="title">'+set.title+'</span></div>');
+  if($('.profile_photos .addPhotoset').length > 0) {
+    $('.profile_photos .addPhotoset').appendTo($('.profile_photos'));
+  }
+  $('.profile_photos .profile_photoset:last').find('.title').data({
+    'height': $('.profile_photos .profile_photoset:last').find('.title').height()
+  });
+  var primary = set.fotos[0].url;
+  for(var j = 0; j < set.fotos.length; j++) {
+    if(set.fotos[j].isprimary == 1) {
+      primary = set.fotos[j].url;
+      break;
+    }
+  }
+  $('.profile_photos .profile_photoset:last').css({
+    'background': 'url("'+primary+'")'
+  }).data('set', set).hover(function() {
+    var set = $(this).data('set');
+    $(this).find('.title').append('<div class="thumbs"></div>');
+    for(var j = 0; j < set.fotos.length; j++) {
+      if(j < 4) {
+        $(this).find('.thumbs').append('<div class="photo_thumb"></div>');
+        $(this).find('.thumbs > .photo_thumb:last').css({
+          'background': 'url("'+set.fotos[j].url+'")'
+        });
+      } else {
+        break;
+      }
+    }
+    $(this).find('.thumbs').append('<span style="clear: left;"></span>');
+    $(this).find('.title').stop().animate({
+      'height': '150px'
+    }, 400);
+    $(this).find('.thumbs').slideDown(400);
+  }, function() {
+    $(this).find('.title').stop().animate({
+      'height': $(this).find('.title').data('height')
+    }, 400);
+    $(this).find('.thumbs').slideUp(400, function() {
+      $(this).remove();
+    });
+  }).click(function() {
+    var set = $(this).data('set');
+    $('.profile_photoset, .add_photoset').fadeOut();
+    var g = $('.profile_photos .gallery');
+    
+    if(u.id == gon.user_id) {
+      // Foto hinzufügen
+      g.find('.thumbs').append('<div class="upload_photo" title="Fotos diesem Album hinzufügen"><i class="icon-plus"></i></div>');
+      g.find('.thumbs .upload_photo').data({
+        'photoSetId': set.id
+      });
+      g.find('.thumbs .upload_photo').click(function() {
+        $(this).append('<div class="upload_photo_form"></div>');
+        $('.upload_photo_form').load('upload_form form', function() {
+          // Change-Listener auf File-Input setzen
+          $('.upload_photo_form').find('input[name="photo"]').bind('change', function() {
+            var form = $(this).parents('.upload_photo_form').find('form');
+            console.log(this.files);
+            form.find('.selected_file').remove();
+            for(var i = 0; i < this.files.length; i++) {
+              var f = this.files[i];
+              form.append('<div class="selected_file"><b>'+f.name+' ('+(Math.round(f.size/1024/1024*100)/100)+' MB)</b><br /><input type="text" name="title" value="Bild-Titel" /><br /><textarea name="description">Bild-Beschreibung</textarea></div>')
+            }
+          });
+          $('.upload_photo_form form').attr("target", "hiddenUploadFrame");
+          $('.upload_photo_form').append('<iframe name="hiddenUploadFrame" width="1px" height="1px" style="border: 0px; visibility: hidden;"></iframe>');
+          $('.upload_photo_form iframe[name="hiddenUploadFrame"]').load(function() {
+            if($(this).contents().text() != "") {
+              var photoId = parseInt($(this).contents().text());
+              var photoSetId = $('.upload_photo:visible').data('photoSetId');
+              $.ajax({
+                url: 'photosets/add',
+                type: 'POST',
+                data: {
+                  'photoset_id': photoSetId,
+                  'photo_id': photoId
+                },
+                success: function(r) {
+                  $.ajax({
+                    url: 'photo/'+photoId+'.json',
+                    success: function(img) {
+                      appendPhoto(g, img);
+                    },
+                    complete: function() {
+                      hideLoading();
+                      $('.upload_photo_form').dialog("close");
+                    }
+                  });
+                },
+                error: function(e) {
+                  console.log(e.responseText);
+                }
+              });
+            }
+          });
+          $('.upload_photo_form').dialog({
+            modal: true,
+            width: 400,
+            buttons: {
+              "Hochladen": function() {
+                showLoading();
+                $(this).find('form').submit();
+              }
+            },
+            close: function() {
+              $(this).empty();
+            }
+          });
+        });
+      });
+    }
+    
+    for(var i = 0; i < set.fotos.length; i++) {
+      appendPhoto(g, set.fotos[i], u);
+    }
+    
+    g.prepend('<button name="back_to_photosets"><i class="icon-arrow-left"></i> Zurück</button>');
+    g.find('button[name="back_to_photosets"]').button().click(function() {
+      $('.profile_photos .gallery').fadeOut(function() {
+        $('.profile_photoset, .add_photoset').fadeIn();
+        $(this).find('.thumbs, .pic, .description, .comments').empty();
+      });
+      $(this).fadeOut(function() {
+        $(this).remove();
+      });
+    });
+    g.delay(400).fadeIn();
+  });
+}
+
+var appendPhoto = function(g, img, u) {
+  g.find('.thumbs .upload_photo').before('<div class="thumb"><a rel="photo_group" href="'+img.url+'" title="'+img.title+'"><img alt="'+img.title+'" src="'+img.url+'" /></a><span class="title"></span></div>');
+  var title = img.title.length > 12 ? img.title.substring(0,12)+"..." : img.title;
+  g.find('.thumb:last').css({
+    'background': 'url("'+img.url+'")'
+  }).data({
+    'description': img.description,
+    'title': img.title,
+    'id': img.id
+  }).find('.title').text(title);
+  g.find('.thumb:last').click(function(e) {
+    var link = $(this).find('a');
+    if(e.target === link[0]) return false;
+    link.trigger('click');
+    return false;
+  });
+  initFancyBox(g.find('.thumbs a[rel="photo_group"]'), u);
 }
 
 var initFancyBox = function(coll, u) {

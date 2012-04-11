@@ -150,6 +150,33 @@
   background-color: rgba(0,0,0,0.6);
   overflow: hidden;
 }
+
+.profile_photos .add_photoset {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  float: left;
+  margin: 5px;
+  vertical-align: middle;
+  background-position: center !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  cursor: pointer;
+  border: 1px solid #999;
+  box-shadow: 0px 0px 5px #999;
+  font-size: 75px;
+  line-height: 150px;
+  text-align: center;
+  
+  transition: 0.4s all;
+  -moz-transition: 0.4s all;
+  -webkit-transition: 0.4s all;
+  -o-transition: 0.4s all;
+}
+.profile_photos .add_photoset:hover {
+  box-shadow: 0px 0px 8px #333;
+}
+
 .profile_photoset .thumbs {
   display: none;
 }
@@ -213,7 +240,7 @@
   overflow: hidden;
 }
 .profile_photos .gallery .thumbs .upload_photo {
-position: relative;
+  position: relative;
   width: 100px;
   height: 100px;
   float: left;
