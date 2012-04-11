@@ -151,6 +151,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.json { render json: @response }
     end
+  end
 
   # Public: Ein Foto zu Flickr hochladen
   #
