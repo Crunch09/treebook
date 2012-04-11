@@ -638,6 +638,10 @@ var appendPhotoset = function(set, u) {
     $('.profile_photoset, .add_photoset').fadeOut();
     var g = $('.profile_photos .gallery');
     
+    for(var i = 0; i < set.fotos.length; i++) {
+      appendPhoto(g, set.fotos[i], u);
+    }
+    
     if(u.id == gon.user_id) {
       // Foto hinzufügen
       g.find('.thumbs').append('<div class="upload_photo" title="Fotos diesem Album hinzufügen"><i class="icon-plus"></i></div>');
@@ -703,10 +707,6 @@ var appendPhotoset = function(set, u) {
           });
         });
       });
-    }
-    
-    for(var i = 0; i < set.fotos.length; i++) {
-      appendPhoto(g, set.fotos[i], u);
     }
     
     g.prepend('<button name="back_to_photosets"><i class="icon-arrow-left"></i> Zurück</button>');
