@@ -535,7 +535,7 @@ $(function() {
             type: 'PUT',
             dataType: 'json',
             data: {
-                'user[current_password]': $('#Account input[name="oldpass"]').val(),
+                //'user[current_password]': $('#Account input[name="oldpass"]').val(),
                 'user[password]': $('#Account input[name="newpass"]').val(),
                 'user[password_confirmation]': $('#Account input[name="newpasscopy"]').val()
             },
