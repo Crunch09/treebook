@@ -169,7 +169,7 @@ class UsersController < ApplicationController
       flickr.access_secret = current_user.access_secret
       album = Hash.new
       album[:photoset] = flickr.photosets.getInfo :photoset_id => params[:id]
-      album[:photoset].to_hash[:fotos] = flickr.photosets.getPhotos(:photoset_id => params[:id]).photo
+      album[:photoset].to_hash[:fotos] = flickr.photosets.getPhotos(:photoset_id => params[:id], :privacy_filer => 1, :media => 'photos').photo
       album[:photoset].to_hash[:fotos].each do |f|
         f.to_hash[:url] = "http://farm#{f.farm}.staticflickr.com/#{f.server}/#{f.id}_#{f.secret}.jpg"
         f.to_hash[:description] = flickr.photos.getInfo(:photo_id => f.id).description
