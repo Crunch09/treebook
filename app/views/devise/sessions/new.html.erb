@@ -6,22 +6,22 @@
       <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
         <%= devise_error_messages! %>
         
-        <div><%= f.label :email, "E-Mail" %><br />
+        <div><%= f.label :email, "E-Mail" %>
         <%= f.email_field :email, "width" => "100%", "size" => 0 %></div>
         
-        <div><%= f.label :password, "Passwort" %><br />
+        <div><%= f.label :password, "Passwort" %>
         <%= f.password_field :password, "width" => "100%", "size" => 0 %></div>
         
-        <div><%= f.label :password_confirmation, "Passwort wiederholen" %><br />
+        <div><%= f.label :password_confirmation, "Passwort wiederholen" %>
         <%= f.password_field :password_confirmation, "width" => "100%", "size" => 0 %></div>
         
-        <div><%= f.label :firstname, "Vorname" %><br />
+        <div><%= f.label :firstname, "Vorname" %>
         <%= f.text_field :firstname, "width" => "100%", "size" => 0 %></div>
         
-        <div><%= f.label :name, "Nachname" %><br />
+        <div><%= f.label :name, "Nachname" %>
         <%= f.text_field :name, "width" => "100%", "size" => 0 %></div>
         
-        <div><%= f.label :birthday, "Geburtstag" %><br />
+        <div><%= f.label :birthday, "Geburtstag" %>
         <%= f.date_select :birthday, :start_year => 1950, :order => [:day, :month, :year], :end_year => (Time.now.year - 10), :default => 25.years.ago, :use_month_numbers => true %></div>
         
         <div><%= f.submit "Registrieren" %></div>
@@ -33,10 +33,10 @@
     <b>Einloggen</b>
     <div>
       <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-        <div><%= f.label :email, "E-Mail" %><br />
+        <div><%= f.label :email, "E-Mail" %>
         <%= f.email_field :email, "width" => "100%", "size" => 0 %></div>
 
-        <div><%= f.label :password, "Passwort" %><br />
+        <div><%= f.label :password, "Passwort" %>
         <%= f.password_field :password, "width" => "100%", "size" => 0 %></div>
 
         <% if devise_mapping.rememberable? -%>
