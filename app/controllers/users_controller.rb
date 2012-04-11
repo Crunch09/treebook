@@ -153,6 +153,39 @@ class UsersController < ApplicationController
     end
   end
 
+  # Public: Ein Photoset abrufen
+  #
+  # id - Id des Photosets
+  #
+  # Beispiele:
+  #
+  #  GET /photosets/123
+  #
+  # Gibt Infos zu dem angeforderten Photoset zurück
+  def get_photoset
+    flickr = FlickRaw::Flickr.new
+    if current_user.got_flickr_connection?
+      flickr.access_token = current_user.access_token
+      flickr.access_secret = current_user.access_secret
+      album = Hash.new
+      album[:photoset] = flickr.photosets.getInfo :photoset_id => params[:id]
+      album[:photoset].to_hash[:fotos] = flickr.photosets.getPhotos(:photoset_id => params[:id]).photo
+      album[:photoset].to_hash[:fotos].each do |f|
+        f.to_hash[:url] = "http://farm#{f.farm}.staticflickr.com/#{f.server}/#{f.id}_#{f.secret}.jpg"
+        f.to_hash[:description] = flickr.photos.getInfo(:photo_id => f.id).description
+      end
+      @response = album
+    else
+      @response = Hash.new
+      @response[:photoset] = "Leider ist ein Fehler aufgetreten"
+    end
+
+    respond_to do |format|
+      format.json { render json: @response[:photoset] }
+    end
+
+  end
+
   # Public: Ein Foto zu Flickr hochladen
   #
   # photo - Photo, welches hochgeladen werden soll

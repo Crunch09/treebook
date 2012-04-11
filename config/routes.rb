@@ -22,6 +22,7 @@ Treebook::Application.routes.draw do
   match "photo/:id" => "users#get_photo", :via => :get
   match "photosets/create" => "users#create_photoset", :via => :post
   match "photosets/add" => "users#add_photo_to_photoset", :via => :post
+  match "photosets/:id" => "users#get_photoset", :via => :get
   match "flickrcallback" => "users#flickrcallback", :via => :get, :as => :flickrcallback
   match "vote/" => "votes#create", :via => :post
   match "search/:keyword" => "users#search", :via => :get
