@@ -674,7 +674,7 @@ var appendPhotoset = function(set, u) {
                   $.ajax({
                     url: 'photo/'+photoId+'.json',
                     success: function(img) {
-                      appendPhoto(g, img);
+                      appendPhoto(g, img, u);
                     },
                     complete: function() {
                       hideLoading();
@@ -743,11 +743,13 @@ var appendPhoto = function(g, img, u) {
 }
 
 var initFancyBox = function(coll, u) {
+  coll.fancybox("destroy");
   // Fancybox initialisieren
   coll.fancybox({
     'cyclic': true,
     'titlePosition': 'inside',
     'titleFormat': function(title, currentArray, currentIndex, currentOpts) {
+      console.log(u);
       var editBtn = gon.user_id == u.id ? '<button name="edit_photo" title="Details bearbeiten"><i class="icon-edit"></i></button>' : "";
       var link = currentArray[currentIndex];
       var description = $(link).parents('.thumb').data('description') == "" ? "Keine Beschreibung vorhanden." : $(link).parents('.thumb').data('description');
