@@ -127,6 +127,31 @@ class UsersController < ApplicationController
     end
   end
 
+  # Public: Ein Photoset erstellen
+  #
+  # title - Der Titel des Photosets
+  # primary_photo_id - ID des Photos, dass eingefügt werden soll
+  #
+  # Beispiele:
+  #
+  #  POST /photosets/create
+  #
+  # Gibt die Id des erstellten Photosets zurück
+  def create_photoset
+    flickr = FlickRaw::Flickr.new
+
+    if current_user.got_flickr_connection? && !params[:title].nil? && !params[:primary_photo_id].nil?
+      flickr.access_token = current_user.access_token
+      flickr.access_secret = current_user.access_secret
+      @response = flickr.photosets_create :title => params[:title], :primary_photo_id => params[:primary_photo_id]
+    else
+      @response = "Es ist ein Fehler aufgetreten"
+    end
+
+    respond_to do |format|
+      format.json { render json: @response }
+    end
+
   # Public: Ein Foto zu Flickr hochladen
   #
   # photo - Photo, welches hochgeladen werden soll
