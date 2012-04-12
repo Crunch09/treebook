@@ -12,6 +12,8 @@ class UsersController < ApplicationController
         restricted: 1
   }
 
+  flickr = FlickRaw::Flickr.new
+
   # Public: Wird als Startseite benutzt
   #
   # Beispiele:
@@ -22,7 +24,7 @@ class UsersController < ApplicationController
   # Gibt die Startseite zurück und eine Meldung, falls kein User eingeloggt ist
   def index
     @users = User.all
-    unless current_user.nil?
+    if user_signed_in?
       gon.user_id = current_user.id
       gon.firstname = current_user.firstname
       gon.lastname = current_user.name
@@ -30,7 +32,7 @@ class UsersController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to new_user_session_path if current_user.nil? }
+      format.html { redirect_to new_user_session_path unless user_signed_in? }
       format.json { render json: @users }
     end
   end
@@ -91,7 +93,7 @@ class UsersController < ApplicationController
   # Gibt Photosets und darin enthaltene Bilder eines Users zurück bzw.
   # einen Link um eine Flickr-Verbindung zu erstellen
   def images
-    flickr = FlickRaw::Flickr.new
+    
 
     u = params[:id].nil? ? current_user : User.find(params[:id])
     # pruefen ob der aktuelle User eine Berechtigung hat, diese Bilder zu sehen
@@ -138,7 +140,6 @@ class UsersController < ApplicationController
   #
   # Gibt die Id des erstellten Photosets zurück
   def create_photoset
-    flickr = FlickRaw::Flickr.new
 
     if current_user.got_flickr_connection? && !params[:title].nil? && !params[:primary_photo_id].nil?
       flickr.access_token = current_user.access_token
@@ -163,7 +164,6 @@ class UsersController < ApplicationController
   #
   # Gibt Infos zu dem angeforderten Photoset zurück
   def get_photoset
-    flickr = FlickRaw::Flickr.new
     if current_user.got_flickr_connection?
       flickr.access_token = current_user.access_token
       flickr.access_secret = current_user.access_secret
@@ -194,7 +194,6 @@ class UsersController < ApplicationController
   #
   # Gibt die Id des hochgeladenen Fotos oder eine Fehlermeldung zurück
   def upload_photo
-    flickr = FlickRaw::Flickr.new
 
     if current_user.got_flickr_connection?
       flickr.access_token = current_user.access_token
@@ -219,7 +218,6 @@ class UsersController < ApplicationController
   #
   # Gibt Fotoinfos oder eine Fehlermeldung zurück
   def get_photo
-    flickr = FlickRaw::Flickr.new
 
     if current_user.got_flickr_connection?
       flickr.access_token = current_user.access_token
@@ -247,7 +245,6 @@ class UsersController < ApplicationController
   #
   # Gibt die Kommentare für das Foto mit der übergebenen Id zurück
   def photo_comments
-    flickr = FlickRaw::Flickr.new
     if params[:id].nil?
       respond_to do |format|
         format.json { render json: "Bitte gib eine Photo-Id an", status: :unprocessable_entity }
@@ -286,7 +283,6 @@ class UsersController < ApplicationController
   #
   # Gibt die Id des Kommentars oder eine Fehlermeldung zurück
   def comment
-    flickr = FlickRaw::Flickr.new
 
     flickr.access_token = current_user.access_token
     flickr.access_secret = current_user.access_secret
@@ -312,7 +308,6 @@ class UsersController < ApplicationController
   #
   # Gibt eine leere Antwort oder einen Fehler bei Fehlschlag zurück
   def add_photo_to_photoset
-    flickr = FlickRaw::Flickr.new
 
     flickr.access_token = current_user.access_token
     flickr.access_secret = current_user.access_secret
@@ -343,7 +338,6 @@ class UsersController < ApplicationController
   # Gibt ein leere Antwort oder eine Fehlermeldung zurück
   def edit_photo
 
-    flickr = FlickRaw::Flickr.new
     flickr.access_token = current_user.access_token
     flickr.access_secret = current_user.access_secret
 
@@ -372,8 +366,6 @@ class UsersController < ApplicationController
   #
   # Leitet zum images_path weiter
   def flickrcallback
-
-    flickr = FlickRaw::Flickr.new
 
     oauth_token = params[:oauth_token]
     oauth_verifier = params[:oauth_verifier]

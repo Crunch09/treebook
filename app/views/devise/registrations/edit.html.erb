@@ -24,10 +24,7 @@
   <div class="field">
     <%- if devise_mapping.omniauthable? %>
       <%- resource_class.omniauth_providers.each do |provider| %>
-      <!-- diesen Link (vorerst) nur für Facebook anzeigen -->
-        <% #if provider.to_s.titleize.eql? "Flickr" %>
           <%= link_to "Mit #{provider.to_s.titleize} verbinden", omniauth_authorize_path(resource_name, provider) %><br />
-        <% #end %>
       <% end -%>
     <% end -%>
 
