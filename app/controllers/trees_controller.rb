@@ -17,7 +17,9 @@ class TreesController < ApplicationController
 
     respond_to do |format|
       if @tree.user == current_user
-        format.json { render json: @tree.to_json(:include => { :user => {:only => [:firstname, :name, :id, :email]}, :users => {:only => [:firstname, :name, :id, :email], :methods => :image}}) }
+        format.json { render json: @tree.to_json(:include => { :user => 
+          {:only => [:firstname, :name, :id, :email]}, :users => 
+            {:only => [:firstname, :name, :id, :email], :methods => :image}}) }
       else
         format.json { render json: "Du kannst leider nicht auf diesen Tree zugreifen", status: :unprocessable_entity }
       end
@@ -56,10 +58,15 @@ class TreesController < ApplicationController
     @tree = Tree.find(params[:id])
 
     respond_to do |format|
-      id = params[:tree][:user_ids].last
-      user = User.find id
       if @tree.update_attributes(params[:tree])
-        Notification.create(:user => user, :message => "#{current_user.firstname} #{current_user.name} hat dich in einen Tree hinzugefuegt", :recognized => false, :typ => 2)
+        # prüfen, ob ein neuer user hinzugefügt werden sollte
+        unless params[:tree][:user_ids].nil? || params[:tree][:user_ids].empty?        
+          id = params[:tree][:user_ids].last
+          user = User.find id
+          Notification.create(:user => user, 
+            :message => "#{current_user.firstname} #{current_user.name} hat dich in einen Tree hinzugefuegt", 
+            :recognized => false, :typ => 2)
+        end
         format.json { head :no_content }
       else
         format.json { render json: @tree.errors, status: :unprocessable_entity }
