@@ -57,10 +57,12 @@ class TreesController < ApplicationController
   def update
     @tree = Tree.find(params[:id])
 
+    #wird benötigt um zu überprüfen ob eine Notification gesendet werden muss
+    old_tree_count = @tree.users.count
     respond_to do |format|
       if @tree.update_attributes(params[:tree])
         # prüfen, ob ein neuer user hinzugefügt werden sollte
-        unless params[:tree][:user_ids].nil? || params[:tree][:user_ids].empty?        
+        if old_tree_count < @tree.users.count       
           id = params[:tree][:user_ids].last
           user = User.find id
           Notification.create(:user => user, 
