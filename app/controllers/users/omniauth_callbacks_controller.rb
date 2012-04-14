@@ -17,16 +17,24 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 	      flash[:notice] = "Erfolgreich mit Facebook angemeldet"
 	      sign_in_and_redirect :user, authentication.user
 	    else
-	      # ein neuer User wird erstellt
-	      user = User.new(:email => data.email, :password => Devise.friendly_token[0,20], :firstname => data.first_name, :name => data.last_name)
 	      a = Authentication.create!(:provider => omniauth[:provider], :uid => omniauth[:uid])
-	      user.authentications << a
+	      # überprüfen, ob schon ein User mit dieser Email-Adresse existiert
+	      # falls ja, Accounts verbinden
+	      if User.find_by_email(data.email).nil?
+          # ein neuer User wird erstellt
+          user = User.new(:email => data.email, :password => Devise.friendly_token[0,20], :firstname => data.first_name, :name => data.last_name)
+          user.authentications << a
+	      else
+  	      user = User.find_by_email(data.email)
+          user.authentications << a
+        end
+
 	      if user.save
 	      	session["devise.facebook_data"] = request.env["omniauth.auth"]
 	      	sign_in_and_redirect :user, user
 	      else
-			redirect_to new_user_registration_url
-		  end
+          redirect_to root_path
+		    end
 	    end
   	end
 
