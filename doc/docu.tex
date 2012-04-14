@@ -131,12 +131,12 @@ Die etablierten Freundschaftssysteme in den gängigen sozialen Netzwerken sind s
 \end{list}
 Nach Evaluierung der diversen Möglichkeiten entschieden sich die Entwickler von Treebook das \textbf{Freundschaftssystem von Google+} zu adaptieren.
 
-Um möglichst viele Nutzer begeistern zu können sich bei Treebook anzumelden entschlossen ist ein Login per Facebook möglich ohne sich bei einem zusätzlichen Dienst registrieren zu müssen. Über 800 Millionen\footnote{\href{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}} möglichen Benutzern kann so der Einstieg erleichtert werden. Ein normales Registrierungsformular wird dennoch angeboten um niemanden auszuschließen.
+Um möglichst viele Nutzer begeistern zu können sich bei Treebook anzumelden  ist ein Login per Facebook. Über 800 Millionen\footnote{\href{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}} möglichen Benutzern kann so der Einstieg erleichtert werden. Ein normales Registrierungsformular wird dennoch angeboten um niemanden auszuschließen.
 
 Bei der Auswahl eines geeigneten Foto-Hosters geht es zunächst um die Frage, ob man die Bilder selbst hosten möchte oder auf die API eines anderen Anbieters zugreifen. Die Treebook-Verantwortlichen entschieden sich für letzteres, da diese Möglichkeit angenehmer für Nutzer sowie Entwickler scheint. Die zwei Dienste, die hier in der engeren Auswahl waren, sind Flickr und Google Picasa\footnote{\href{http://picasa.google.com/}{http://picasa.google.com/}}. Ausgewählt wurde hier schließlich Flickr, da Picasa stark mit Google+ verwurzelt ist und die oAuth-Möglichkeiten bei Flickr besser sind.  
 \section{Ruby on Rails}
 Die Wahl der Programmiersprache für das Backend fiel auf \textbf{Ruby}\footnote{\href{http://www.ruby-lang.org/en/}{http://www.ruby-lang.org/en/}} mit dem dazugehörigen Web-Framework \textbf{Rails}\footnote{\href{http://rubyonrails.org/}{http://rubyonrails.org/}}. Diese Entscheidung hatte mehrere Gründe:
-\lstset{language=bash}
+\lstset{language=Ruby}
 \begin{list}{$\bullet$}{}
 \item Da im Frontend Daten dynamisch per AJAX nachgeladen werden sollten, ist es sinnvoll zwischen Frontend und Server per JSON zu kommunizieren. Variablen in JSON-Objekte umzuwandeln geht in Ruby on Rails sehr einfach:
 \begin{lstlisting}
@@ -148,7 +148,7 @@ end
 # Ergebnis etwa: [{"name":"Mustermann","firstname":"Max","id":1}]
 \end{lstlisting}
 \item Es gibt viele gute Erweiterungen, zum Beispiel für die Benutzerauthentifizierung oder "Wrapper" um fremde APIs zu nutzen
-\item Object-relation mapping (ORM)\footnote{\href{http://ar.rubyonrails.org/}{http://ar.rubyonrails.org/}} in Rails macht das Entwickeln schneller
+\item Object-relation mapping (ORM)\footnote{\href{http://ar.rubyonrails.org/}{http://ar.rubyonrails.org/}} in Rails macht das Entwickeln schneller und angenehmer
 \end{list}
 
 \section{jQuery}
@@ -172,7 +172,7 @@ jQuery stellt viele Funktionen bereit, die DOM-Tree-Manipulationen erheblich ver
 Stellen Sie zunächst sicher, dass eine Internetverbindung besteht und die Ports \textbf{3000} und \textbf{9292} nicht durch andere Anwendungen belegt sind.
 \section{Linux}
 \begin{enumerate}
-\item Laden Sie die aktuelle Ruby-Version (Stand 6.4.2012) von der offiziellen Ruby-Website herunter\footnote{\href{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}} entpacken und installieren es wie jedes andere Programm unter Linux (evtl. werden dazu Root-Rechte benötigt).
+\item Laden Sie die aktuelle Ruby-Version (Stand 14.4.2012) von der offiziellen Ruby-Website herunter\footnote{\href{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}{http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p125.tar.gz}} entpacken und installieren es wie jedes andere Programm unter Linux (evtl. werden dazu Root-Rechte benötigt).
 \lstset{language=bash}
 \begin{lstlisting}
 # ./configure
@@ -270,7 +270,7 @@ match "comment/" => "users#comment", :via => :post
 \section{Gems}
 Als Gems (deutsch: Edelsteine) werden in Ruby Erweiterungen bezeichnet, die der Entwickler zu seiner Software hinzufügen kann. Folgende Gems werden in Treebook verwendet:
 \subsection{Devise}
-Devise wird zur Benutzerauthentifizierung verwendet. Es hilft dabei, Benutzern den Zugriff auf Funktionen des Controllers zu erlauben bzw. zu verbieten. Desweiteren ermöglicht es den Zugriff auf die Daten des momentan eingeloggten Anwenders.
+Devise wird zur Benutzerauthentifizierung verwendet. Es hilft dabei, Benutzern den Zugriff auf Funktionen des Controllers zu erlauben bzw. zu verbieten. Desweiteren stellt es Methoden bereit mit Hilfe derer man auf den aktuell eingeloggten Nutzer zugreifen kann, überprüfen kann, ob dieser Nutzer überhaupt eingeloggt ist usw.
 \subsection{Omniauth-Facebook}
 Erweiterung von Devise um per \textbf{OAuth}\footnote{\href{http://oauth.net/}{http://oauth.net/}} einen Login mit Facebook zu ermöglichen. 
 Dafür wurde zunächst eine Treebook-App auf Facebook erstellt, der der Anwender bei erstmaligem Klick auf "Via Facebook anmelden" Zugriff auf 
@@ -286,13 +286,13 @@ Funktionsweise wie oben, allerdings wird hier nicht der Login per Flickr ermögl
 Die \textbf{flickrcallback}-Action im \textbf{UsersController} nimmt den Callback von Flickr entgegegen und speichert das übergebene Token in der Datenbank.
 \subsection{Flickraw}
 Das Flickraw-Gem\footnote{\href{https://github.com/hanklords/flickraw}{https://github.com/hanklords/flickraw}} ist eine Funktionsbibliothek, 
-die den Zugriff auf die Flickr-API erleichtert. Initialisiert wird es mit dem \textbf{API-Key} und \textbf{Shared-Secret} der Trebook-App auf Flickr.
+die den Zugriff auf die Flickr-API erleichtert. Initialisiert wird es mit dem \textbf{API-Key} und \textbf{Shared-Secret} der Treebook-App auf Flickr.
 \begin{lstlisting}
 FlickRaw.api_key = "XYZ"
 FlickRaw.shared_secret = "020b6b5209"
 \end{lstlisting}
 In der Users-Tabelle der Datenbank sind drei Attribute für die Flickr-Authentifizierung des Benutzers wichtig: \textbf{flickr\_id} , 
-\textbf{access\_token} und \textbf{access\_secret}. Die letzten beiden werden speziell für Request mit Schreibrechten benötigt. Eine Funktion im User-Model ist deshalb speziell dafür gedacht zu überprüfen, ob der Benutzer eine Flickr-Verbindung eingerichtet hat
+\textbf{access\_token} und \textbf{access\_secret}. Die letzten beiden werden speziell für Requests mit Schreibrechten benötigt. Eine Funktion im User-Model ist deshalb speziell dafür gedacht zu überprüfen, ob der Benutzer eine Flickr-Verbindung eingerichtet hat
 \begin{lstlisting}
 def got_flickr_connection?
   !self.access_token.nil? && !self.access_secret.nil?
@@ -322,7 +322,11 @@ end
 \subsection{Faye}
 Faye ist ein \textbf("publish-subscribe" Nachrichtensystem), welches außerdem einen extra Server für diesen Zweck bereitstellt. So können alle Nutzer, die die benötigten Rechte besitzen in Echtzeit informiert werden, wenn ein neuer Post verfasst wurde. Dazu muss im Backend nur eine von Faye bereitgestellte JavaScript-Datei zusaetzlich geladen werden. Der Code, der im Frontend implementiert werden muss, wird spaeter in dieser Dokumentation noch genauer erlaeutert.
 \subsection{Gon}
-Gon hilft dabei, die Kommunikation zwischen Backend und Frontend zu vereinfachen. So wird im Backend eine Variable \textbf{gon.user\_id} mit der Id des aktuell angemeldeten Benutzers belegt.
+Gon hilft dabei, die Kommunikation zwischen Backend und Frontend zu vereinfachen. Der Programmierer muss dazu nur folgendes definieren
+\begin{lstlisting}
+gon.variablen_name = variablen_wert
+\end{lstlisting}
+So wird im Backend eine Variable \textbf{gon.user\_id} mit der Id des aktuell angemeldeten Benutzers belegt.
 \begin{lstlisting}
 gon.user_id = current_user.id
 \end{lstlisting}
@@ -547,29 +551,47 @@ Der Einbau eines solchen Icons kann an jeder beliebigen Stelle im HTML-Dokument 
 Dies fällt kürzer aus, als die Einbindung über ein \textit{img}-Tag und ist bequemer zu handhaben, da sich die Icons an der Schriftgröße orientieren und somit optimal ausgerichtet sind. \textit{img}-Tags müssen in der Regel per CSS noch extra ausgerichtet werden.
 
 \chapter{Fazit}
-Die Aufteilung der Arbeit in Front- und Backend hat mithilfe gut abgesprochener Spezifikationen der Schnittstellen zu einem guten Ablauf geführt.
-Wir haben eine Software entwickelt, die gut erweiterbar, relativ leicht zu warten und aktuelle Paradigmen des Webs beinhaltet.
+Die Aufteilung der Arbeit in Front- und Backend hat mithilfe gut abgesprochener Spezifikationen der Schnittstellen und der Code-Versionierung via \textbf{git}\footnote{\href{http://git-scm.com/}{http://git-scm.com/}} und \textbf{GitHub}\footnote{\href{https://github.com/}{https://github.com/}} ohne größere Probleme funktioniert. Dabei war es von Vorteil, dass wir die unserer Meinung nach passenden Programmiersprachen / Frameworks für dieses Vorhaben ausgewählt hatten.
+Wir haben eine Software entwickelt, die gut erweiterbar, relativ leicht zu warten ist und aktuelle Paradigmen des Webs beinhaltet.
 Unsere gesetzten Ziele haben wir in vollem Umfang erreicht. Dennoch könnte Treebook noch großzügig erweitert werden, z.B. durch eine Privat-Nachrichten-Funktion, einen Live-Chat oder ein erweitertes Benutzerprofil.
 
 Bei der Analyse der API-Dokumentationen von Anbietern, wie Facebook, Google+ und flickr ist uns aufgefallen, dass es wichtig ist, dass solche Schnittstellen sauber dokumentiert sein müssen, um sie gut nutzen zu können. Dies war vorallem der Anlass die Authentifizierungs-API von Facebook, statt wie ursprünglich geplant von Google+, zu nutzen.
 
-Für die Veranstaltungen selbst hätten wir uns gewünscht, dass die Themenvergabe früher stattgefunden hätte. So hätte man sicherlich eine noch bessere Analyse und Planung durchführen können.
+Für die Veranstaltungen selbst hätten wir uns gewünscht, dass die Themenvergabe früher stattgefunden hätte. So hätte man sicherlich eine noch bessere Analyse und Planung durchführen können. Dennoch sind wir mit dem Ergebnis unseres Projektes sehr zufrieden.
 
 Insgesamt bewerten wir die ganze Veranstaltung als sehr positiv und würden sie definitiv weiterempfehlen.
 \chapter{Literatur}
 \begin{list}{$\bullet$}{}
+\item Devise
+
+\href{http://devise.plataformatec.com.br/}{http://devise.plataformatec.com.br/}
 \item Facebook-API für Webseiten
 
 \href{https://developers.facebook.com/docs/guides/web/}{https://developers.facebook.com/docs/guides/web/}
 \item fancybox
 
 \href{http://fancybox.net}{http://fancybox.net}
+\item Faye
+
+\href{http://faye.jcoglan.com/}{http://faye.jcoglan.com/}
 \item flickr-API
 
 \href{http://www.flickr.com/services/api/}{http://www.flickr.com/services/api/}
+\item Flickraw
+
+\href{http://hanklords.github.com/flickraw/}{http://hanklords.github.com/flickraw/}
 \item Font Awesome
 
 \href{http://fortawesome.github.com/Font-Awesome}{http://fortawesome.github.com/Font-Awesome}
+\item Foreman
+
+\href{https://github.com/ddollar/foreman}{https://github.com/ddollar/foreman}
+\item Gon
+
+\href{https://github.com/gazay/gon}{https://github.com/gazay/gon}
+\item Gravatar
+
+\href{http://en.gravatar.com/site/implement/}{http://en.gravatar.com/site/implement/}
 \item jQuery
 
 \href{http://jquery.com}{http://jquery.com}
