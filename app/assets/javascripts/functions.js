@@ -567,7 +567,7 @@ var showProfile = function(user_id) {
                           }
                         },
                         close: function() {
-                          $(this).empty();
+                          $(this).remove();
                         }
                       });
                     });
@@ -703,7 +703,7 @@ var appendPhotoset = function(set, u) {
                 }
               },
               close: function() {
-                $(this).empty();
+                $(this).remove();
               }
             });
           });
