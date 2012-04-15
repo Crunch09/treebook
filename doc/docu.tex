@@ -187,10 +187,10 @@ Stellen Sie zunächst sicher, dass eine Internetverbindung besteht und die Ports
 \end{lstlisting}
 Anschließend laden Sie bitte Ihre Shell neu.
 \item Sie benötigen eine JavaScript Runtime auf dem Zielsystem. Falls noch keine vorhanden ist, wird Node.js\footnote{\href{http://nodejs.org/}{http://nodejs.org/}} empfohlen.
-\item Kopieren Sie den Ordner \textbf{treebook.tar.gz} von der mitgelieferten DVD an einen beliebigen Ort innerhalb Ihres Home-Verzeichnisses und führen Sie anschließend folgende Befehle in der Konsole aus:
+\item Kopieren Sie den Ordner \textbf{treebook.zip} von der mitgelieferten DVD an einen beliebigen Ort innerhalb Ihres Home-Verzeichnisses und führen Sie anschließend folgende Befehle in der Konsole aus:
 \begin{lstlisting}
 # cd /pfad/zum/treebook/verzeichnis
-# tar -zxvf treebook.tar.gz
+# unzip treebook.zip
 # cd treebook
 # bundle install
 # rake db:migrate
@@ -207,13 +207,16 @@ aus, um Beispieldaten (Benutzer, Trees und Posts) zu laden.
 in Ihrer Konsole ein um den Server zu starten und öffnen Sie anschließend die URL \textbf{http://localhost:3000} in Ihrem Browser.
 \end{enumerate}
 \section{Windows}
+Es wird sehr empfohlen diese Software unter Linux zu installieren, da es bei der Installation unter Windows vermehrt zu Komplikationen kommen kann und Features wie der Facebook-Login möglicherweise nicht zur Verfügung stehen.
+Noch einmal der Hinweis an dieser Stelle, dass ein voll funktionsfähiges System unter \textbf{http://treebook.florianthomas.net} zur Verfügung steht.
 \begin{enumerate}
 \item Laden Sie sich zunächst die aktuelle Version des \textbf{Rails Installers}\footnote{\href{http://railsinstaller.org/}{http://railsinstaller.org/}} herunter und folgen Sie den Installationsanweisungen.
-\item Entpacken Sie den Ordner \textbf{treebook.tar.gz} von der mitgelieferten DVD in einen beliebigen Ort innerhalb Ihres Home-Verzeichnisses, öffnen sie anschließend eine Eingabeaufforderung im \textbf{Treebook}-Ordner und geben Sie folgende Befehle ein:
+\item Entpacken Sie den Ordner \textbf{treebook.zip} von der mitgelieferten DVD in einen beliebigen Ort innerhalb Ihres Home-Verzeichnisses, öffnen sie anschließend eine Eingabeaufforderung im \textbf{Treebook}-Ordner und geben Sie folgende Befehle ein:
 \begin{lstlisting}
 # bundle install
 # rake db:migrate
 \end{lstlisting}
+Laden Sie im Anschluss ihre Eingabeaufforderung neu.
 \item \textbf{Optional:} Führen Sie
 \begin{lstlisting}
 # rake db:seed
