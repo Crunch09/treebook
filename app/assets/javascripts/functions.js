@@ -302,6 +302,7 @@ var showProfile = function(user_id) {
         $('.profile_photos').show();
         $('.profile_menu li').removeClass('profile_menu_active');
         $(this).addClass('profile_menu_active');
+        loadPhotos(u);
       });
       
       /* Beiträge einfügen */
@@ -484,117 +485,6 @@ var showProfile = function(user_id) {
         });
       }
       
-      
-      
-      /* Fotos einfügen */
-      window.setTimeout(function() {
-        var imgUrl = u.id == gon.user_id ? 'images.json' : 'images/'+u.id+'.json';
-        // Fotos laden
-        $.ajax({
-          url: imgUrl,
-          dataType: 'json',
-          complete: function() {
-            // Lade-Icon im Profil ausblenden
-            $('.profile_photos .photos_loading').remove();
-          },
-          error: function(e) {
-            // User hat noch keine Bilder
-            $('.profile_photos').html('<br />'+e.responseText.replace("Dieser User", u.firstname));
-          },
-          success: function(imgs) {
-            if(imgs.url) {
-              // User muss noch seinen flickr-Account mit treebook verknüpfen
-              $.ajax({
-                url: 'images',
-                success: function(f) {
-                  if(u.id == gon.user_id) {
-                    $('.profile_photos').append('<br /><span><a href="'+f.url+'">Verknüpfe jetzt deinen Treebook-Account mit <img src="assets/social/flickr16px.png" /> flickr&reg;</a></span>');
-                    $('.profile_photos span, .profile_photos span img').css('verticalAlign', 'middle');
-                  }
-                },
-                error: function(e) {
-                  $('.profile_photos').html('<br />'+e.responseText.replace("Dieser User", u.firstname));
-                }
-              });
-            } else {
-              if(imgs.photosets) {
-                // Es sind Alben vorhanden, die angezeigt werden können
-                for(var i = 0; i < imgs.photosets.length; i++) {
-                  appendPhotoset(imgs.photosets[i], u);
-                }
-                if(u.id == gon.user_id) {
-                  $('.profile_photos').append('<div class="add_photoset" title="Neues Album erstellen"><i class="icon-plus"></i></div>');
-                  $('.profile_photos .add_photoset').click(function() {
-                    $(this).append('<div class="upload_photo_form"></div>');
-                    $('.upload_photo_form').load('upload_form form', function() {
-                      // Input Feld für Photoset-Namen einfügen
-                      $('.upload_photo_form').prepend('<label for="photoset_title">Album-Titel</label><input type="text" name="photoset_title" />');
-                      // Change-Listener auf File-Input setzen
-                      $('.upload_photo_form').find('input[name="photo"]').bind('change', function() {
-                        var form = $(this).parents('.upload_photo_form').find('form');
-                        console.log(this.files);
-                        form.find('.selected_file').remove();
-                        for(var i = 0; i < this.files.length; i++) {
-                          var f = this.files[i];
-                          form.append('<div class="selected_file"><b>'+f.name+' ('+(Math.round(f.size/1024/1024*100)/100)+' MB)</b><br /><input type="text" name="title" value="Bild-Titel" /><br /><textarea name="description">Bild-Beschreibung</textarea></div>')
-                        }
-                      });
-                      $('.upload_photo_form form').attr("target", "hiddenUploadFrame");
-                      $('.upload_photo_form').append('<iframe name="hiddenUploadFrame" width="1px" height="1px" style="border: 0px; visibility: hidden;"></iframe>');
-                      $('.upload_photo_form iframe[name="hiddenUploadFrame"]').load(function() {
-                        if($(this).contents().text() != "") {
-                          var photoId = parseInt($(this).contents().text());
-                          $.ajax({
-                            url: 'photosets/create.json',
-                            type: 'POST',
-                            dataType: 'json',
-                            data: {
-                              'title': $('.upload_photo_form input[name="photoset_title"]').val(),
-                              'primary_photo_id': photoId
-                            },
-                            success: function(r) {
-                              $.ajax({
-                                url: 'photosets/'+r.id+'.json',
-                                dataType: 'json',
-                                success: function(photoset) {
-                                  appendPhotoset(photoset, u);
-                                  $('.profile_photos .profile_photoset:last').prependTo($('.profile_photos'));
-                                  $('.upload_photo_form').dialog("close");
-                                }
-                              });
-                            },
-                            error: function(e) {
-                              makeToast("Es ist ein Fehler aufgetreten! Bitte versuche es später erneut!");
-                              console.log(e.responseText);
-                            },
-                            complete: function() {
-                              hideLoading();
-                            }
-                          });
-                        }
-                      });
-                      $('.upload_photo_form').dialog({
-                        modal: true,
-                        width: 400,
-                        buttons: {
-                          "Erstellen und hochladen": function() {
-                            showLoading();
-                            $(this).find('form').submit();
-                          }
-                        },
-                        close: function() {
-                          $(this).remove();
-                        }
-                      });
-                    });
-                  });
-                }
-              }
-            }
-          }
-        });
-      }, 1000);
-      
       show("Profil");
       
       if(args[1] != undefined) {
@@ -605,6 +495,116 @@ var showProfile = function(user_id) {
       }
     }
   });
+}
+
+var loadPhotos = function(u) {
+  if($('.profile_photos .photos_loading').length > 0) {
+    var imgUrl = u.id == gon.user_id ? 'images.json' : 'images/'+u.id+'.json';
+    // Fotos laden
+    $.ajax({
+      url: imgUrl,
+      dataType: 'json',
+      complete: function() {
+        // Lade-Icon im Profil ausblenden
+        $('.profile_photos .photos_loading').remove();
+      },
+      error: function(e) {
+        // User hat noch keine Bilder
+        $('.profile_photos').html('<br />'+e.responseText.replace("Dieser User", u.firstname));
+      },
+      success: function(imgs) {
+        if(imgs.url) {
+          // User muss noch seinen flickr-Account mit treebook verknüpfen
+          $.ajax({
+            url: 'images',
+            success: function(f) {
+              if(u.id == gon.user_id) {
+                $('.profile_photos').append('<br /><span><a href="'+f.url+'">Verknüpfe jetzt deinen Treebook-Account mit <img src="assets/social/flickr16px.png" /> flickr&reg;</a></span>');
+                $('.profile_photos span, .profile_photos span img').css('verticalAlign', 'middle');
+              }
+            },
+            error: function(e) {
+              $('.profile_photos').html('<br />'+e.responseText.replace("Dieser User", u.firstname));
+            }
+          });
+        } else {
+          if(imgs.photosets) {
+            // Es sind Alben vorhanden, die angezeigt werden können
+            for(var i = 0; i < imgs.photosets.length; i++) {
+              appendPhotoset(imgs.photosets[i], u);
+            }
+            if(u.id == gon.user_id) {
+              $('.profile_photos').append('<div class="add_photoset" title="Neues Album erstellen"><i class="icon-plus"></i></div>');
+              $('.profile_photos .add_photoset').click(function() {
+                $(this).append('<div class="upload_photo_form"></div>');
+                $('.upload_photo_form').load('upload_form form', function() {
+                  // Input Feld für Photoset-Namen einfügen
+                  $('.upload_photo_form').prepend('<label for="photoset_title">Album-Titel</label><input type="text" name="photoset_title" />');
+                  // Change-Listener auf File-Input setzen
+                  $('.upload_photo_form').find('input[name="photo"]').bind('change', function() {
+                    var form = $(this).parents('.upload_photo_form').find('form');
+                    console.log(this.files);
+                    form.find('.selected_file').remove();
+                    for(var i = 0; i < this.files.length; i++) {
+                      var f = this.files[i];
+                      form.append('<div class="selected_file"><b>'+f.name+' ('+(Math.round(f.size/1024/1024*100)/100)+' MB)</b><br /><input type="text" name="title" value="Bild-Titel" /><br /><textarea name="description">Bild-Beschreibung</textarea></div>')
+                    }
+                  });
+                  $('.upload_photo_form form').attr("target", "hiddenUploadFrame");
+                  $('.upload_photo_form').append('<iframe name="hiddenUploadFrame" width="1px" height="1px" style="border: 0px; visibility: hidden;"></iframe>');
+                  $('.upload_photo_form iframe[name="hiddenUploadFrame"]').load(function() {
+                    if($(this).contents().text() != "") {
+                      var photoId = parseInt($(this).contents().text());
+                      $.ajax({
+                        url: 'photosets/create.json',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                          'title': $('.upload_photo_form input[name="photoset_title"]').val(),
+                          'primary_photo_id': photoId
+                        },
+                        success: function(r) {
+                          $.ajax({
+                            url: 'photosets/'+r.id+'.json',
+                            dataType: 'json',
+                            success: function(photoset) {
+                              appendPhotoset(photoset, u);
+                              $('.profile_photos .profile_photoset:last').prependTo($('.profile_photos'));
+                              $('.upload_photo_form').dialog("close");
+                            }
+                          });
+                        },
+                        error: function(e) {
+                          makeToast("Es ist ein Fehler aufgetreten! Bitte versuche es später erneut!");
+                          console.log(e.responseText);
+                        },
+                        complete: function() {
+                          hideLoading();
+                        }
+                      });
+                    }
+                  });
+                  $('.upload_photo_form').dialog({
+                    modal: true,
+                    width: 400,
+                    buttons: {
+                      "Erstellen und hochladen": function() {
+                        showLoading();
+                        $(this).find('form').submit();
+                      }
+                    },
+                    close: function() {
+                      $(this).remove();
+                    }
+                  });
+                });
+              });
+            }
+          }
+        }
+      }
+    });
+  }
 }
 
 var appendPhotoset = function(set, u) {

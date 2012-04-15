@@ -529,6 +529,17 @@ Bei Treebok sind dies in den meisten Fällen JSON-Objekte, die dann direkt verwe
 \subsection{Faye}
 Die Erweiterung von Treebook durch \textbf{Faye} ermöglicht es, dass alle Benutzer immer automatisch die neuesten Posts und Kommentare sehen.
 Jeder Benutzer hat seinen eigenen \textbf{Channel} (deutsch: Kanal). Wenn der Benutzer einen neuen Post oder Kommentar abschickt, wird die neue ID des Posts bzw. Kommentars über seinen Channel übertragen.
+\begin{lstlisting}
+// einen Channel abonnieren
+// uid ist die User-ID des Channels
+client.subscribe('/posts/'+uid, function(message) {
+    ...
+});
+
+// eine Nachricht an den eigenen Channel senden,
+// wenn ein Post abgeschickt wurde
+client.publish('/posts/'+gon.user_id, { post_id: newPost.id });
+\end{lstlisting}
 Zeitgleich hat jeder Benutzer einen registrierten Listener auf alle Channels seiner verknüpften Kontakte. Sobald eine Nachricht auf einen der Channels registriert wird, prüft das System, ob der neue Post bzw. Kommentar für den aktuellen Nutzer relevant ist. Ist dies der Fall, so wird der Post bzw. Kommentar direkt angezeigt.
 
 Um den Lesefluss nicht zu beeinträchtigen, werden neue Posts und Kommentare nur direkt angezeigt, wenn sie sich unterhalb der aktuellen Ansicht des Nutzers befinden.
