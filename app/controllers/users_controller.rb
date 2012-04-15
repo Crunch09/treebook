@@ -168,16 +168,23 @@ class UsersController < ApplicationController
       flickr.access_token = current_user.access_token
       flickr.access_secret = current_user.access_secret
       album = Hash.new
-      album[:photoset] = flickr.photosets.getInfo :photoset_id => params[:id]
-      album[:photoset].to_hash[:fotos] = flickr.photosets.getPhotos(:photoset_id => params[:id], :privacy_filer => 1, :media => 'photos').photo
-      album[:photoset].to_hash[:fotos].each do |f|
-        f.to_hash[:url] = "http://farm#{f.farm}.staticflickr.com/#{f.server}/#{f.id}_#{f.secret}.jpg"
-        f.to_hash[:description] = flickr.photos.getInfo(:photo_id => f.id).description
+      begin
+        album[:photoset] = flickr.photosets.getInfo :photoset_id => params[:id]
+        album[:photoset].to_hash[:fotos] = flickr.photosets.getPhotos(:photoset_id => params[:id], :privacy_filer => 1, :media => 'photos').photo
+        album[:photoset].to_hash[:fotos].each do |f|
+          f.to_hash[:url] = "http://farm#{f.farm}.staticflickr.com/#{f.server}/#{f.id}_#{f.secret}.jpg"
+          f.to_hash[:description] = flickr.photos.getInfo(:photo_id => f.id).description
+        end
+        @response = album
+      rescue FlickRaw::FailedResponse => e
+        respond_to do |format|
+          format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+        end
+        return
       end
-      @response = album
     else
       @response = Hash.new
-      @response[:photoset] = "Leider ist ein Fehler aufgetreten"
+      @response[:photoset] = "Leider hast du noch keine Flickr-Verbindung hergestellt"
     end
 
     respond_to do |format|
@@ -198,7 +205,14 @@ class UsersController < ApplicationController
     if current_user.got_flickr_connection?
       flickr.access_token = current_user.access_token
       flickr.access_secret = current_user.access_secret
-      @response = flickr.upload_photo params[:photo].tempfile.path, :title => params[:title], :description => params[:description]
+      begin
+        @response = flickr.upload_photo params[:photo].tempfile.path, :title => params[:title], :description => params[:description]
+      rescue FlickRaw::FailedResponse => e
+        respond_to do |format|
+          format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+        end
+        return
+      end
     else
       @response = "Du hast leider noch keine Flickr-Verbindung hergestellt"
     end
@@ -223,8 +237,15 @@ class UsersController < ApplicationController
       flickr.access_token = current_user.access_token
       flickr.access_secret = current_user.access_secret
       @photo = Hash.new
-      @photo = flickr.photos.getInfo :photo_id => params[:id]
-      @photo.to_hash['url'] = "http://farm#{@photo.farm}.staticflickr.com/#{@photo.server}/#{@photo.id}_#{@photo.secret}.jpg"
+      begin
+        @photo = flickr.photos.getInfo :photo_id => params[:id]
+        @photo.to_hash['url'] = "http://farm#{@photo.farm}.staticflickr.com/#{@photo.server}/#{@photo.id}_#{@photo.secret}.jpg"
+      rescue FlickRaw::FailedResponse => e
+        respond_to do |format|
+          format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+        end
+        return
+      end
     else
       @photo = "Du hast leider noch keine Flickr-Verbindung hergestellt"
     end
@@ -251,7 +272,14 @@ class UsersController < ApplicationController
       end
     else
       @comments = Hash.new
-      @comments[:comments] = flickr.photos.comments.getList :photo_id => params[:id]
+      begin
+        @comments[:comments] = flickr.photos.comments.getList :photo_id => params[:id]
+      rescue FlickRaw::FailedResponse => e
+        respond_to do |format|
+          format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+        end
+        return
+      end
       #überprüfen, ob überhaupt Kommentare vorhanden sind
       if @comments[:comments].to_hash.has_key?("comment")
         #Falls möglich den Autor des Kommentars mit dem entsprechenden
@@ -293,8 +321,15 @@ class UsersController < ApplicationController
       end
       return
     else
-      @comment = flickr.photos.comments.addComment(:photo_id => params[:photo_id],
+      begin
+        @comment = flickr.photos.comments.addComment(:photo_id => params[:photo_id],
                                                    :comment_text => params[:comment_text])
+      rescue FlickRaw::FailedResponse => e
+        respond_to do |format|
+          format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+        end
+        return
+      end
       respond_to do |format|
         format.json { render json: @comment }
       end
@@ -318,8 +353,15 @@ class UsersController < ApplicationController
       end
       return
     else
-      flickr.photosets.addPhoto(:photoset_id => params[:photoset_id],
+      begin
+        flickr.photosets.addPhoto(:photoset_id => params[:photoset_id],
                                 :photo_id => params[:photo_id])
+      rescue FlickRaw::FailedResponse => e
+        respond_to do |format|
+          format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+        end
+        return
+      end
       respond_to do |format|
         format.json { head :no_content }
       end
@@ -347,9 +389,16 @@ class UsersController < ApplicationController
       end
       return
     else
-      @comment = flickr.photos.setMeta(:photo_id => params[:photo_id],
+      begin
+        @comment = flickr.photos.setMeta(:photo_id => params[:photo_id],
                                        :title => params[:title],
                                        :description => params[:description])
+      rescue FlickRaw::FailedResponse => e
+        respond_to do |format|
+          format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+        end
+        return
+      end
       respond_to do |format|
         format.json { render json: @comment }
       end
@@ -369,20 +418,24 @@ class UsersController < ApplicationController
 
     oauth_token = params[:oauth_token]
     oauth_verifier = params[:oauth_verifier]
+    begin
+      raw_token = flickr.get_access_token(session[:token]['oauth_token'], session[:token]['oauth_token_secret'], oauth_verifier)
 
-    raw_token = flickr.get_access_token(session[:token]['oauth_token'], session[:token]['oauth_token_secret'], oauth_verifier)
-    # raw_token is a hash like this {"user_nsid"=>"92023420%40N00", "oauth_token_secret"=>"XXXXXX", "username"=>"boncey", "fullname"=>"Darren%20Greaves", "oauth_token"=>"XXXXXX"}
-    # Use URI.unescape on the nsid and name parameters
+      current_user.access_token = raw_token["oauth_token"]
+      current_user.access_secret = raw_token["oauth_token_secret"]
 
-    current_user.access_token = raw_token["oauth_token"]
-    current_user.access_secret = raw_token["oauth_token_secret"]
-
-    flickr.access_token = current_user.access_token
+      flickr.access_token = current_user.access_token
       flickr.access_secret = current_user.access_secret
 
       login = flickr.test.login
       current_user.flickr_id = login.id
       current_user.save
+    rescue FlickRaw::FailedResponse => e
+      respond_to do |format|
+        format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+      end
+      return
+    end
 
     flash[:notice] = "Deine Fotos sind jetzt mit Treebook verbunden!"
     redirect_to root_path
@@ -425,7 +478,7 @@ class UsersController < ApplicationController
   # Ǵibt das Formular zurück, welches im Frontend verwendet wird
   def upload_form
     respond_to do |format|
-      format.html
+      format.html # lädt views/users/upload_form.html.erb
     end
   end
 

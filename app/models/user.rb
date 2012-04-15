@@ -13,22 +13,25 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable
 
-  # Setup accessible (or protected) attributes for your model
+  # Public: Getter und Setter
   attr_accessible :email, :password, :password_confirmation, :remember_me, :firstname, :name,
                   :birthday, :trees, :posts, :owned_trees, :access_token, :access_secret,
                   :flickr_id, :privacy_setting, :likes, :movies, :food, :music, :books,
                   :twitter, :github
 
+  # Public: Initialisierung von Variablen, die nicht in der DB sind
   attr_accessor :posts_by_user, :gravatar_size
 
 
+  # Public: Berechnet den Avatar des Users und gibt ihn zurück
   def image
-    default_url = "http://localhost:3000/assets/derp.png" #Default-Bild
+    default_url = "http://localhost:3000/assets/derp.png" # Default-Bild
     gravatar_id = Digest::MD5.hexdigest(self.email.downcase)
     img = "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{self.gravatar_size}&d=#{CGI.escape(default_url)}"
     img #die letzte Anweisung im Code einer Methode wird zurückgegeben
   end
 
+  # Public: Gibt alle "Über mich"-Info des Users zurück
   def about_me
     h = Hash.new
     h[:likes] = self.likes
@@ -41,11 +44,12 @@ class User < ActiveRecord::Base
     return h
   end
 
+  # Public : überprüft ob der User eine Flickr-Connection besitzt
   def got_flickr_connection?
     !self.access_token.nil? && !self.access_secret.nil?
   end
 
-  # zeigt alle "FirstLevel"-Posts an die ich von einem anderen User sehen darf
+  # Public: zeigt alle "FirstLevel"-Posts an die ich von einem anderen User sehen darf
   def shared_posts owner_id = nil
     available_posts = []
     unless self == User.current
@@ -65,6 +69,7 @@ class User < ActiveRecord::Base
     available_posts
   end
 
+  # Public gibt alle öffentlichen Photosets des Users und deren Bilder zurück
   def get_photos
     flickr.access_token = self.access_token
     flickr.access_secret = self.access_secret
@@ -80,6 +85,7 @@ class User < ActiveRecord::Base
     album
   end
 
+  # Public: to_s wird überschrieben
   def to_s
     "#{self.firstname} #{self.name}"
   end
@@ -88,11 +94,12 @@ class User < ActiveRecord::Base
     time_ago_in_words(Time.at(timestamp.to_i))
   end
 
-  #werden benötigt um innerhalb von shared_posts auf den current_user zuzugreifen
+  # Public: wird benötigt um innerhalb von shared_posts auf den current_user zuzugreifen
   def self.current
     Thread.current[:user]
   end
 
+  # Public: wird benötigt um innerhalb von shared_posts auf den current_user zuzugreifen
   def self.current=(user)
     Thread.current[:user] = user
   end
