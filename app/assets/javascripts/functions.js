@@ -360,6 +360,7 @@ var showProfile = function(user_id) {
           if(u.about_me[i] != null && u.about_me[i].trim() != "") {
             c++;
             var label = "";
+            var text = u.about_me[i].trim();
             switch(i) {
               case "books":
                 label = "Bücher";
@@ -369,6 +370,7 @@ var showProfile = function(user_id) {
                 break;
               case "github":
                 label = "Github";
+                text = '<a href="http://github.com/'+text+'" target="_blank">'+text+'</a>';
                 break;
               case "likes":
                 label = "Ich mag";
@@ -381,9 +383,10 @@ var showProfile = function(user_id) {
                 break;
               case "twitter":
                 label = "Twitter";
+                text = '<a href="http://twitter.com/#!/'+text+'" target="_blank">'+text+'</a>';
                 break;
             }
-            $('.profile_info').append('<label for="'+i+'">'+label+'</label><span name="'+i+'">'+u.about_me[i]+'</span>');
+            $('.profile_info').append('<label for="'+i+'">'+label+'</label><span name="'+i+'">'+text+'</span>');
           }
         }
         if(c == 0) {
@@ -419,7 +422,15 @@ var showProfile = function(user_id) {
                 $('.profile_actions button').show();
                 for(var i in u.about_me) {
                   if($('.profile_info span[name="'+i+'"] textarea').val().trim() != "") {
-                    $('.profile_info span[name="'+i+'"]').text($('.profile_info span[name="'+i+'"] textarea').val());
+                    if(i == "github") {
+                      var github = $('.profile_info span[name="'+i+'"] textarea').val();
+                      $('.profile_info span[name="'+i+'"]').html("<a href='https://github.com/"+github+"' target='_blank'>"+github+"</a>");
+                    } else if(i == "twitter") {
+                      var twitter = $('.profile_info span[name="'+i+'"] textarea').val();
+                      $('.profile_info span[name="'+i+'"]').html("<a href='http://twitter.com/#!/"+twitter+"' target='_blank'>"+twitter+"</a>");
+                    } else {
+                      $('.profile_info span[name="'+i+'"]').text($('.profile_info span[name="'+i+'"] textarea').val());
+                    }
                   } else {
                     $('.profile_info span[name="'+i+'"], label[for="'+i+'"]').remove();
                   }
@@ -436,7 +447,12 @@ var showProfile = function(user_id) {
           });
           for(var i in u.about_me) {
             if($('span[name="'+i+'"]').length > 0) {
-              $('span[name="'+i+'"]').wrapInner('<textarea></textarea>');
+              if($('span[name="'+i+'"]').find('a').length > 0) {
+                var t = $('span[name="'+i+'"] a').text();
+                $('span[name="'+i+'"]').html('<textarea>'+t+'</textarea>');
+              } else {
+                $('span[name="'+i+'"]').wrapInner('<textarea></textarea>');
+              }
             } else {
               var label = "";
               switch(i) {
