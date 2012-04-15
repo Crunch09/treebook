@@ -660,3 +660,7 @@ var checkUserCache = function(id) {
 var showCreditsDialog = function() {
     $('#credits_dialog').dialog("open");
 }
+
+var showLicenseDialog = function() {
+    $('#license_dialog').dialog("open");
+}

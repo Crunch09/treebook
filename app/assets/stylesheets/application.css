@@ -12,7 +12,7 @@
  *= require_tree .
 */
 
-#credits_dialog {
+#credits_dialog, #license_dialog {
   display: none;
 }
 
@@ -129,13 +129,13 @@ div#login_layer a{
   color: #000000;
 }
 
-div#login_layer, div#signup_layer, div#show_credits {
+div#login_layer, div#signup_layer, div#show_credits, div#show_license {
   float: right;
   line-height: 40px;
   margin-right: 20px;
 }
 
-div#login_layer > b, div#signup_layer > b, div#user_menu > b, div#show_credits > b {
+div#login_layer > b, div#signup_layer > b, div#user_menu > b, div#show_credits > b, div#show_license > b {
   display: block;
   padding: 0px 10px;
   cursor: pointer;
@@ -146,7 +146,7 @@ div#login_layer > b, div#signup_layer > b, div#user_menu > b, div#show_credits >
   border-right: 1px solid transparent;
 }
 
-div#login_layer > b:hover, div#signup_layer > b:hover, div#user_menu > b:hover, div#show_credits > b:hover {
+div#login_layer > b:hover, div#signup_layer > b:hover, div#user_menu > b:hover, div#show_credits > b:hover, div#show_license > b:hover {
   text-shadow: #000 0px 0px 6px !important;
 }
 
