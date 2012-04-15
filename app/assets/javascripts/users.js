@@ -39,6 +39,11 @@ $(function() {
    * Prüfen, ob der Login-Layer vorhanden ist (User ist nicht eingeloggt)
    */
   if($('#login_layer').length > 0) {
+    $('#credits_dialog').dialog({
+        autoOpen: false,
+        title: "Credits"
+    });
+    
     // Layer-Toggle initialisieren (slideUp/slideDown)
     $('#login_layer > b').toggle(function() {
       // Layer-Position neu setzen
@@ -650,4 +655,8 @@ var checkUserCache = function(id) {
     });
   }
   return users[id];
+}
+
+var showCreditsDialog = function() {
+    $('#credits_dialog').dialog("open");
 }
