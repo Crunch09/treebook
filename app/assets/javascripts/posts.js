@@ -66,6 +66,7 @@ var loadPosts = function() {
         coll.prependTo($(this).data('prepend'));
       }
     });
+    $('.post').show();
   }
 }
 

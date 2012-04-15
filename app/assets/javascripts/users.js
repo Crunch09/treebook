@@ -328,7 +328,7 @@ $(function() {
                     var p = window.location.hash.split(":");
                     switch(p[0]) {
                         case "#u":
-                            if(p[1].indexOf("_") == 0) {
+                            if(p[1].indexOf("_") == -1) {
                                 showProfile(p[1]);
                             } else {
                                 var e = p[1].split("_");
