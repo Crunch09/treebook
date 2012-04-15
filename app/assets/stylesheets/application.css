@@ -65,6 +65,10 @@ textarea:focus {
     box-shadow: 0px 0px 4px #008800;
 }
 
+#login_layer input, #signup_layer input {
+  max-width: 250px;
+}
+
 label {
   display: block;
   font-weight: bold;
