@@ -11,6 +11,7 @@ gem 'sqlite3'
 # load Devise
 gem 'devise'
 
+gem 'eventmachine', ">= 1.0.0.beta.4", "<= 1.0.0.beta.4.1"
 
 #load Gon
 gem 'gon'
