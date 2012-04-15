@@ -97,29 +97,29 @@ Im Rahmen der Veranstaltung "Entwicklung webbasierter Software", geleitet von He
 \chapter{Einführung}
 Die hier beschriebene Software ist ein soziales Netzwerk, vergleichbar mit Facebook\footnote{\href{http://facebook.com/}{http://facebook.com/}
 } oder Google+\footnote{\href{http://plus.google.com/}{http://plus.google.com/}}. Der Name "Treebook" leitet sich aus der Struktur der 
-Freundschaften innerhalb dieser Software her. Dieses System ist angelehnt an das Circle-System von Google+\footnote{\href{http://www.youtube.
-com/watch?v=BeMZP-oyOII}{http://www.youtube.com/watch?v=BeMZP-oyOII}}: Der Benutzer besitzt mehrere "Trees" in denen wiederum 
+Freundschaften innerhalb dieser Software her. Das System ist angelehnt an das Circle-System von Google+\footnote{\href{http://www.youtube.
+com/watch?v=BeMZP-oyOII}{http://www.youtube.com/watch?v=BeMZP-oyOII}}: Der Benutzer besitzt mehrere "Trees", in denen wiederum 
 mehrere Benutzer enthalten sein können.
 
 Treebook benutzt mehrere Application programming interfaces (nachfolgend kurz API) um die Funktionsmöglichkeiten der Software zu erweitern. 
 Dem Benutzer ist es so mit Hilfe der API von Facebook möglich, sich mit seinen Facebook-Zugangsdaten bei Treebook anzumelden. Die API des 
-Bilderdienstes Flickr\footnote{\href{http://flickr.com}{http://flickr.com}} wird verwendet um dem Anwender zu ermöglichen innerhalb von 
+Bilderdienstes Flickr\footnote{\href{http://flickr.com}{http://flickr.com}} wird verwendet, um dem Anwender zu ermöglichen, innerhalb von 
 Treebook mit seinen auf Flickr bereitgestellten Fotos zu interagieren (Fotos ansehen, kommentieren, hochladen).
 
 Der Anwender hat mehrere für ein soziales Netzwerk typische Aktionen zur Auswahl. Er kann Nachrichten (sogenannte "Posts") schreiben, die er 
 mit von ihm ausgewählten "Trees" teilt. Leser einer Nachricht können diese kommentieren, mögen und im Gegensatz zu den bekannten sozialen 
 Netzwerken auch Ablehnung zeigen.
 
-Dem Benutzer steht ein eigenes Profil zur Verfügung, in dem er Informationen über sich, für die anderen Benutzer, veröffentlichen kann. Diese 
-Informationen, sowie eventuelle Fotos können über die Privatsphäreneinstellung entweder mit allen angemeldeten Benutzern geteilt werden oder 
+Dem Benutzer steht ein eigenes Profil zur Verfügung, in dem er Informationen über sich für die anderen Benutzer veröffentlichen kann. Diese 
+Informationen sowie eventuelle Fotos können über die Privatsphäreneinstellung entweder mit allen angemeldeten Benutzern geteilt werden oder 
 nur mit den eigenen Trees.
 
 Eine Onlineversion von Treebook ist unter \textbf{http://treebook.florianthomas.net} verfügbar.
 \chapter{Analyse}
-Software, die in diesem Markt bereits existiert beinhaltet etablierte Namen wie Facebook, Twitter oder Google+. Diese haben eine Reichweite und Bekanntheit mit der es ein neues Produkt unmöglich aufnehmen kann. Deshalb wird in Treebook versucht gute Konzept aus diesen Branchengrößen zu extrahieren, eigene Ideen hinzuzufügen oder ihre APIs zu nutzen.
+Software, die in diesem Markt bereits existiert, beinhaltet etablierte Namen wie Facebook, Twitter oder Google+. Diese haben eine Reichweite und Bekanntheit, mit der es ein neues Produkt nur schwer aufnehmen kann. Deshalb wird in Treebook versucht, gute Konzept aus diesen Branchengrößen zu extrahieren, eigene Ideen hinzuzufügen oder ihre APIs zu nutzen.
 
 Standardmäßig ist es der Nutzer gewohnt in einem sozialen Netzwerk eigene Posts verfassen zu können, die von den Freunden im Netzwerk gelesen und kommentiert werden können. Im Gegensatz zu Twitter gibt es in Treebook kein Zeichenlimit für einen Post, da diese Begrenzung in Twitter auf Grund der maximalen Länge einer SMS eingeführt wurde\footnote{\href{http://www.quora.com/Twitter-Inc-company/What-is-the-rationale-behind-Twitters-15-character-limit-for-usernames}{http://www.quora.com/Twitter-Inc-company/What-is-the-rationale-behind-Twitters-15-character-limit-for-usernames}}, es in Treebook aber ohnehin nicht möglich ist Posts per SMS abzusetzen.
-Um sich von anderen Marken abzusetzen ist es in der hier dokumentierten Software möglich neben einer Zustimmung("Liken" auf Facebook, +1 auf Google+) auch Ablehnung durch eine "Dislike"-Funktion zu äußern.
+Um sich von anderen Marken abzusetzen ist es in der hier dokumentierten Software möglich neben einer Zustimmung ("Like" bzw. "Gefällt mir" auf Facebook, "+1" auf Google+) auch Ablehnung durch eine "Dislike"-Funktion zu äußern.
 
 Bei den Privatsphäre-Einstellungen distanziert sich Treebook ganz bewusst von einer schwer zugänglichen und unverständlichen Struktur der Einstellungen wie etwa auf Facebook. Es gibt nur zwei mögliche Einstellungen, die der Nutzer vornehmen kann: "Für alle Nutzer auf Treebook sichtbar" oder "Nur für Nutzer in meinen Trees sichtbar". Diese Möglichkeiten beziehen sich auf Flickr-Fotos sowie auf den "Über mich" Bereich.
 
@@ -131,9 +131,9 @@ Die etablierten Freundschaftssysteme in den gängigen sozialen Netzwerken sind s
 \end{list}
 Nach Evaluierung der diversen Möglichkeiten entschieden sich die Entwickler von Treebook das \textbf{Freundschaftssystem von Google+} zu adaptieren.
 
-Um möglichst viele Nutzer begeistern zu können sich bei Treebook anzumelden  ist ein Login per Facebook. Über 800 Millionen\footnote{\href{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}} möglichen Benutzern kann so der Einstieg erleichtert werden. Ein normales Registrierungsformular wird dennoch angeboten um niemanden auszuschließen.
+Um möglichst viele Nutzer begeistern zu können sich bei Treebook anzumelden ist ein Login per Facebook möglich. Über 800 Millionen\footnote{\href{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}{http://newsroom.fb.com/content/default.aspx?NewsAreaId=22}} möglichen Benutzern kann so der Einstieg erleichtert werden. Ein normales Registrierungsformular wird dennoch angeboten, um niemanden auszuschließen.
 
-Bei der Auswahl eines geeigneten Foto-Hosters geht es zunächst um die Frage, ob man die Bilder selbst hosten möchte oder auf die API eines anderen Anbieters zugreifen. Die Treebook-Verantwortlichen entschieden sich für letzteres, da diese Möglichkeit angenehmer für Nutzer sowie Entwickler scheint. Die zwei Dienste, die hier in der engeren Auswahl waren, sind Flickr und Google Picasa\footnote{\href{http://picasa.google.com/}{http://picasa.google.com/}}. Ausgewählt wurde hier schließlich Flickr, da Picasa stark mit Google+ verwurzelt ist und die oAuth-Möglichkeiten bei Flickr besser sind.  
+Bei der Auswahl eines geeigneten Foto-Hosters geht es zunächst um die Frage, ob man die Bilder selbst hosten oder auf die API eines anderen Anbieters zugreifen möchte. Die Treebook-Verantwortlichen entschieden sich für letzteres, da diese Möglichkeit angenehmer für Nutzer sowie Entwickler scheint. Die zwei Dienste, die hier in der engeren Auswahl waren, sind Flickr und Google Picasa\footnote{\href{http://picasa.google.com/}{http://picasa.google.com/}}. Ausgewählt wurde hier schließlich Flickr, da Picasa stark mit Google+ verwurzelt ist und die oAuth-Möglichkeiten bei Flickr besser sind.  
 \section{Ruby on Rails}
 Die Wahl der Programmiersprache für das Backend fiel auf \textbf{Ruby}\footnote{\href{http://www.ruby-lang.org/en/}{http://www.ruby-lang.org/en/}} mit dem dazugehörigen Web-Framework \textbf{Rails}\footnote{\href{http://rubyonrails.org/}{http://rubyonrails.org/}}. Diese Entscheidung hatte mehrere Gründe:
 \lstset{language=Ruby}
@@ -152,7 +152,7 @@ end
 \end{list}
 
 \section{jQuery}
-Der meiste für Treebook entwickelte JavaScript-Code basiert auf der JavaScript-Bibliothek \textbf{jQuery}\footnote{\href{http://jquery.com}{http://jquery.com}}. Mit jQuery hat es der JavaScript-Entwickler äußerst bequem, da er sich nicht mehr um Browser-Weichen\footnote{Browser-Weichen sind in JavaScript übliche Code-Verzweigungen, die die verfügbaren Informationen des Browsers auswerten, um möglichst viele Browser-Eigenheiten bei der Ausführung des Codes abzudecken. Dadurch soll erreich werden, dass dieselbe JavaScript-Anwendung in möglichst vielen Browsern funktioniert.} kümmern muss und die Code-Menge um ein Vielfaches schrumpft. Damit bleibt JavaScript-Code überschaubarer und leichter wartbar.
+Der meiste für Treebook entwickelte JavaScript-Code basiert auf der JavaScript-Bibliothek \textbf{jQuery}\footnote{\href{http://jquery.com}{http://jquery.com}}. Mit jQuery hat es der JavaScript-Entwickler äußerst bequem, da er sich nicht mehr um Browser-Weichen\footnote{Browser-Weichen sind in JavaScript übliche Code-Verzweigungen, die die verfügbaren Informationen des Browsers auswerten, um möglichst viele Browser-Eigenheiten bei der Ausführung des Codes abzudecken. Dadurch soll erreicht werden, dass dieselbe JavaScript-Anwendung in möglichst vielen Browsern funktioniert.} kümmern muss und die Code-Menge um ein Vielfaches schrumpft. Damit bleibt JavaScript-Code überschaubarer und leichter wartbar.
 
 Ein Beispiel:\footnote{In den Code-Beispielen wird der Zugriff auf die jQuery-Bibliothek mit der Variablen \textit{jQuery} gekennzeichnet. Im Produktiveinsatz wird meistens \textit{\$} verwendet, um den Code noch schlanker zu halten.}
 
@@ -183,7 +183,7 @@ Stellen Sie zunächst sicher, dass eine Internetverbindung besteht und die Ports
 \begin{lstlisting}
 # gem install bundler
 \end{lstlisting}
-Anschließen laden Sie bitte Ihre Shell neu.
+Anschließend laden Sie bitte Ihre Shell neu.
 \item Sie benötigen eine JavaScript Runtime auf dem Zielsystem. Falls noch keine vorhanden ist, wird Node.js\footnote{\href{http://nodejs.org/}{http://nodejs.org/}} empfohlen.
 \item Kopieren Sie den Ordner \textbf{treebook.tar.gz} von der mitgelieferten DVD an einen beliebigen Ort innerhalb Ihres Home-Verzeichnisses und führen Sie anschließend folgende Befehle in der Konsole aus:
 \begin{lstlisting}
@@ -270,7 +270,7 @@ match "comment/" => "users#comment", :via => :post
 \section{Gems}
 Als Gems (deutsch: Edelsteine) werden in Ruby Erweiterungen bezeichnet, die der Entwickler zu seiner Software hinzufügen kann. Folgende Gems werden in Treebook verwendet:
 \subsection{Devise}
-Devise wird zur Benutzerauthentifizierung verwendet. Es hilft dabei, Benutzern den Zugriff auf Funktionen des Controllers zu erlauben bzw. zu verbieten. Desweiteren stellt es Methoden bereit mit Hilfe derer man auf den aktuell eingeloggten Nutzer zugreifen kann, überprüfen kann, ob dieser Nutzer überhaupt eingeloggt ist usw.
+Devise wird zur Benutzerauthentifizierung verwendet. Es hilft dabei, Benutzern den Zugriff auf Funktionen des Controllers zu erlauben bzw. zu verbieten. Desweiteren stellt es Methoden bereit, mit Hilfe derer man auf den aktuell eingeloggten Nutzer zugreifen kann, überprüfen kann, ob dieser Nutzer überhaupt eingeloggt ist usw.
 \subsection{Omniauth-Facebook}
 Erweiterung von Devise um per \textbf{OAuth}\footnote{\href{http://oauth.net/}{http://oauth.net/}} einen Login mit Facebook zu ermöglichen. 
 Dafür wurde zunächst eine Treebook-App auf Facebook erstellt, der der Anwender bei erstmaligem Klick auf "Via Facebook anmelden" Zugriff auf 
@@ -299,7 +299,7 @@ def got_flickr_connection?
 end
 \end{lstlisting}
 Hier als Beispiel die \textbf{upload\_photo} Action, welche die von \textbf{Devise} bereitgestellte Variable \textbf{current\_user} benutzt,
-um auf den aktuell eingeloggten Nutzer zuzugreifen und Parameter aus dem Frontend empfängt. Näheres dazu im Abschnitt \textbf{Routing}.
+um auf den aktuell eingeloggten Nutzer zuzugreifen, und Parameter aus dem Frontend empfängt. Näheres dazu im Abschnitt \textbf{Routing}.
 \begin{lstlisting}
 def upload_photo
   flickr = FlickRaw::Flickr.new
@@ -320,7 +320,7 @@ def upload_photo
 end
 \end{lstlisting}
 \subsection{Faye}
-Faye ist ein \textbf("publish-subscribe" Nachrichtensystem), welches außerdem einen extra Server für diesen Zweck bereitstellt. So können alle Nutzer, die die benötigten Rechte besitzen in Echtzeit informiert werden, wenn ein neuer Post verfasst wurde. Dazu muss im Backend nur eine von Faye bereitgestellte JavaScript-Datei zusaetzlich geladen werden. Der Code, der im Frontend implementiert werden muss, wird spaeter in dieser Dokumentation noch genauer erlaeutert.
+Faye ist ein \textbf("publish-subscribe" Nachrichtensystem), welches außerdem einen extra Server für diesen Zweck bereitstellt. So können alle Nutzer, die die benötigten Rechte besitzen, in Echtzeit informiert werden, wenn ein neuer Post verfasst wurde. Dazu muss im Backend nur eine von Faye bereitgestellte JavaScript-Datei zusätzlich geladen werden. Der Code, der im Frontend implementiert werden muss, wird später in dieser Dokumentation noch genauer erläutert.
 \subsection{Gon}
 Gon hilft dabei, die Kommunikation zwischen Backend und Frontend zu vereinfachen. Der Programmierer muss dazu nur folgendes definieren
 \begin{lstlisting}
@@ -332,10 +332,10 @@ gon.user_id = current_user.id
 \end{lstlisting}
 Diese Variable steht nun im Frontend zur Verfügung und kann im Javascript-Code ausgelesen werden.
 \subsection{Foreman}
-Foreman ermöglicht es mehrere Server mit einem Befehl zu starten(in Treebook sind das WEBrick und Faye). Die zu startenden Server werden in \textbf{/Procfile} definiert.
+Foreman ermöglicht es, mehrere Server mit einem Befehl zu starten(in Treebook sind das WEBrick und Faye). Die zu startenden Server werden in \textbf{/Procfile} definiert.
 \section{Sonstiges}
 \subsection{Gravatar}
-Gravatar\footnote{\href{http://gravatar.com}{http://gravatar.com}} ist ein Dienst, der es ermöglicht zu einer Email-Adresse ein Avatar zu hinterlegen. Treebook nutzt diesen Dienst für die Darstellung der Nutzer-Avatare. Der Vorteil dieser Lösung liegt für den Anwender darin, dass er seinen gewünschten Avatar an einer zentralen Stelle verwalten kann und nicht direkt in Treebook hochladen muss. Gravatar stellt eine API bereit, die es ermöglicht aus der Email-Adresse des Treebook-Nutzers die Gravatar Bild-URL zu berechnen, sowie einene Fallback-Avatar anzugeben.
+Gravatar\footnote{\href{http://gravatar.com}{http://gravatar.com}} ist ein Dienst, der es ermöglicht, zu einer Email-Adresse einen Avatar zu hinterlegen. Treebook nutzt diesen Dienst für die Darstellung der Nutzer-Avatare. Der Vorteil dieser Lösung liegt für den Anwender darin, dass er seinen gewünschten Avatar an einer zentralen Stelle verwalten kann und nicht direkt in Treebook hochladen muss. Gravatar stellt eine API bereit, die es ermöglicht, aus der Email-Adresse des Treebook-Nutzers die Gravatar Bild-URL zu berechnen, sowie einen Fallback-Avatar anzugeben.
 \begin{lstlisting}
 def image
   default_url = "http://localhost:3000/assets/derp.png" # Default-Bild
@@ -391,13 +391,13 @@ Ein Klick auf "neuer Tree" zeigt ein Textfeld, in das der Nutzer eine Bezeichnun
 Hinter den \textbf{Credits} verbergen sich Links zu Software und sonstigen Ressourcen, die für die Entwicklung von Treebook verwendet wurden.
 
 \subsection{Die Tree-Ansicht}
-Klickt der Nutzer auf einen Tree in der Navigation, so befindet sich der Stream in der \textbf{Tree-Ansicht}. Hier werden nur Posts angezeigt, die diesem Tree zuzuordnen sind. Das sind Posts, die der Nutzer diese Tree freigegeben hat, oder Posts von Kontakten, die der Nutzer diesem Tree zugeordnet hat.
+Klickt der Nutzer auf einen Tree in der Navigation, so befindet sich der Stream in der \textbf{Tree-Ansicht}. Hier werden nur Posts angezeigt, die diesem Tree zuzuordnen sind. Das sind Posts, die der Nutzer für diesen Tree freigegeben hat, oder Posts von Kontakten, die der Nutzer diesem Tree zugeordnet hat.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{Pictures/screen_treeview.png}%
 \caption{Tree-Ansicht}%
 \end{figure}
-In der Tree-Ansicht befinden sich rechts neben dem Titel 3 Aktionsbuttons:
+In der Tree-Ansicht befinden sich rechts neben dem Titel drei Aktionsbuttons:
 \begin{list}{$\bullet$}{}
 \item \textbf{Die Anzahl der Personen in diesem Tree}
 
@@ -411,14 +411,14 @@ Löscht den Tree inklusive der Kontaktzuordnungen zu diesem Tree.
 \end{list}
 
 \subsection{Das Suchfeld}
-Das Suchfeld zur Rechten des Streams bietet dem Anwender die Möglichkeit nach Personen zu suchen. Nachdem er mindestens 3 Buchstaben eingetippt hat, liefert das System alle Personen, deren Vor- oder Nachname mit diesen Buchstaben beginnt. Eine Suche nach "Han" wird genauso "Hans Dampf" wie "Lars Hansen" liefern, sofern diese Personen bei Treebook registriert sind.
+Das Suchfeld zur Rechten des Streams bietet dem Anwender die Möglichkeit nach Personen zu suchen. Nachdem er mindestens drei Buchstaben eingetippt hat, liefert das System alle Personen, deren Vor- oder Nachname mit diesen Buchstaben beginnt. Eine Suche nach "Han" wird genauso "Hans Dampf" wie "Lars Hansen" liefern, sofern diese Personen bei Treebook registriert sind.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{Pictures/screen_search.png}%
 \caption{Suche}%
 \end{figure}
 Der Anwender hat nun die Möglichkeit per Klick auf einen Namen das Profil des jeweiligen Nutzers aufzurufen, welches dann im mittleren Bereich der Seite angezeigt wird.
-Er hat weiterhin die Möglichkeit den Namen per \textbf{Drag and Drop} auf einen Tree in der linken Navigation zu ziehen. Dies fügt den Nutzer dann in den ausgewählten Tree ein, sofern er nicht bereits dem Tree zugeordnet wurde.
+Er hat weiterhin die Möglichkeit, den Namen per \textbf{Drag and Drop} auf einen Tree in der linken Navigation zu ziehen. Dies fügt den Nutzer dann in den ausgewählten Tree ein, sofern er nicht bereits dem Tree zugeordnet wurde.
 
 \subsection{Posts und Kommentare}
 Im Stream werden alle Posts und deren Kommentare angezeigt, die vom Nutzer selbst oder seinen Kontakten verfasst wurden. Die Posts sind nach Datum sortiert, wobei die neuesten weiter oben stehen.
@@ -440,8 +440,8 @@ Sofern der Autor des Posts der aktuelle Nutzer ist, wird in der oberen rechten E
 \includegraphics[width=\ScaleIfNeeded]{Pictures/screen_post_menu.png}%
 \caption{Post mit Kontext-Menü}%
 \end{figure}
-Unterhalb des Posts werden die Kommentare eingerückt angezeigt. Diese sind im Wesentlichen genauso aufgebaut, wie ein Post. Allerdings können Kommentare nicht ebenfalls kommentiert werden, daher entfällt die Anzahl der Kommentare und der Link zum Kommentieren.
-Standardmäßig werden die bis zu letzten 3 Kommentare zu einem Post angezeigt. Wurde ein Post mehr als dreimal kommentiert, so erscheint zwischen Post und den letzten 3 Kommentaren ein Link "Zeige alle x vorherigen Kommentare", der nachdem er geklickt wurde alle vorherigen Kommentare anzeigt.
+Unterhalb des Posts werden die Kommentare eingerückt angezeigt. Diese sind im Wesentlichen genauso aufgebaut wie ein Post. Allerdings können Kommentare nicht ebenfalls kommentiert werden, daher entfällt die Anzahl der Kommentare und der Link zum Kommentieren.
+Standardmäßig werden die bis zu letzten drei Kommentare zu einem Post angezeigt. Wurde ein Post mehr als dreimal kommentiert, so erscheint zwischen Post und den letzten 3 Kommentaren ein Link "Zeige alle x vorherigen Kommentare", der nachdem er geklickt wurde alle vorherigen Kommentare anzeigt.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\ScaleIfNeeded]{Pictures/screen_post_and_comments.png}%
@@ -450,10 +450,10 @@ Standardmäßig werden die bis zu letzten 3 Kommentare zu einem Post angezeigt. 
 Auch ein Kommentar kann bearbeitet und gelöscht werden, wenn der Nutzer diesen verfasst hat. Dies geschieht analog zur Bearbeitung eines Posts.
 
 \subsection{Die Kopfzeile}
-In der Kopfzeile wird zu jeder Zeit der Treebook-Schriftzug angezeigt, der den Link zur Startseite enthält. Am rechten Rand sieht der Nutzer nochmals seinen vollen Namen, hinter dem sich ein Link zu seinem Profil und zum Ausloggen verbirgt.
+In der Kopfzeile wird zu jeder Zeit der Treebook-Schriftzug angezeigt, der den Link zur Startseite enthält. Am rechten Rand sieht der Nutzer nochmals seinen vollen Namen, hinter dem sich ein Link zu seinem Profil, den Account-Einstellungen und zum Ausloggen verbirgt.
 Nach dem Ausloggen landet der Nutzer wieder auf der Startseite mit dem Treebook-Logo.
 
-Links neben seinem Namen, sieht der Nutzer einen Indikator für Benachrichtigungen. Hier wird angezeigt, wieviele Benachrichtigungen für den aktuellen nutzer vorliegen. In folgenden Fällen wird eine Benachrichtigung generiert:
+Links neben seinem Namen sieht der Nutzer einen Indikator für Benachrichtigungen. Hier wird angezeigt, wieviele Benachrichtigungen für den aktuellen Nutzer vorliegen. In folgenden Fällen wird eine Benachrichtigung generiert:
 \begin{list}{$\bullet$}{}
 \item wenn ein anderer Nutzer einen Post des Anwenders kommentiert hat
 \item wenn ein anderer Nutzer ein Foto des Anwenders kommentiert hat
