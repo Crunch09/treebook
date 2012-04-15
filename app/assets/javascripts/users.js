@@ -44,6 +44,12 @@ $(function() {
         title: "Credits"
     });
     
+    $('#license_dialog').dialog({
+        autoOpen: false,
+        title: "Lizenz",
+        width: 500
+    });
+    
     // Layer-Toggle initialisieren (slideUp/slideDown)
     $('#login_layer > b').toggle(function() {
       // Layer-Position neu setzen
