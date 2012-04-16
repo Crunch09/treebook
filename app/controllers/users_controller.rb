@@ -324,6 +324,11 @@ class UsersController < ApplicationController
       begin
         @comment = flickr.photos.comments.addComment(:photo_id => params[:photo_id],
                                                    :comment_text => params[:comment_text])
+        owner = flickr.photos.getInfo(:photo_id => params[:photo_id]).owner.nsid
+        u = User.find_by_flickr_id owner
+        unless u.user.id == current_user.id
+          Notification.create(:user => p.user, :message => "#{current_user.firstname} #{current_user.name} hat dein Photo kommentiert", :recognized => false, :typ => 1)
+        end
       rescue FlickRaw::FailedResponse => e
         respond_to do |format|
           format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
