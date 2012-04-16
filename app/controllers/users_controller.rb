@@ -462,9 +462,9 @@ class UsersController < ApplicationController
       if keywords.count == 1
         # wenn nur ein Wort übergeben wurde, 
         # nach Vor- oder Nachname suchen
-        @matches = User.find(:all, :conditions => ["firstname LIKE ? OR name LIKE ? ", "#{keywords.first}%", "#{keywords.first}%"])
+        @matches = User.find(:all, :conditions => ["(firstname LIKE ? OR name LIKE ?) AND id != ? ", "#{keywords.first}%", "#{keywords.first}%", current_user.id])
       else
-        @matches = User.find(:all, :conditions => ["firstname LIKE ? AND name LIKE ? ", "#{keywords.first}%", "#{keywords[1]}%"])
+        @matches = User.find(:all, :conditions => ["firstname LIKE ? AND name LIKE ? AND id != ? ", "#{keywords.first}%", "#{keywords[1]}%", current_user.id])
       end
       respond_to do |format|
         format.json { render json: @matches.to_json(:only => [:firstname, :name, :id], :methods => [:image])}
