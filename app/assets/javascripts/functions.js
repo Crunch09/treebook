@@ -370,8 +370,8 @@ var showProfile = function(user_id) {
                 label = "Essen";
                 break;
               case "github":
-                label = "Github";
-                text = '<a href="http://github.com/'+text+'" target="_blank">'+text+'</a>';
+                label = "<i class='icon-github-sign'></i> Github-Nutzername";
+                text = '<a href="http://github.com/'+text+'" class="external_link" target="_blank">'+text+'</a>';
                 break;
               case "likes":
                 label = "Ich mag";
@@ -383,8 +383,8 @@ var showProfile = function(user_id) {
                 label = "Musik";
                 break;
               case "twitter":
-                label = "Twitter";
-                text = '<a href="http://twitter.com/#!/'+text+'" target="_blank">'+text+'</a>';
+                label = "<i class='icon-twitter-sign'></i> Twitter-Nutzername";
+                text = '<a href="http://twitter.com/#!/'+text+'" class="external_link" target="_blank">'+text+'</a>';
                 break;
             }
             $('.profile_info').append('<label for="'+i+'">'+label+'</label><span name="'+i+'">'+text+'</span>');
@@ -410,27 +410,27 @@ var showProfile = function(user_id) {
               type: 'PUT',
               dataType: 'json',
               data: {
-                'user[books]': $('.profile_info span[name="books"] textarea').val(),
-                'user[food]': $('.profile_info span[name="food"] textarea').val(),
-                'user[github]': $('.profile_info span[name="github"] textarea').val(),
-                'user[likes]': $('.profile_info span[name="likes"] textarea').val(),
-                'user[movies]': $('.profile_info span[name="movies"] textarea').val(),
-                'user[music]': $('.profile_info span[name="music"] textarea').val(),
-                'user[twitter]': $('.profile_info span[name="twitter"] textarea').val()
+                'user[books]': $('.profile_info span[name="books"] :input').val(),
+                'user[food]': $('.profile_info span[name="food"] :input').val(),
+                'user[github]': $('.profile_info span[name="github"] :input').val(),
+                'user[likes]': $('.profile_info span[name="likes"] :input').val(),
+                'user[movies]': $('.profile_info span[name="movies"] :input').val(),
+                'user[music]': $('.profile_info span[name="music"] :input').val(),
+                'user[twitter]': $('.profile_info span[name="twitter"] :input').val()
               },
               success: function(r) {
                 $('.profile_actions button[name="profile_save"]').remove();
                 $('.profile_actions button').show();
                 for(var i in u.about_me) {
-                  if($('.profile_info span[name="'+i+'"] textarea').val().trim() != "") {
+                  if($('.profile_info span[name="'+i+'"] :input').val().trim() != "") {
                     if(i == "github") {
-                      var github = $('.profile_info span[name="'+i+'"] textarea').val();
-                      $('.profile_info span[name="'+i+'"]').html("<a href='https://github.com/"+github+"' target='_blank'>"+github+"</a>");
+                      var github = $('.profile_info span[name="'+i+'"] :input').val();
+                      $('.profile_info span[name="'+i+'"]').html("<a href='https://github.com/"+github+"' class='external_link' target='_blank'>"+github+"</a>");
                     } else if(i == "twitter") {
-                      var twitter = $('.profile_info span[name="'+i+'"] textarea').val();
-                      $('.profile_info span[name="'+i+'"]').html("<a href='http://twitter.com/#!/"+twitter+"' target='_blank'>"+twitter+"</a>");
+                      var twitter = $('.profile_info span[name="'+i+'"] :input').val();
+                      $('.profile_info span[name="'+i+'"]').html("<a href='http://twitter.com/#!/"+twitter+"' class='external_link' target='_blank'>"+twitter+"</a>");
                     } else {
-                      $('.profile_info span[name="'+i+'"]').text($('.profile_info span[name="'+i+'"] textarea').val());
+                      $('.profile_info span[name="'+i+'"]').text($('.profile_info span[name="'+i+'"] :input').val());
                     }
                   } else {
                     $('.profile_info span[name="'+i+'"], label[for="'+i+'"]').remove();
@@ -450,12 +450,21 @@ var showProfile = function(user_id) {
             if($('span[name="'+i+'"]').length > 0) {
               if($('span[name="'+i+'"]').find('a').length > 0) {
                 var t = $('span[name="'+i+'"] a').text();
-                $('span[name="'+i+'"]').html('<textarea>'+t+'</textarea>');
+                if(i == "twitter" || i == "github") {
+                  $('span[name="'+i+'"]').html('<input type="text" value="'+t+'" />');
+                } else {
+                  $('span[name="'+i+'"]').html('<textarea>'+t+'</textarea>');
+                }
               } else {
-                $('span[name="'+i+'"]').wrapInner('<textarea></textarea>');
+                if(i == "twitter" || i == "github") {
+                  $('span[name="'+i+'"]').html('<input type="text" value="" />');
+                } else {
+                  $('span[name="'+i+'"]').wrapInner('<textarea></textarea>');
+                }
               }
             } else {
               var label = "";
+              var field = "<textarea>"+(u.about_me[i] == null ? "" : u.about_me[i])+"</textarea>";
               switch(i) {
                 case "books":
                   label = "Bücher";
@@ -464,7 +473,8 @@ var showProfile = function(user_id) {
                   label = "Essen";
                   break;
                 case "github":
-                  label = "Github";
+                  label = "<i class='icon-github-sign'></i> Github-Nutzername";
+                  field = '<input type="text" value="'+(u.about_me[i] == null ? "" : u.about_me[i])+'" />';
                   break;
                 case "likes":
                   label = "Ich mag";
@@ -476,10 +486,11 @@ var showProfile = function(user_id) {
                   label = "Musik";
                   break;
                 case "twitter":
-                  label = "Twitter";
+                  label = "<i class='icon-twitter-sign'></i> Twitter-Nutzername";
+                  field = '<input type="text" value="'+(u.about_me[i] == null ? "" : u.about_me[i])+'" />';
                   break;
               }
-              $('.profile_info').append('<label for="'+i+'">'+label+'</label><span name="'+i+'"><textarea>'+(u.about_me[i] == null ? "" : u.about_me[i])+'</textarea></span>');
+              $('.profile_info').append('<label for="'+i+'">'+label+'</label><span name="'+i+'">'+field+'</span>');
             }
           }
         });
