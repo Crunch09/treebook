@@ -315,28 +315,34 @@ class UsersController < ApplicationController
     flickr.access_token = current_user.access_token
     flickr.access_secret = current_user.access_secret
 
-    if params[:photo_id].nil? || params[:comment_text].nil?
-      respond_to do |format|
-        format.json { render json: "Bitte gib ein Foto und einen Kommentar an", status: :unprocessable_entity}
-      end
-      return
-    else
-      begin
-        @comment = flickr.photos.comments.addComment(:photo_id => params[:photo_id],
-                                                   :comment_text => params[:comment_text])
-        owner = flickr.photos.getInfo(:photo_id => params[:photo_id]).owner.nsid
-        u = User.find_by_flickr_id owner
-        unless u.user.id == current_user.id
-          Notification.create(:user => p.user, :message => "#{current_user.firstname} #{current_user.name} hat dein Photo kommentiert", :recognized => false, :typ => 1)
-        end
-      rescue FlickRaw::FailedResponse => e
+    if current_user.got_flickr_connection?
+      if params[:photo_id].nil? || params[:comment_text].nil?
         respond_to do |format|
-          format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+          format.json { render json: "Bitte gib ein Foto und einen Kommentar an", status: :unprocessable_entity}
         end
         return
+      else
+        begin
+          @comment = flickr.photos.comments.addComment(:photo_id => params[:photo_id],
+                                                     :comment_text => params[:comment_text])
+          owner = flickr.photos.getInfo(:photo_id => params[:photo_id]).owner.nsid
+          u = User.find_by_flickr_id owner
+          unless u.id == current_user.id
+            Notification.create(:user => u, :message => "#{current_user.firstname} #{current_user.name} hat dein Photo kommentiert", :recognized => false, :typ => 1)
+          end
+        rescue FlickRaw::FailedResponse => e
+          respond_to do |format|
+            format.json { render json: "Leider ist ein Fehler aufgetreten, bitte versuch es noch einmal.", status: :unprocessable_entity }
+          end
+          return
+        end
+        respond_to do |format|
+          format.json { render json: @comment }
+        end
       end
+    else
       respond_to do |format|
-        format.json { render json: @comment }
+        format.json { render json: "Bitte verbinde deinen Account erst mit Flickr.", status: :unprocessable_entity }
       end
     end
   end

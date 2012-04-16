@@ -830,37 +830,48 @@ var initFancyBox = function(coll, u) {
       
       var cBox = $('<div class="fancybox-comments"><h3>Kommentare</h3><input type="hidden" name="photo_id" value="'+photo_id+'" /><textarea name="photo_comment"></textarea><span class="loading"><img src="assets/loading_big.gif" /></span></div>');
       cBox.appendTo('body');
-      makeTextareaGrowable(cBox.find('textarea'));
-      setInputDefault(cBox.find('textarea'), "Schreibe einen Kommentar zu diesem Bild.");
-      
-      cBox.find('textarea').bind('focus', function() {
-        if($(this).nextAll('button[name="send_photo_comment"]').length == 0) {
-          $(this).after('<button name="send_photo_comment"><i class="icon-ok"></i> Abschicken</button> <button name="cancel_photo_comment"><i class="icon-remove"></i> Abbrechen</button>');
-          $(this).nextAll('button[name="send_photo_comment"]').click(function() {
-            var c = $('textarea[name="photo_comment"]').val();
-            if(c != "Schreibe einen Kommentar zu diesem Bild.") {
-              $.ajax({
-                url: 'comment.json',
-                type: 'POST',
-                data: {
-                  'photo_id': $('.fancybox-comments input[name="photo_id"]').val(),
-                  'comment_text': c
-                },
-                dataType: 'json',
-                success: function(response) {
-                  console.log(response);
-                  $('button[name="cancel_photo_comment"]').click();
-                  $('.fancybox-comments .no-comments').remove();
-                  $('.fancybox-comments textarea').after('<div class="photo_comment"><img src="'+gon.gravatar+'" /><b>'+gon.firstname+' '+gon.lastname+'</b><br /><small>vor weniger als einer Minute</small><p>'+c+'</p></div>');
-                }
-              });
-            }
-          });
-          $(this).nextAll('button[name="cancel_photo_comment"]').click(function() {
-            $(this).add($('button[name="send_photo_comment"]')).remove();
-            $('textarea[name="photo_comment"]').val("").trigger('blur');
-          });
-          $(this).nextAll('button').button();
+
+      $.ajax({
+        url: 'users/'+gon.user_id+'.json',
+        dataType: 'json',
+        success: function(u) {
+          if(u.flickr_id != null) {
+            makeTextareaGrowable(cBox.find('textarea'));
+            setInputDefault(cBox.find('textarea'), "Schreibe einen Kommentar zu diesem Bild.");
+            
+            cBox.find('textarea').bind('focus', function() {
+              if($(this).nextAll('button[name="send_photo_comment"]').length == 0) {
+                $(this).after('<button name="send_photo_comment"><i class="icon-ok"></i> Abschicken</button> <button name="cancel_photo_comment"><i class="icon-remove"></i> Abbrechen</button>');
+                $(this).nextAll('button[name="send_photo_comment"]').click(function() {
+                  var c = $('textarea[name="photo_comment"]').val();
+                  if(c != "Schreibe einen Kommentar zu diesem Bild.") {
+                    $.ajax({
+                      url: 'comment.json',
+                      type: 'POST',
+                      data: {
+                        'photo_id': $('.fancybox-comments input[name="photo_id"]').val(),
+                        'comment_text': c
+                      },
+                      dataType: 'json',
+                      success: function(response) {
+                        console.log(response);
+                        $('button[name="cancel_photo_comment"]').click();
+                        $('.fancybox-comments .no-comments').remove();
+                        $('.fancybox-comments textarea').after('<div class="photo_comment"><img src="'+gon.gravatar+'" /><b>'+gon.firstname+' '+gon.lastname+'</b><br /><small>vor weniger als einer Minute</small><p>'+c+'</p></div>');
+                      }
+                    });
+                  }
+                });
+                $(this).nextAll('button[name="cancel_photo_comment"]').click(function() {
+                  $(this).add($('button[name="send_photo_comment"]')).remove();
+                  $('textarea[name="photo_comment"]').val("").trigger('blur');
+                });
+                $(this).nextAll('button').button();
+              }
+            });
+          } else {
+            cBox.find('textarea').replaceWith("<b>Um dieses Foto kommentieren zu können, musst du deinen Account mit Flickr verbinden.</b>")
+          }
         }
       });
       

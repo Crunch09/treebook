@@ -29,8 +29,11 @@ var refreshPostTimeAgo = function() {
   }, autoRefreshRate);
 }
 
+var postsLoading = false;
+
 var loadPosts = function() {
-  if($('.post').length == 0) {
+  if($('.post').length == 0 && !postsLoading) {
+    postsLoading = true;
     // Alle verfügbaren Posts laden
     $.ajax({
       url: 'posts.json',
